@@ -1,7 +1,7 @@
 # Smart road signaling :vertical_traffic_light:
 
 
-Projet dans le cadre du cours **INFOM453 Laboratoire en informatique ambiante et mobile**
+Projet dans le cadre du cours **INFOM453 Laboratoire en informatique ambiante et mobile** sur le sujet des *Smart cities*.
 
 Serveur/Scala | Maquette/Phidgets
 ------------- | -------------
@@ -23,3 +23,6 @@ Cette troisième et dernière tâche est la plus complexe, en effet, elle permet
 
 ### Maquette
 Dessin abstrait de la maquette disponible [ici](https://docs.google.com/drawings/d/1vkHto2qSTscVSHUA4KIwAOQl6Z28mmhF0PmFOPPPtXE/edit?usp=sharing) (7/3/2017)
+
+## Phase 2 : Phidgets
+> À compléter
