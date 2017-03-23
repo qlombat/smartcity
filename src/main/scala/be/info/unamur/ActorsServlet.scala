@@ -24,9 +24,7 @@ class ActorsServlet(system: ActorSystem, servoMotorActor: ActorRef) extends Scal
     }
   }
 
-  override def init(config: ServletConfig): Unit = {
-    super.init(config)
-
+  get("/init") {
     rfid openAny()
     rfid waitForAttachment()
     rfid setAntennaOn true
