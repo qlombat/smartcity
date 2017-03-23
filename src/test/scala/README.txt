@@ -1,0 +1,1 @@
+Add your scala tests in this folder.
