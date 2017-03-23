@@ -26,3 +26,20 @@ Dessin abstrait de la maquette disponible [ici](https://docs.google.com/drawings
 
 ## Phase 2 : Phidgets
 > À compléter
+
+## Phase 3 : Scala
+Pour pouvoir compiler le projet, il faut installer la librairie Phidgets dans votre repository local Maven :
+- Télécharger la documentation [ici](http://www.phidgets.com/documentation/JavaDoc.zip)
+- Dézipper le ficier .zip télécharger et ouvrir un terminal dans le dossier résultant de dézippage.
+- Lancer la commande `jar cf ../phidget-javadoc.jar .`
+- Télécharger la librairie Java de Phidgets [ici](http://www.phidgets.com/downloads/libraries/phidget21jar.zip)
+- Lancer la commande `mvn install:install-file -Dfile=phidget21.jar -DgroupId=com.phidgets -DartifactId=phidget -Dversion=2.1 -Dpackaging=jar -Djavadoc=phidget-javadoc.jar` dans le dossier où se trouvent les .jar de la librairie et de la JavaDoc de celle-ci.
+- S'assurer que la dépendance suivante se trouve dans le pom.xml (ce qui est normalement déjà le cas) :
+```
+<dependency>
+    <groupId>com.phidgets</groupId>
+    <artifactId>phidget</artifactId>
+    <version>2.1</version>
+    <scope>compile</scope>
+</dependency>
+```
