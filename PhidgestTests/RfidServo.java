@@ -16,7 +16,7 @@ public class RfidServo{
                 System.out.println("attachment of InterfaceKitPhidget " + ae);
             }
         });
-        .addDetachListener(new DetachListener() {
+        ik.addDetachListener(new DetachListener() {
             public void detached(DetachEvent ae) {
                 System.out.println("detachment of InterfaceKitPhidget " + ae);
             }
@@ -45,15 +45,13 @@ public class RfidServo{
                 System.out.println("attachment of RFIDPhidget " + ae);
             }
         });
-
         rfid.addDetachListener(new DetachListener() {
             public void detached(DetachEvent ae) {
                 System.out.println("detachment of RFIDPhidget " + ae);
             }
         });
 
-        rfid.addTagGainListener(new TagGainListener()
-        {
+        rfid.addTagGainListener(new TagGainListener() {
             public void tagGained(TagGainEvent oe)
             {
                 System.out.println("Tag Gained: " +oe.getValue());
@@ -63,9 +61,7 @@ public class RfidServo{
                 }
             }
         });
-
-        rfid.addTagLossListener(new TagLossListener()
-        {
+        rfid.addTagLossListener(new TagLossListener() {
             public void tagLost(TagLossEvent oe)
             {
                 System.out.println(oe);
@@ -91,9 +87,10 @@ public class RfidServo{
         servo.close();
         ik.close();
     }
-    public static void openBarrier(AdvancedServoPhidget servo, String rfidTag, InterfaceKitPhidget ik) throws Exception{
-        if (rfidTag.equals("2800b86b50")){
-           Thread threadLight = new Thread(new Runnable(){
+
+    public static void openBarrier(AdvancedServoPhidget servo, String rfidTag, InterfaceKitPhidget ik) throws Exception {
+        if (rfidTag.equals("2800b86b50")) {
+            Thread threadLight = new Thread(new Runnable(){
             public void run(){
                 try{
                     for (int i = 0; i <12; i++){
@@ -105,16 +102,17 @@ public class RfidServo{
                 }
                 catch(Exception e){};
             }
-        });
-           threadLight.start();
-           servo.setSpeedRampingOn(0, true);
-           servo.setAcceleration(0,100);
-           servo.setVelocityLimit(0, 200);
-           servo.setPosition(0, 190);
-           Thread.sleep(5000);
-           servo.setPosition(0, 100);
-       }else{
-        return;
+            });
+
+            threadLight.start();
+            servo.setSpeedRampingOn(0, true);
+            servo.setAcceleration(0,100);
+            servo.setVelocityLimit(0, 200);
+            servo.setPosition(0, 190);
+            Thread.sleep(5000);
+            servo.setPosition(0, 100);
+        } else {
+            return;
+        }
     }
-}
 }

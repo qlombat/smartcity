@@ -1,13 +1,20 @@
 import javax.servlet.ServletContext
+
+import _root_.akka.actor.{ActorSystem, Props}
+import be.info.unamur.actors.ServoMotorActor
+import be.info.unamur.{ActorsServlet, MainServlet}
 import org.scalatra._
-import be.info.unamur.MainServlet
 
 class ScalatraBootstrap extends LifeCycle {
+
+  // Initialize the Actor System
+  val system = ActorSystem()
+  val servoMotorActor = system.actorOf(Props[ServoMotorActor])
+
   override def init(context: ServletContext) {
-
-    // Mount servlets.
+    // Mount servlets
     context.mount(new MainServlet, "/*")
-
-
+    context.mount(new ActorsServlet(system, servoMotorActor), "/actors/*")
   }
 }
+
