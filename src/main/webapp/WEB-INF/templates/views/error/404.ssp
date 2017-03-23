@@ -1,0 +1,7 @@
+<%@ var title: String = "404 NotFound" %>
+
+<h2>404 NotFound</h2>
+
+<p>
+    Page not found
+</p>
