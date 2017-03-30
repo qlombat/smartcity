@@ -1,7 +1,7 @@
 package be.info.unamur.actors
 
 import akka.actor.{Actor, ActorSystem, Props}
-import com.phidgets.{InterfaceKitPhidget}
+import com.phidgets.InterfaceKitPhidget
 
 /**
   * @author jeremyduchesne
@@ -14,6 +14,7 @@ class CityActor extends Actor {
   case class SwitchOff() extends Message
   case class Blink() extends Message
   case class Close() extends Message
+  case class Pedestrian(b:Boolean) extends Message
 
   val ik = new InterfaceKitPhidget()
 
@@ -25,7 +26,7 @@ class CityActor extends Actor {
       ik openAny()
       ik waitForAttachment()
 
-      crossroadsActor ! Init(0,1,2,3,4,5,6,7)
+      crossroadsActor ! Init(0,1,2,3,4,5,6,7,8,9)
 
     }
     case Close => {

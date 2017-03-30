@@ -1,7 +1,5 @@
 package be.info.unamur.actors
 
-import akka.actor.Actor
-
 /**
   * @author jeremyduchesne
   */
