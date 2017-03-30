@@ -30,6 +30,8 @@ class CrossroadsActor extends CityActor {
       trafficLights2 ! SwitchOff
       trafficLights3 ! SwitchOn
       trafficLights4 ! SwitchOff
+      pedestrianCrossing1 ! SwitchOn
+      pedestrianCrossing2 ! SwitchOn
     }
     case Pedestrian(pedestrianPresent) => {
       if(pedestrianPresent) {
