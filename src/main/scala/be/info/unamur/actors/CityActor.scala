@@ -6,7 +6,7 @@ import com.phidgets.InterfaceKitPhidget
 /**
   * @author jeremyduchesne
   */
-class CityActor extends Actor {
+class CityActor(system: ActorSystem) extends Actor {
 
   sealed trait Message
   case class Init(port:Int*) extends Message
@@ -18,18 +18,17 @@ class CityActor extends Actor {
 
   val ik = new InterfaceKitPhidget()
 
-  val system = ActorSystem("PoeteSystem")
-  val crossroadsActor = system.actorOf(Props[CrossroadsActor], name = "crossroadsActor")
+  val crossroadsActor = system.actorOf(Props(new CrossroadsActor(system)), name = "crossroadsActor")
 
   override def receive: Receive = {
-    case Init => {
+    case "Init" => {
       ik openAny()
       ik waitForAttachment()
 
-      crossroadsActor ! Init(0,1,2,3,4,5,6,7,8,9)
+      crossroadsActor ! Init
 
     }
-    case Close => {
+    case "Close" => {
       ik close()
     }
   }

@@ -1,5 +1,7 @@
 package be.info.unamur
 
+import akka.actor.{ActorSystem, Props}
+import be.info.unamur.actors.CityActor
 import org.scalatra.ScalatraServlet
 import org.scalatra.scalate.ScalateSupport
 
@@ -10,5 +12,11 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
 
   get("/") {
     layoutTemplate("/WEB-INF/templates/views/index.ssp")
+
+    val system = ActorSystem("SmartCity")
+
+    val cityActor = system.actorOf(Props(new CityActor(system)), name = "cityActor")
+
+    cityActor ! "Init"
   }
 }
