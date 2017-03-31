@@ -1,35 +1,27 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import com.phidgets.InterfaceKitPhidget
 
 /**
   * @author jeremyduchesne
+  * @author Noé Picard
   */
-class CityActor(system: ActorSystem) extends Actor {
+class CityActor extends Actor with SharedProperties {
 
-  sealed trait Message
-  case class Init(port:Int*) extends Message
-  case class SwitchOn() extends Message
-  case class SwitchOff() extends Message
-  case class Blink() extends Message
-  case class Close() extends Message
-  case class Pedestrian(b:Boolean) extends Message
+  val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)), name = "crossroadsActor")
 
   val ik = new InterfaceKitPhidget()
 
-  val crossroadsActor = system.actorOf(Props(new CrossroadsActor(system)), name = "crossroadsActor")
-
   override def receive: Receive = {
-    case "Init" => {
+    case "init" =>
       ik openAny()
       ik waitForAttachment()
 
-      crossroadsActor ! Init
+      crossroadsActor ! Init()
 
-    }
-    case "Close" => {
+    case "close" =>
       ik close()
-    }
+
   }
 }

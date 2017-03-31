@@ -1,30 +1,31 @@
 package be.info.unamur.actors
 
-import akka.actor.ActorSystem
+import akka.actor.Actor
+import com.phidgets.InterfaceKitPhidget
 
 /**
   * @author jeremyduchesne
   */
-class LightActor(system: ActorSystem) extends TrafficLightsActor(system){
+class LightActor(ik: InterfaceKitPhidget) extends Actor with SharedProperties {
 
-  var port:Int = _
+  var port: Int = _
 
   override def receive: Receive = {
-    case Init(port:Int) => {
+    case Init(port: Int) =>
       this.port = port
       ik.setOutputState(port, true)
-    }
-    case SwitchOn => {
+
+    case SwitchOn =>
       ik.setOutputState(port, true)
-    }
-    case SwitchOff => {
+
+    case SwitchOff =>
       ik.setOutputState(port, false)
-    }
-    case Blink => {
+
+    case Blink =>
       ik.setOutputState(port, true)
       Thread.sleep(500)
       ik.setOutputState(port, false)
-    }
+
   }
 
 }

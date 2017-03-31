@@ -12,11 +12,13 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
 
   get("/") {
     layoutTemplate("/WEB-INF/templates/views/index.ssp")
+  }
 
+  get("/init_actors") {
     val system = ActorSystem("SmartCity")
 
-    val cityActor = system.actorOf(Props(new CityActor(system)), name = "cityActor")
+    val cityActor = system.actorOf(Props[CityActor], name = "cityActor")
 
-    cityActor ! "Init"
+    cityActor ! "init"
   }
 }
