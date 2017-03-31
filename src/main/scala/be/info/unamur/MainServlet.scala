@@ -1,7 +1,7 @@
 package be.info.unamur
 
 import akka.actor.{ActorSystem, Props}
-import be.info.unamur.actors.CityActor
+import be.info.unamur.actors.{CityActor, Init}
 import org.scalatra.ScalatraServlet
 import org.scalatra.scalate.ScalateSupport
 
@@ -20,6 +20,6 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
 
     val cityActor = system.actorOf(Props[CityActor], name = "cityActor")
 
-    cityActor ! "init"
+    cityActor ! Init()
   }
 }

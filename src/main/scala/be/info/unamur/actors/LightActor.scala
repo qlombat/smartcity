@@ -6,7 +6,7 @@ import com.phidgets.InterfaceKitPhidget
 /**
   * @author jeremyduchesne
   */
-class LightActor(ik: InterfaceKitPhidget) extends Actor with SharedProperties {
+class LightActor(ik: InterfaceKitPhidget) extends Actor with SharedProperties{
 
   var port: Int = _
 
@@ -15,10 +15,10 @@ class LightActor(ik: InterfaceKitPhidget) extends Actor with SharedProperties {
       this.port = port
       ik.setOutputState(port, true)
 
-    case SwitchOn =>
+    case SwitchOn() =>
       ik.setOutputState(port, true)
 
-    case SwitchOff =>
+    case SwitchOff() =>
       ik.setOutputState(port, false)
 
     case Blink =>
