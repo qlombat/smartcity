@@ -7,14 +7,14 @@ import com.phidgets.event.{TagGainEvent, TagGainListener}
 /**
   * @author Noé Picard
   */
-class ParkingActor extends Actor with SharedProperties {
+class ParkingActor extends Actor with Messages {
   val rfid = new RFIDPhidget()
 
   val barrierActor: ActorRef = context.actorOf(Props(new BarrierActor(rfid)), name = "barrierActor")
 
   rfid addTagGainListener new TagGainListener {
     override def tagGained(tagGainEvent: TagGainEvent): Unit = {
-      barrierActor ! OpenBarrier
+      barrierActor ! OpenBarrier()
     }
   }
 

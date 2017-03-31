@@ -6,7 +6,7 @@ import com.phidgets.InterfaceKitPhidget
 /**
   * @author jeremyduchesne
   */
-class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor with SharedProperties{
+class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor with Messages{
 
   val pedestrianCrossingTime = 10000
 

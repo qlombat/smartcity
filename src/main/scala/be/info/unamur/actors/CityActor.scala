@@ -7,7 +7,7 @@ import com.phidgets.InterfaceKitPhidget
   * @author jeremyduchesne
   * @author Noé Picard
   */
-class CityActor extends Actor with SharedProperties{
+class CityActor extends Actor with Messages {
 
   val ik = new InterfaceKitPhidget()
 
@@ -16,12 +16,12 @@ class CityActor extends Actor with SharedProperties{
 
   override def receive: Receive = {
     case Init() =>
-      ik openAny()
+      /*ik openAny()
       ik waitForAttachment()
 
-      crossroadsActor ! Init()
+      crossroadsActor ! Init()*/
       parkingActor ! Init()
-
+      /*
       Thread.sleep(2000)
 
       crossroadsActor ! Start()
@@ -29,8 +29,6 @@ class CityActor extends Actor with SharedProperties{
       Thread.sleep(2000)
 
       crossroadsActor ! SecondaryCarComing()
-    case Close() =>
-      ik close()
-
+      */
   }
 }

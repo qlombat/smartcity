@@ -6,7 +6,7 @@ import com.phidgets.{AdvancedServoPhidget, RFIDPhidget}
 /**
   * @author Noé Picard
   */
-class BarrierActor(ik: RFIDPhidget) extends Actor with SharedProperties {
+class BarrierActor(ik: RFIDPhidget) extends Actor with Messages {
   val sm = new AdvancedServoPhidget()
 
   override def receive: Receive = {
@@ -15,19 +15,17 @@ class BarrierActor(ik: RFIDPhidget) extends Actor with SharedProperties {
       sm waitForAttachment()
 
       sm setEngaged(0, false)
-      sm setSpeedRampingOn(0, false)
       sm setPosition(0, 100)
+      sm setSpeedRampingOn (0, false)
       sm setEngaged(0, true)
 
-    case OpenBarrier =>
+    case OpenBarrier() =>
       // Open the barrier
-      sm setSpeedRampingOn(0, true)
-      sm setAcceleration(0, 100)
-      sm setVelocityLimit(0, 200)
-      sm setPosition(0, 190)
+      sm setPosition(0, 180)
 
       // Close the barrier after 5 seconds
-      Thread sleep 5000
+      Thread.sleep(5000)
+
       sm setPosition(0, 100)
   }
 }

@@ -6,7 +6,7 @@ import com.phidgets.InterfaceKitPhidget
 /**
   * @author jeremyduchesne
   */
-class TrafficLightsActor(red: Int, green: Int, ik: InterfaceKitPhidget) extends Actor with SharedProperties{
+class TrafficLightsActor(red: Int, green: Int, ik: InterfaceKitPhidget) extends Actor with Messages {
 
   val blinkingTime = 4000
   val lightRedPin = red

@@ -6,7 +6,7 @@ import com.phidgets.InterfaceKitPhidget
 /**
   * Created by jsirjacq on 31/03/17.
   */
-class PedestrianTrafficLightActor(yellow: Int, ik: InterfaceKitPhidget) extends Actor with SharedProperties {
+class PedestrianTrafficLightActor(yellow: Int, ik: InterfaceKitPhidget) extends Actor with Messages {
 
   val lightYellowPin = yellow
 
