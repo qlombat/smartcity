@@ -6,26 +6,24 @@ import com.phidgets.InterfaceKitPhidget
 /**
   * @author jeremyduchesne
   */
-class TrafficLightsActor(ik: InterfaceKitPhidget) extends Actor with SharedProperties{
+class TrafficLightsActor(red: Int, green: Int, ik: InterfaceKitPhidget) extends Actor with SharedProperties{
 
   val blinkingTime = 4000
-
-  val lightGreen: ActorRef = context.actorOf(Props(new LightActor(ik)), name = "lightGreen")
-  val lightRed: ActorRef = context.actorOf(Props(new LightActor(ik)), name = "lightRed")
-
+  val lightRedPin = red
+  val lightGreenPin = green
 
   override def receive: Receive = {
-    case Init(x: Int, y: Int) =>
-      lightGreen ! Init(y)
-      lightRed ! Init(x)
+    case Init() =>
+      ik.setOutputState(lightRedPin, true)
+      ik.setOutputState(lightGreenPin, true)
 
     case SetGreen() =>
-      lightRed ! SwitchOff
-      lightGreen ! SwitchOn
+      ik.setOutputState(lightRedPin, false)
+      ik.setOutputState(lightGreenPin, true)
 
     case SetRed() =>
-      lightRed ! SwitchOn
-      lightGreen ! SwitchOff
+      ik.setOutputState(lightRedPin, true)
+      ik.setOutputState(lightGreenPin, false)
   }
 
 

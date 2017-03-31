@@ -10,30 +10,30 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor with SharedProperti
 
   val pedestrianCrossingTime = 10000
 
-  val trafficLights1: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik)), name = "trafficLightsActor1")
-  val trafficLights2: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik)), name = "trafficLightsActor2")
+  val trafficLightsMain: ActorRef = context.actorOf(Props(new TrafficLightsActor(0,1,ik)), name = "trafficLightsActor1")
+  val trafficLightsAuxiliary: ActorRef = context.actorOf(Props(new TrafficLightsActor(2,3,ik)), name = "trafficLightsActor2")
 
-  val pedestrianCrossing1 = context.actorOf(Props(new PedestrianTrafficLightActor(ik)), name = "pedestrianCrossing1")
+  val pedestrianCrossing1 = context.actorOf(Props(new PedestrianTrafficLightActor(4,ik)), name = "pedestrianCrossing1")
 
   override def receive: Receive = {
     case Init() =>
-      trafficLights1 ! Init(0, 1)
-      trafficLights2 ! Init(2, 3)
-      pedestrianCrossing1 ! Init(4)
+      trafficLightsMain ! Init()
+      trafficLightsAuxiliary ! Init()
+      pedestrianCrossing1 ! Init()
 
     case Start() =>
-      trafficLights1 ! SetGreen()
-      trafficLights2 ! SetRed()
+      trafficLightsMain ! SetGreen()
+      trafficLightsAuxiliary ! SetRed()
       pedestrianCrossing1 ! SetOn()
 
     case SecondaryCarComing()=>
       pedestrianCrossing1 ! SetOff()
       Thread.sleep(4000)
-      trafficLights1 ! SetRed()
-      trafficLights2 ! SetGreen()
+      trafficLightsMain ! SetRed()
+      trafficLightsAuxiliary ! SetGreen()
       Thread.sleep(10000)
-      trafficLights1 ! SetGreen()
-      trafficLights2 ! SetRed()
+      trafficLightsMain ! SetGreen()
+      trafficLightsAuxiliary ! SetRed()
       Thread.sleep(2000)
       pedestrianCrossing1 ! SetOn()
   }
