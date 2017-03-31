@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>be.info.unamur</groupId>
@@ -10,6 +10,37 @@
     <version>1.0-SNAPSHOT</version>
 
     <packaging>war</packaging>
+
+    <developers>
+        <developer>
+            <id>jduchesne</id>
+            <name>Jeremy Duchesne</name>
+            <email>jeremy.duchesne@student.unamur.be</email>
+            <organization>University of Namur</organization>
+            <organizationUrl>http://www.unamur.be</organizationUrl>
+        </developer>
+        <developer>
+            <id>qlombat</id>
+            <name>Quentin LOMBAT</name>
+            <email>quentin.lombat@student.unamur.be</email>
+            <organization>University of Namur</organization>
+            <organizationUrl>http://www.unamur.be</organizationUrl>
+        </developer>
+        <developer>
+            <id>jsirjacq</id>
+            <name>Justin SIRJACQUES</name>
+            <email>justin.sirjacques@student.unamur.be</email>
+            <organization>University of Namur</organization>
+            <organizationUrl>http://www.unamur.be</organizationUrl>
+        </developer>
+        <developer>
+            <id>npicard</id>
+            <name>Noe PICARD</name>
+            <email>noe.picard@student.unamur.be</email>
+            <organization>University of Namur</organization>
+            <organizationUrl>http://www.unamur.be</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <!-- Plugins -->

@@ -1,9 +1,8 @@
 package be.info.unamur.actors
 
-/**
-  * @author Noé Picard
+/** Messages case classes for pattern matching.
   *
-  * Shared properties (like case classes for pattern matching on messages) for all actors.
+  * @author Noé Picard
   */
 trait Messages
 case class Init(port: Int*) extends Messages

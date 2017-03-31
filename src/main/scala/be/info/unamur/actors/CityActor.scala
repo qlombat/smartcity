@@ -16,12 +16,12 @@ class CityActor extends Actor with Messages {
 
   override def receive: Receive = {
     case Init() =>
-      /*ik openAny()
+      ik openAny()
       ik waitForAttachment()
 
-      crossroadsActor ! Init()*/
+      crossroadsActor ! Init()
       parkingActor ! Init()
-      /*
+
       Thread.sleep(2000)
 
       crossroadsActor ! Start()
@@ -29,6 +29,6 @@ class CityActor extends Actor with Messages {
       Thread.sleep(2000)
 
       crossroadsActor ! SecondaryCarComing()
-      */
+
   }
 }
