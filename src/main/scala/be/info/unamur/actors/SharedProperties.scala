@@ -12,3 +12,4 @@ case class SwitchOff() extends SharedProperties
 case class Blink() extends SharedProperties
 case class Close() extends SharedProperties
 case class Pedestrian(b: Boolean) extends SharedProperties
+case object OpenBarrier extends SharedProperties

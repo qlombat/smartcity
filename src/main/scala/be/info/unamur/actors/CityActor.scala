@@ -9,9 +9,10 @@ import com.phidgets.InterfaceKitPhidget
   */
 class CityActor extends Actor with SharedProperties {
 
-  val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)), name = "crossroadsActor")
-
   val ik = new InterfaceKitPhidget()
+
+  val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)), name = "crossroadsActor")
+  val parkingActor: ActorRef = context.actorOf(Props(new ParkingActor()), name = "parkingActor")
 
   override def receive: Receive = {
     case "init" =>
@@ -19,6 +20,7 @@ class CityActor extends Actor with SharedProperties {
       ik waitForAttachment()
 
       crossroadsActor ! Init()
+      parkingActor ! Init()
 
     case "close" =>
       ik close()

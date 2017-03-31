@@ -15,6 +15,7 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
   }
 
   get("/init_actors") {
+    // Initialize the Actor System
     val system = ActorSystem("SmartCity")
 
     val cityActor = system.actorOf(Props[CityActor], name = "cityActor")
