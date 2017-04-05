@@ -24,6 +24,10 @@ Cette troisième et dernière tâche est la plus complexe, en effet, elle permet
 ### Maquette
 Dessin abstrait de la maquette disponible [ici](https://docs.google.com/drawings/d/1vkHto2qSTscVSHUA4KIwAOQl6Z28mmhF0PmFOPPPtXE/edit?usp=sharing) (7/3/2017)
 
+### Arduino - Maquette
+Emplacement de chaque led géré par l'arduino. Le numéro du port associé y est précisé  [ici](https://docs.google.com/drawings/d/1HutxQbEiszSulH7tbw2Y27EUrotwv26EINmu5cpH85Q/edit?usp=sharing) (05/04/2017). 
+
+
 ## Phase 2 : Phidgets
 > À compléter
 
