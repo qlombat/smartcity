@@ -1,16 +1,16 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.Actor
 import com.phidgets.InterfaceKitPhidget
 
 /**
   * @author jeremyduchesne
+  * @author Noé Picard
   */
-class TrafficLightsActor(red: Int, green: Int, ik: InterfaceKitPhidget) extends Actor with Messages {
+class TrafficLightsActor(ik: InterfaceKitPhidget, red: Int, green: Int) extends Actor {
 
-  val blinkingTime = 4000
-  val lightRedPin = red
-  val lightGreenPin = green
+  val lightRedPin  : Int = red
+  val lightGreenPin: Int = green
 
   override def receive: Receive = {
     case Init() =>
@@ -24,6 +24,17 @@ class TrafficLightsActor(red: Int, green: Int, ik: InterfaceKitPhidget) extends 
     case SetRed() =>
       ik.setOutputState(lightRedPin, true)
       ik.setOutputState(lightGreenPin, false)
+
+    case Stop() =>
+      1 to 3 foreach { _ =>
+        ik.setOutputState(lightRedPin, true)
+        ik.setOutputState(lightGreenPin, true)
+        Thread.sleep(500)
+        ik.setOutputState(lightRedPin, false)
+        ik.setOutputState(lightGreenPin, false)
+        Thread.sleep(500)
+      }
+      sender ! StopFinished()
   }
 
 

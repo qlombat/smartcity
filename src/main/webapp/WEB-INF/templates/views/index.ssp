@@ -1,1 +1,4 @@
-<h2>Hello</h2>
+<!-- Jumbotron Header -->
+<header class="jumbotron hero-spacer">
+<h2>Welcome !</h2>
+</header>

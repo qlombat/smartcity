@@ -1,53 +1,60 @@
+<!DOCTYPE html>
 
-        <!DOCTYPE html>
+<% import org.scalatra.scalate.ScalatraRenderContext %>
 
-        <% import org.scalatra.scalate.ScalatraRenderContext %>
+<%@ var body: String %>
+<%@ var title: String = "SmartCity" %>
 
-        <%@ var body: String %>
-        <%@ var title: String = "smartcity8" %>
+<% var flash = context.asInstanceOf[ScalatraRenderContext].flash %>
 
-        <% var flash = context.asInstanceOf[ScalatraRenderContext].flash %>
+<html>
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
 
-        <html>
-        <head>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<body>
 
-            <!-- Optional theme -->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-
-            </head>
-
-            <body>
-
-                <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#">smartcity8</a>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="/">Home</a></li>
-
-
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div>
-                </nav>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">${title}</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                    aria-haspopup="true" aria-expanded="false">Actors <span
+                    class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a target="_blank" href="/init_actors">Initialize actors</a></li>
+                        <li><a target="_blank" href="/stop_actors">Stop actors</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+    </nav>
 
 
-                <div class="container theme-showcase" role="main">
+    <div class="container theme-showcase" role="main">
+    <div style="margin-top: 256px;">
+        ${ unescape(body) }
+    </div>
+    </div>
 
-                <div style="margin-top: 256px;">
-                                        ${ unescape(body) }
-                </div>
 
-                </div>
-            </body>
-        </html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

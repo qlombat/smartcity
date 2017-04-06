@@ -7,33 +7,34 @@ import com.phidgets.{AdvancedServoPhidget, RFIDPhidget}
   *
   * @author Noé Picard
   */
-class BarrierActor(ik: RFIDPhidget) extends Actor with Messages {
+class BarrierActor(ik: RFIDPhidget) extends Actor {
 
   val sm = new AdvancedServoPhidget()
 
 
   override def receive: Receive = {
-    /*
-     * Initializes the motor by opening it and setting up the parameters.
-     */
+    /* Initializes the motor by opening it and setting up the parameters. */
     case Init() =>
       sm openAny()
       sm waitForAttachment()
 
       sm setEngaged(BarrierActor.MotorIndex, false)
-      sm setPosition(BarrierActor.MotorIndex, BarrierActor.MinPosition)
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
       sm setSpeedRampingOn(BarrierActor.MotorIndex, false)
       sm setEngaged(BarrierActor.MotorIndex, true)
 
-    /*
-     * Opens the barrier and wait for 5 seconds before closing it.
-     */
+    /* Opens the barrier and wait for 5 seconds before closing it. */
     case OpenBarrier() =>
-      sm setPosition(BarrierActor.MotorIndex, BarrierActor.MaxPosition)
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
 
       Thread.sleep(BarrierActor.WaitingTime)
 
-      sm setPosition(BarrierActor.MotorIndex, BarrierActor.MinPosition)
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
+
+    /* Stop the servo motor */
+    case Stop() =>
+      sm close()
+      sender ! StopFinished()
   }
 }
 
@@ -42,8 +43,8 @@ class BarrierActor(ik: RFIDPhidget) extends Actor with Messages {
   */
 object BarrierActor {
   /* Constants */
-  val MotorIndex: Int = 0
-  val MinPosition: Int = 100
-  val MaxPosition: Int = 180
-  val WaitingTime:Int = 5000 //in milliseconds
+  val MotorIndex    : Int = 0
+  val OpenedPosition: Int = 100
+  val ClosedPosition: Int = 0
+  val WaitingTime   : Int = 5000 //in milliseconds
 }
