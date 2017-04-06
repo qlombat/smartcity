@@ -43,6 +43,8 @@
     </developers>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <!-- Plugins -->
         <jetty-maven-plugin.version>9.4.2.v20170220</jetty-maven-plugin.version>
         <surefire-plugin.version>2.19.1</surefire-plugin.version>
@@ -50,7 +52,8 @@
 
         <!-- Dependencies -->
         <scalatra.version>2.5.0</scalatra.version>
-        <scala.version>2.11.6</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.8</scala.version>
         <logback.version>1.2.2</logback.version>
         <jetty.orbit.version>3.0.0.v201112011016</jetty.orbit.version>
         <jetty.version>9.4.2.v20170220</jetty.version>
@@ -74,6 +77,8 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
+                            <scalaCompatVersion>${scala.binary.version}</scalaCompatVersion>
+                            <scalaVersion>${scala.version}</scalaVersion>
                             <args>
                                 <arg>-dependencyfile</arg>
                                 <arg>${project.build.directory}/.scala_dependencies</arg>
@@ -145,7 +150,6 @@
             <artifactId>akka-actor_2.11</artifactId>
             <version>${akka-actor.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.phidgets</groupId>
             <artifactId>phidget</artifactId>
