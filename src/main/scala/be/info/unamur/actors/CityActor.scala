@@ -24,6 +24,7 @@ class CityActor extends FailureSpreadingActor {
 
   val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)), name = "crossroadsActor")
   val parkingActor   : ActorRef = context.actorOf(Props(new ParkingActor()), name = "parkingActor")
+  val publicLightingActor : ActorRef = context.actorOf(Props(new PublicLightingActor(ik,4,5,6,7)), name = "publicLightningActor")
 
   // To know if the city is already stopped
   var stopped: Boolean = true
@@ -40,15 +41,18 @@ class CityActor extends FailureSpreadingActor {
 
         val initCrossroads = crossroadsActor ? Initialize()
         val initParking = parkingActor ? Initialize()
+        val initPublicLightning = publicLightingActor ? Initialize()
 
         val results = for {
           resultInitCrossroads <- initCrossroads
           resultInitParking <- initParking
-        } yield (resultInitCrossroads, resultInitParking)
+          resultInitPublicLightning <- initPublicLightning
+        } yield (resultInitCrossroads, resultInitParking, resultInitPublicLightning)
 
         Thread.sleep(2000)
 
         crossroadsActor ! Start()
+        publicLightingActor ! Start()
 
         results pipeTo sender
 
