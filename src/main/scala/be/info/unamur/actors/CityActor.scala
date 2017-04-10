@@ -1,21 +1,23 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
-import akka.pattern.ask
+import akka.actor.{ActorRef, Props}
+import akka.pattern.{ask, pipe}
 import akka.util.Timeout
+import be.info.unamur.messages.{Initialize, Start, Stop}
+import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
 
 /**
+  * Master actor that controls the other city sub-actors.
+  *
   * @author jeremyduchesne
   * @author Noé Picard
   */
-class CityActor extends Actor {
+class CityActor extends FailureSpreadingActor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   val ik = new InterfaceKitPhidget()
@@ -23,44 +25,50 @@ class CityActor extends Actor {
   val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)), name = "crossroadsActor")
   val parkingActor   : ActorRef = context.actorOf(Props(new ParkingActor()), name = "parkingActor")
 
+  // To know if the city is already stopped
   var stopped: Boolean = true
 
+  // Timeout for the ask messages to some actors
   implicit val timeout = Timeout(5 seconds)
 
 
   override def receive: Receive = {
-    case Init() =>
-      ik openAny()
-      ik waitForAttachment()
+    case Initialize() =>
+      if (stopped) {
+        ik openAny()
+        ik waitForAttachment()
 
-      crossroadsActor ! Init()
-      parkingActor ! Init()
+        val initCrossroads = crossroadsActor ? Initialize()
+        val initParking = parkingActor ? Initialize()
 
-      Thread.sleep(2000)
+        val results = for {
+          resultInitCrossroads <- initCrossroads
+          resultInitParking <- initParking
+        } yield (resultInitCrossroads, resultInitParking)
 
-      crossroadsActor ! Start()
+        Thread.sleep(2000)
 
-      stopped = true
+        crossroadsActor ! Start()
+
+        results pipeTo sender
+
+        stopped = false
+      }
+
 
     case Stop() =>
       if (!stopped) {
-        val stopCrossroadsFuture = crossroadsActor ? Stop()
-        val stopParkingFuture = parkingActor ? Stop()
+        val stopCrossroads = crossroadsActor ? Stop()
+        val stopParking = parkingActor ? Stop()
 
         val results = for {
-          crossroadsResult <- stopCrossroadsFuture
-          parkingResult <- stopParkingFuture
-        } yield (crossroadsResult, parkingResult)
+          resultStopCrossroads <- stopCrossroads
+          resultStopParking <- stopParking
+        } yield (resultStopCrossroads, resultStopParking)
 
-        Await.ready(results, Duration.Inf).value.get match {
-          /* Kill all the actors hierarchy */
-          case Success(_) =>
-            ik close()
-            stopped = true
+        results pipeTo sender
 
-          case Failure(t) =>
-            logger.debug("Impossible the stop the actors", t)
-        }
+        stopped = true
       }
   }
 }

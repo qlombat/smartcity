@@ -1,21 +1,21 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
-import akka.pattern.ask
+import akka.actor.{ActorRef, Props}
+import akka.pattern.{ask, pipe}
 import akka.util.Timeout
+import be.info.unamur.messages._
+import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
 
 /**
   * @author jeremyduchesne
   * @author Quentin Lombat
   */
-class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
+class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   val trafficLightsMainActor     : ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)), name = "trafficLightsMainActor")
@@ -33,14 +33,33 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
 
 
   override def receive: Receive = {
-    case Init() =>
-      trafficLightsMainActor ! Init()
-      trafficLightsAuxiliaryActor ! Init()
-      pedestrianCrossingActor ! Init()
-      secondaryCarDetectorActor1 ! Init()
-      secondaryCarDetectorActor2 ! Init()
-      pedestrianTouchDetectorActor1 ! Init()
-      pedestrianTouchDetectorActor2 ! Init()
+    case Initialize() =>
+      val initTrafficLightsMainActor = trafficLightsMainActor ? Initialize()
+      val initTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Initialize()
+      val initPedestrianCrossingActor = pedestrianCrossingActor ? Initialize()
+      val initSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Initialize()
+      val initSecondaryCarDetectorActor2 = secondaryCarDetectorActor2 ? Initialize()
+      val initPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Initialize()
+      val initPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Initialize()
+
+      val results = for {
+        resultInitTrafficLightsMainActor <- initTrafficLightsMainActor
+        resultInitTrafficLightsAuxiliaryActor <- initTrafficLightsAuxiliaryActor
+        resultInitPedestrianCrossingActor <- initPedestrianCrossingActor
+        resultInitSecondaryCarDetectorActor1 <- initSecondaryCarDetectorActor1
+        resultInitSecondaryCarDetectorActor2 <- initSecondaryCarDetectorActor2
+        resultInitPedestrianTouchDetectorActor1 <- initPedestrianTouchDetectorActor1
+        resultInitPedestrianTouchDetectorActor2 <- initPedestrianTouchDetectorActor2
+      } yield (resultInitTrafficLightsMainActor,
+        resultInitTrafficLightsAuxiliaryActor,
+        resultInitPedestrianCrossingActor,
+        resultInitSecondaryCarDetectorActor1,
+        resultInitSecondaryCarDetectorActor2,
+        resultInitPedestrianTouchDetectorActor1,
+        resultInitPedestrianTouchDetectorActor2)
+
+      results pipeTo sender
+
 
     case Start() =>
       trafficLightsMainActor ! SetGreen()
@@ -51,26 +70,29 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       pedestrianTouchDetectorActor1 ! Start()
       pedestrianTouchDetectorActor2 ! Start()
 
+
     case OpenAuxiliary() =>
       pedestrianCrossingActor ! SetOff()
-      Thread.sleep(4000)
+      Thread sleep 4000
       trafficLightsMainActor ! SetRed()
       trafficLightsAuxiliaryActor ! SetGreen()
-      Thread.sleep(10000)
+      Thread sleep 10000
       trafficLightsMainActor ! SetGreen()
       trafficLightsAuxiliaryActor ! SetRed()
-      Thread.sleep(2000)
+      Thread sleep 2000
       pedestrianCrossingActor ! SetOn()
 
+
     case Pedestrian() =>
-      Thread.sleep(4000)
+      Thread sleep 4000
       trafficLightsAuxiliaryActor ! SetRed()
       trafficLightsMainActor ! SetRed()
-      Thread.sleep(4000)
+      Thread sleep 4000
       pedestrianCrossingActor ! SetOn()
-      Thread.sleep(4000)
+      Thread sleep 4000
       trafficLightsMainActor ! SetGreen()
       pedestrianCrossingActor ! SetOn()
+
 
     case Stop() =>
       val stopTrafficLightsMainActor = trafficLightsMainActor ? Stop()
@@ -97,10 +119,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         resultStopPedestrianTouchDetectorActor1,
         resultStopPedestrianTouchDetectorActor2)
 
-      Await.ready(results, Duration.Inf).value.get match {
-        case Success(_) => sender ! StopFinished()
-        case Failure(t) => logger.debug("Impossible the stop the actors", t)
-      }
+      results pipeTo sender
   }
 
 }

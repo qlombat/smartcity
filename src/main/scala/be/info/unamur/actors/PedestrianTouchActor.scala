@@ -1,6 +1,8 @@
 package be.info.unamur.actors
 
 import akka.actor.Actor
+import be.info.unamur.messages._
+import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 
@@ -8,13 +10,13 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 /**
   * @author Quentin Lombat
   */
-class PedestrianTouchActor(ik: InterfaceKitPhidget, index: Int) extends Actor {
+class PedestrianTouchActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
 
   var sensorChangeListener: SensorChangeListener = _
 
   override def receive: Receive = {
-    case Init() =>
-      //Necessary sender reference for the listener under
+    case Initialize() =>
+      // Necessary sender reference for the listener below
       val senderRef = sender
 
       this.sensorChangeListener = new SensorChangeListener {
@@ -23,14 +25,16 @@ class PedestrianTouchActor(ik: InterfaceKitPhidget, index: Int) extends Actor {
             senderRef ! Pedestrian()
         }
       }
-      ik.setSensorChangeTrigger(index, 500)
+      ik setSensorChangeTrigger(index, 500)
+
+      sender ! Initialized()
 
     case Start() =>
-      ik.addSensorChangeListener(this.sensorChangeListener)
+      ik addSensorChangeListener this.sensorChangeListener
 
     case Stop() =>
-      ik.removeSensorChangeListener(this.sensorChangeListener)
-      sender ! StopFinished()
+      ik removeSensorChangeListener this.sensorChangeListener
+      sender ! Stopped()
   }
 
 }

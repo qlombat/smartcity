@@ -1,8 +1,10 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
-import akka.pattern.ask
+import akka.actor.{ActorRef, Props}
+import akka.pattern.{ask, pipe}
 import akka.util.Timeout
+import be.info.unamur.messages._
+import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.RFIDPhidget
 import com.phidgets.event.{TagGainEvent, TagGainListener}
 import org.slf4j.{Logger, LoggerFactory}
@@ -16,16 +18,14 @@ import scala.util.{Failure, Success}
   *
   * @author Noé Picard
   */
-class ParkingActor extends Actor {
+class ParkingActor extends FailureSpreadingActor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   val rfid = new RFIDPhidget()
 
   val barrierActor: ActorRef = context.actorOf(Props(new BarrierActor(rfid)), name = "barrierActor")
 
-  /*
-   * Sends the "open barrier" message when a RFID tag is read.
-   */
+  // Sends the "open barrier" message when a RFID tag is read.
   val tagGainListener = new TagGainListener {
     override def tagGained(tagGainEvent: TagGainEvent): Unit = {
       barrierActor ! OpenBarrier()
@@ -36,14 +36,21 @@ class ParkingActor extends Actor {
 
 
   override def receive: Receive = {
-    case Init() =>
+    case Initialize() =>
       rfid openAny()
       rfid waitForAttachment()
-      rfid setAntennaOn true
 
+      rfid setAntennaOn true
       rfid addTagGainListener this.tagGainListener
 
-      barrierActor ! Init()
+      val initBarrierActor = barrierActor ? Initialize()
+
+      val results = for {
+        resultInitBarrierActor <- initBarrierActor
+      } yield resultInitBarrierActor
+
+      results pipeTo sender
+
 
     case Stop() =>
       val stopBarrierActor = barrierActor ? Stop()
@@ -52,16 +59,7 @@ class ParkingActor extends Actor {
         resultStopBarrierActor <- stopBarrierActor
       } yield resultStopBarrierActor
 
-      Await.ready(results, Duration.Inf).value.get match {
-        case Success(_) =>
-          rfid removeTagGainListener this.tagGainListener
-          rfid close()
-
-        case Failure(t) =>
-          logger.debug("Impossible to stop the actors", t)
-      }
-
-      sender ! StopFinished()
+      results pipeTo sender
 
   }
 }

@@ -12,11 +12,11 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
     // Mount servlets
-    context.mount(new MainServlet(system), "/*")
+    context mount(new MainServlet(system), "/*")
   }
 
   override def destroy(context: ServletContext) {
-    system.terminate()
+    system terminate
   }
 }
 

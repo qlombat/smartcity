@@ -36,8 +36,8 @@
                     aria-haspopup="true" aria-expanded="false">Actors <span
                     class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a target="_blank" href="/init_actors">Initialize actors</a></li>
-                        <li><a target="_blank" href="/stop_actors">Stop actors</a></li>
+                        <li><a target="_blank" href="/actors/init">Initialize actors</a></li>
+                        <li><a target="_blank" href="/actors/stop">Stop actors</a></li>
                     </ul>
                 </li>
             </ul>
