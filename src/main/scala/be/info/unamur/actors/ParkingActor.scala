@@ -6,23 +6,23 @@ import akka.util.Timeout
 import be.info.unamur.messages._
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.RFIDPhidget
-import com.phidgets.event.{TagGainEvent, TagGainListener}
+import com.phidgets.event.{TagGainEvent, TagGainListener, TagLossEvent, TagLossListener}
 import org.slf4j.{Logger, LoggerFactory}
-
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
 
-/** Implements the behavior of the parking. Uses the RFID tag reader to pilot the barrier.
+/**
+  *  Implements the behaviour of the parking. Uses the RFID tag reader to pilot the barrier.
   *
   * @author Noé Picard
+  * @author jeremyduchesne
   */
 class ParkingActor extends FailureSpreadingActor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   val rfid = new RFIDPhidget()
 
+  // The BarrierActor that handles the RFID.
   val barrierActor: ActorRef = context.actorOf(Props(new BarrierActor(rfid)), name = "barrierActor")
 
   // Sends the "open barrier" message when a RFID tag is read.
@@ -32,16 +32,29 @@ class ParkingActor extends FailureSpreadingActor {
     }
   }
 
+  // Sends the "close barrier" message when a RFID tag is lost.
+  val tagLostListener = new TagLossListener {
+    override def tagLost(tagLossEvent: TagLossEvent): Unit = {
+      barrierActor ! CloseBarrier()
+    }
+  }
+
+  // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
 
 
   override def receive: Receive = {
+
+    /**
+      * Initializes the RFID listeners and the BarrierActor
+      */
     case Initialize() =>
       rfid openAny()
       rfid waitForAttachment()
 
       rfid setAntennaOn true
       rfid addTagGainListener this.tagGainListener
+      rfid addTagLossListener this.tagLostListener
 
       val initBarrierActor = barrierActor ? Initialize()
 
@@ -52,6 +65,9 @@ class ParkingActor extends FailureSpreadingActor {
       results pipeTo sender
 
 
+    /**
+      * Stops the BarrierActor.
+      */
     case Stop() =>
       val stopBarrierActor = barrierActor ? Stop()
 

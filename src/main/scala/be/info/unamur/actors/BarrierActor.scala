@@ -4,17 +4,19 @@ import be.info.unamur.messages._
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.{AdvancedServoPhidget, RFIDPhidget}
 
-/** Implements the behavior of the barrier that controls the parking access.
+/** Implements the behaviour of the barrier that controls the parking access.
   *
   * @author Noé Picard
+  * @author jeremyduchesne
   */
 class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
 
   val sm = new AdvancedServoPhidget()
 
-
   override def receive: Receive = {
-    /* Initializes the motor by opening it and setting up the parameters. */
+    /**
+      * Initializes a basic situation. The barrier is closed by default.
+      */
     case Initialize() =>
       sm openAny()
       sm waitForAttachment()
@@ -26,17 +28,22 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
 
       sender ! Initialized()
 
-
-    /* Opens the barrier and wait for 5 seconds before closing it. */
+    /**
+      * Opens the barrier.
+      */
     case OpenBarrier() =>
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
 
+    /**
+      *  Waits 5 seconds after the loss of the signal and closes the barrier.
+      */
+    case CloseBarrier() =>
       Thread sleep BarrierActor.WaitingTime
-
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
 
-
-    /* Stop the servo motor */
+    /**
+      * Stops the servo motor
+      */
     case Stop() =>
       sm close()
       sender ! Stopped()

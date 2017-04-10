@@ -7,7 +7,8 @@ import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 
 //TODO : Test this actor
-/** Controls the three LEDs that represents the public lighting, connected to the interface kit.
+/**
+  * Controls the three LEDs that represent the public lighting, connected to the interface kit.
   *
   * @author Noé Picard
   */
@@ -15,8 +16,11 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
 
   var lightSensorChangeListener: SensorChangeListener = _
 
-
   override def receive: Receive = {
+
+    /**
+      * Initializes the listener that will handle the changes of light level, and change the intensity of the public lightning according to it.
+      */
     case Initialize() =>
       this.lightSensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
@@ -42,6 +46,9 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
 
       sender ! Initialized()
 
+    /**
+      * Makes blinking the 3 LEDs 3 times at the launch of the system and adds the listener to the interface kit.
+      */
     case Start() =>
       3 times {
         allPinUp()
@@ -53,17 +60,27 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
       ik addSensorChangeListener this.lightSensorChangeListener
 
 
+    /**
+      * Stops the LEDs and remove the listener.
+      */
     case Stop() =>
       ik removeSensorChangeListener this.lightSensorChangeListener
+      allPinDown()
       sender ! Stopped()
   }
 
+  /**
+    * Switches all the lights on.
+    */
   def allPinUp(): Unit = {
     ik setOutputState(level1Pin, true)
     ik setOutputState(level2Pin, true)
     ik setOutputState(level3Pin, true)
   }
 
+  /**
+    * Switches all the lights off.
+    */
   def allPinDown(): Unit = {
     ik setOutputState(level1Pin, false)
     ik setOutputState(level2Pin, false)
@@ -71,7 +88,6 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
   }
 
 }
-
 
 /**
   * Companion object for the public lighting actor

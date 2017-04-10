@@ -2,7 +2,7 @@ package be.info.unamur.utils
 
 import akka.actor.{Actor, Status}
 
-/** Provides automatic sending of a response back to the sender in case of an unexpected exception
+/** Provides an automatic response back to the sender in case of an unexpected exception
   *
   * @author Noé Picard
   */

@@ -1,6 +1,5 @@
 package be.info.unamur.actors
 
-import akka.actor.Actor
 import be.info.unamur.messages._
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
@@ -8,6 +7,8 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 
 
 /**
+  * This actor handles the behaviour of the detection sensor. If it detects a car, the CrossroadsActor will handle the LEDs.
+  *
   * @author Quentin Lombat
   */
 class PedestrianCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
@@ -15,6 +16,10 @@ class PedestrianCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fa
   var sensorChangeListener: SensorChangeListener = _
 
   override def receive: Receive = {
+
+    /**
+      * Initializes the listener.
+      */
     case Initialize() =>
       // Necessary sender reference for the listener below
       val senderRef = sender
@@ -29,9 +34,15 @@ class PedestrianCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fa
 
       sender ! Initialized()
 
+    /**
+      * Adds the listener to the interface kit.
+      */
     case Start() =>
       ik addSensorChangeListener this.sensorChangeListener
 
+    /**
+      * Removes the listener from the interface kit.
+      */
     case Stop() =>
       ik removeSensorChangeListener this.sensorChangeListener
       sender ! Stopped()
