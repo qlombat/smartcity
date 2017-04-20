@@ -10,7 +10,7 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
   *
   * @author Quentin Lombat
   */
-class PedestrianCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
+class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
 
   var sensorChangeListener: SensorChangeListener = _
 
