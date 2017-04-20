@@ -6,6 +6,8 @@ import be.info.unamur.api.ZoneEndpoint
 import be.info.unamur.persistence.DatabaseUtils
 import org.scalatra._
 
+import scala.language.postfixOps
+
 /** Bootstraps the Scalatra application.
   *
   * @author Noé Picard

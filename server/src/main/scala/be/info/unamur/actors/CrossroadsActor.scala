@@ -13,6 +13,7 @@ import org.joda.time.Seconds
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /** This actor handles the behaviour of the crossroads. It controls all the sub-actors needed by the crossroads.
   *

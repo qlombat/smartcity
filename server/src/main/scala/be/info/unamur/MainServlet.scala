@@ -14,6 +14,7 @@ import org.scalatra.scalate.ScalateSupport
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.language.postfixOps
 import scala.util.{Failure, Success}
 
 /** The main servlet, for now it just serves to initialize/stop the actors and displays the index

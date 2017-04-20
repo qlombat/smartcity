@@ -10,6 +10,7 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /** Master actor that controls the other city sub-actors. It is directly called by the servlet.
   * This actor begins the initialization of all the sub-actors, and stops them when it is needed.
