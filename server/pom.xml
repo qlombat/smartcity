@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>be.info.unamur</groupId>
-    <artifactId>smartcity8</artifactId>
+    <artifactId>smartcity</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>war</packaging>
@@ -61,6 +61,8 @@
         <phidgets.version>2.1</phidgets.version>
         <scalikejdbc.version>3.0.0-RC3</scalikejdbc.version>
         <mysql.version>5.1.41</mysql.version>
+        <json4s.version>3.5.1</json4s.version>
+        <joda-time.version>2.9.9</joda-time.version>
     </properties>
 
     <build>
@@ -175,9 +177,24 @@
             <version>${mysql.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-jackson_2.11</artifactId>
+            <version>${json4s.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatra</groupId>
+            <artifactId>scalatra-json_2.11</artifactId>
+            <version>${scalatra.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatra</groupId>
+            <artifactId>scalatra-swagger_2.11</artifactId>
+            <version>${scalatra.version}</version>
+        </dependency>
+        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.9.9</version>
+            <version>${joda-time.version}</version>
         </dependency>
     </dependencies>
 </project>

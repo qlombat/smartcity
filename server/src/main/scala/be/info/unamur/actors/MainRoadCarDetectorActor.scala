@@ -42,7 +42,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
     /*
      * Checks if there is a car on the street.
      */
-    case MainCarDetection() =>
+    case MainCarDetected() =>
       if (ik.getSensorValue(index) < 400) {
         sender ! true
       } else sender ! false

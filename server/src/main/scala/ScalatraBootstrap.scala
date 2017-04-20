@@ -2,6 +2,7 @@ import javax.servlet.ServletContext
 
 import _root_.akka.actor.ActorSystem
 import be.info.unamur.MainServlet
+import be.info.unamur.api.ZoneEndpoint
 import be.info.unamur.persistence.DatabaseUtils
 import org.scalatra._
 
@@ -20,6 +21,7 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
 
     // Mount servlets
     context mount(new MainServlet(system), "/*")
+    context mount(new ZoneEndpoint, "/api/zones/*")
   }
 
   override def destroy(context: ServletContext) {

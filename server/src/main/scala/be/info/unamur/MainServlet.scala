@@ -1,10 +1,13 @@
 package be.info.unamur
 
+import java.sql.Timestamp
+
 import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import be.info.unamur.actors.CityActor
 import be.info.unamur.messages.{Initialize, Stop}
+import be.info.unamur.persistence.entities.{Sensor, Zone}
 import grizzled.slf4j.Logger
 import org.scalatra.ScalatraServlet
 import org.scalatra.scalate.ScalateSupport

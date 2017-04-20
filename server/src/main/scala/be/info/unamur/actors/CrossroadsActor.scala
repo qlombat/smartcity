@@ -133,8 +133,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         lastOpenAuxiliaryMessage = DateTime.now()
 
         //If there is no car on the main road, no need to wait the entire usual waiting time.
-        val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetection()
-        val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetection()
+        val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetected()
+        val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetected()
 
         val results:Future[(Any,Any)] = for {
           resultMainCarDetection1 <- requestMainCarDetector1
