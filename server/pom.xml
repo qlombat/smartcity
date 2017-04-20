@@ -88,6 +88,7 @@
                                 <arg>-dependencyfile</arg>
                                 <arg>${project.build.directory}/.scala_dependencies</arg>
                             </args>
+                            <recompileMode>incremental</recompileMode>
                         </configuration>
                     </execution>
                 </executions>

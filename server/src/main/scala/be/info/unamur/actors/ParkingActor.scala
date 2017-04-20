@@ -11,6 +11,7 @@ import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /** Implements the behaviour of the parking. Uses the RFID tag reader to pilot the barrier.
   *

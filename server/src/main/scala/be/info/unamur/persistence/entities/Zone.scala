@@ -26,6 +26,7 @@ object Zone extends SQLSyntaxSupport[Zone] {
     createdAt = rs.timestamp(z.createdAt)
   )
 
+
   def find(id: Int)(implicit session: DBSession = autoSession): Option[Zone] = {
     withSQL {
       select.from(Zone as zone).where.eq(zone.id, id)

@@ -1,5 +1,7 @@
 package be.info.unamur.utils
 
+import scala.language.implicitConversions
+
 /** Provides a simple way to execute some code a certain number of times
   *
   * @author Noé Picard

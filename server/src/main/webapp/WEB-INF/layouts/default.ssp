@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 
-<% import org.scalatra.scalate.ScalatraRenderContext %>
-
 <%@ var body: String %>
 <%@ var title: String = "SmartCity" %>
-
-<% var flash = context.asInstanceOf[ScalatraRenderContext].flash %>
 
 <html>
 <head>
