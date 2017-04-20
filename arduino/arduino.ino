@@ -58,9 +58,9 @@ const unsigned long BAUD_RATE = 9600;
 
 void setup() {
   initSerial();
-  //initWifi();
-  //initLed();
-  lcd.init();
+  initWifi();
+  initLed();
+  initLCD();
 }
 
 void loop() {
@@ -81,6 +81,11 @@ void initSerial() {
     ;  // wait for serial port to initialize
   }
   Serial.println("Serial ready");
+}
+
+void initLCD(){
+  lcd.init();
+  lcd.backlight();
 }
 
 // Initialize Led
@@ -303,7 +308,6 @@ void updateTemperatureAndHumidity() {
   }
 
   //Show temperature and humidity on lcd screen
-  lcd.backlight();
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Temperature:");
