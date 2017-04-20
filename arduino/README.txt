@@ -1,1 +1,1 @@
-Put the code for the Arduino here.
+Copy and paste all libraries in your installation directory
