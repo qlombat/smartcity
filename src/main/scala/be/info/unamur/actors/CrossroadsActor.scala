@@ -128,8 +128,11 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
      * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
      */
     case OpenAuxiliary() =>
+      // Checks if the request has been sent few minutes ago. If yes, does not add it to the message queue.
       if (lastOpenAuxiliaryMessage.getSecondOfDay + minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
         lastOpenAuxiliaryMessage = DateTime.now()
+
+        //If there is no car on the main road, no need to wait the entire usual waiting time.
         val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetection()
         val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetection()
 
@@ -139,7 +142,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         } yield (resultMainCarDetection1,resultMainCarDetection2)
 
         Await.result(results,5000 millis) match {
-          case (true,true) => openAuxiliary()
+          case (false,false) => openAuxiliary()
           case _ =>
             Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, differenceBetweenGreenAuxiliaryTrafficLights)
             openAuxiliary()
@@ -150,6 +153,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
      * When the touch sensors are triggered, closes the auxiliary road if it is opened, opens the main road, and let the pedestrians pass.
      */
     case Pedestrian() =>
+      // Checks if the request has been sent few minutes ago. If yes, does not add it to the message queue.
       if (lastPedestrianMessage.getSecondOfDay + minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
         lastPedestrianMessage = DateTime.now()
         Thread sleep switchTheLights(timeOfLastPedestrianGreenLight, differenceBetweenGreenPedestrianCrossRoads)
