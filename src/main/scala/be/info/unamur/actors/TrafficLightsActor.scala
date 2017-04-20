@@ -55,6 +55,4 @@ class TrafficLightsActor(ik: InterfaceKitPhidget, redPin: Int, greenPin: Int) ex
       }
       sender ! Stopped()
   }
-
-
 }

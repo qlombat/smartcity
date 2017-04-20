@@ -155,12 +155,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         Thread sleep switchTheLights(timeOfLastPedestrianGreenLight, differenceBetweenGreenPedestrianCrossRoads)
         timeOfLastPedestrianGreenLight = DateTime.now()
         trafficLightsAuxiliaryActor ! SetRed()
-        trafficLightsMainActor ! SetRed()
         Thread sleep 4000
         pedestrianCrossingActor ! SetOn()
-        Thread sleep 4000
         trafficLightsMainActor ! SetGreen()
-        pedestrianCrossingActor ! SetOn()
       }
 
     /*
