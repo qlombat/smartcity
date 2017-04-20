@@ -7,6 +7,7 @@ Serveur/Scala | Maquette/Phidgets
 ------------- | -------------
 Quentin       | Justin
 Jérémy        | Noé
+Noé           | Quentin
 
 
 ## Phase 1 : Design
@@ -28,9 +29,26 @@ Dessin abstrait de la maquette disponible [ici](https://docs.google.com/drawings
 Emplacement de chaque led géré par l'arduino. Le numéro du port associé y est précisé  [ici](https://docs.google.com/drawings/d/1HutxQbEiszSulH7tbw2Y27EUrotwv26EINmu5cpH85Q/edit?usp=sharing) (05/04/2017). 
 
 
-## Phase 2 : Phidgets
-> À compléter
+## Phase 2 : Phidgets & Arduino
+### Arduino
+Le dossier libraries contient toutes les librairies utiles pour faire tourner le code sur l'arduino. Copiez simplement le contenu de ce dossier dans le dossier librairies de votre installation arduino. 
 
+Utilisation des ports sur l'arduino : 
+- Digital
+  - Zone NO : 1
+  - Zone NE : 2
+  - Zone N : 1, 2 et 3
+  - Zone SO : 5
+  - Zone SE : 6
+  - Zone S : 4, 5 et 6
+  - Zone Bus : 7
+- Analogue
+  - Temperature et himidité : A0
+- Autre
+  - LCD : 11 (SDA) et 12 (SCL)
+
+### Phidgets
+À compléter
 ## Phase 3 : Scala
 Pour pouvoir compiler le projet, il faut installer la librairie Phidgets dans votre repository local Maven :
 - Télécharger la documentation [ici](http://www.phidgets.com/documentation/JavaDoc.zip)
