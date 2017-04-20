@@ -7,8 +7,7 @@ import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 
 //TODO : Test this actor
-/**
-  * Controls the three LEDs that represent the public lighting, connected to the interface kit.
+/** Controls the three LEDs that represent the public lighting, connected to the interface kit.
   *
   * @author Noé Picard
   */
@@ -18,9 +17,9 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
 
   override def receive: Receive = {
 
-    /**
-      * Initializes the listener that will handle the changes of light level, and change the intensity of the public lightning according to it.
-      */
+    /*
+     * Initializes the listener that will handle the changes of light level, and change the intensity of the public lightning according to it.
+     */
     case Initialize() =>
       this.lightSensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
@@ -41,14 +40,14 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
             }
         }
       }
-      //TODO : Changer the trigger value if necessary
+      //TODO : Change the trigger value if necessary
       ik setSensorChangeTrigger(index, PublicLightingActor.triggerValue)
 
       sender ! Initialized()
 
-    /**
-      * Makes blinking the 3 LEDs 3 times at the launch of the system and adds the listener to the interface kit.
-      */
+    /*
+     * Makes blinking the 3 LEDs 3 times at the launch of the system and adds the listener to the interface kit.
+     */
     case Start() =>
       3 times {
         allPinUp()
@@ -60,9 +59,9 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
       ik addSensorChangeListener this.lightSensorChangeListener
 
 
-    /**
-      * Stops the LEDs and remove the listener.
-      */
+    /*
+     * Stops the LEDs and remove the listener.
+     */
     case Stop() =>
       ik removeSensorChangeListener this.lightSensorChangeListener
       allPinDown()
@@ -89,8 +88,9 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
 
 }
 
-/**
-  * Companion object for the public lighting actor
+/** Companion object for the public lighting actor
+  *
+  * @author Noé Picard
   */
 object PublicLightingActor {
   /* Constants */

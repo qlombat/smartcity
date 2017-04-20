@@ -8,11 +8,11 @@ import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.RFIDPhidget
 import com.phidgets.event.{TagGainEvent, TagGainListener, TagLossEvent, TagLossListener}
 import org.slf4j.{Logger, LoggerFactory}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-/**
-  *  Implements the behaviour of the parking. Uses the RFID tag reader to pilot the barrier.
+/** Implements the behaviour of the parking. Uses the RFID tag reader to pilot the barrier.
   *
   * @author Noé Picard
   * @author jeremyduchesne
@@ -45,9 +45,9 @@ class ParkingActor extends FailureSpreadingActor {
 
   override def receive: Receive = {
 
-    /**
-      * Initializes the RFID listeners and the BarrierActor
-      */
+    /*
+     * Initializes the RFID listeners and the BarrierActor
+     */
     case Initialize() =>
       rfid openAny()
       rfid waitForAttachment()
@@ -65,9 +65,9 @@ class ParkingActor extends FailureSpreadingActor {
       results pipeTo sender
 
 
-    /**
-      * Stops the BarrierActor.
-      */
+    /*
+     * Stops the BarrierActor.
+     */
     case Stop() =>
       val stopBarrierActor = barrierActor ? Stop()
 

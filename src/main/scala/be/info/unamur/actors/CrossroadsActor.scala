@@ -7,11 +7,11 @@ import be.info.unamur.messages._
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import org.slf4j.{Logger, LoggerFactory}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-/**
-  * This actor handles the behaviour of the crossroads. It controls all the sub-actors needed by the crossroads.
+/** This actor handles the behaviour of the crossroads. It controls all the sub-actors needed by the crossroads.
   *
   * @author jeremyduchesne
   * @author Quentin Lombat
@@ -41,9 +41,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
 
   override def receive: Receive = {
 
-    /**
-      * Initializes all the sub-actors.
-      */
+    /*
+     * Initializes all the sub-actors.
+     */
     case Initialize() =>
       val initTrafficLightsMainActor = trafficLightsMainActor ? Initialize()
       val initTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Initialize()
@@ -72,9 +72,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       results pipeTo sender
 
 
-    /**
-      * Sets a basic situation on the model. Opens the main road and closes the auxiliary one.
-      */
+    /*
+     * Sets a basic situation on the model. Opens the main road and closes the auxiliary one.
+     */
     case Start() =>
       trafficLightsMainActor ! SetGreen()
       trafficLightsAuxiliaryActor ! SetRed()
@@ -85,9 +85,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       pedestrianTouchDetectorActor2 ! Start()
 
 
-    /**
-      * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
-      */
+    /*
+     * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
+     */
     case OpenAuxiliary() =>
       pedestrianCrossingActor ! SetOff()
       Thread sleep 4000
@@ -100,9 +100,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       pedestrianCrossingActor ! SetOn()
 
 
-    /**
-      * When the touch sensors are triggered, closes the auxiliary road if it is opened, opens the main road, and let the pedestrians pass.
-      */
+    /*
+     * When the touch sensors are triggered, closes the auxiliary road if it is opened, opens the main road, and let the pedestrians pass.
+     */
     case Pedestrian() =>
       Thread sleep 4000
       trafficLightsAuxiliaryActor ! SetRed()
@@ -114,9 +114,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       pedestrianCrossingActor ! SetOn()
 
 
-    /**
-      * Stops all the sub-actors.
-      */
+    /*
+     * Stops all the sub-actors.
+     */
     case Stop() =>
       val stopTrafficLightsMainActor = trafficLightsMainActor ? Stop()
       val stopTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Stop()

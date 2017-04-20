@@ -5,9 +5,9 @@ import akka.pattern.ask
 import akka.util.Timeout
 import be.info.unamur.actors.CityActor
 import be.info.unamur.messages.{Initialize, Stop}
+import grizzled.slf4j.Logger
 import org.scalatra.ScalatraServlet
 import org.scalatra.scalate.ScalateSupport
-import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -20,18 +20,19 @@ import scala.util.{Failure, Success}
   * @param system the actor system
   */
 class MainServlet(system: ActorSystem) extends ScalatraServlet with ScalateSupport {
-  val logger: Logger = LoggerFactory.getLogger(getClass)
+  val logger: Logger = Logger[MainServlet]
 
   // The master actor (normally, other actors will be children of this one)
   val cityActor: ActorRef = system.actorOf(Props[CityActor], name = "cityActor")
 
   // Timeout for the ask messages to actors
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(10 seconds)
 
 
   /* Displays the index page */
   get("/") {
     contentType = "text/html"
+    logger.debug("Main page loaded")
     layoutTemplate("/WEB-INF/views/index.ssp")
   }
 
@@ -43,7 +44,7 @@ class MainServlet(system: ActorSystem) extends ScalatraServlet with ScalateSuppo
         logger.debug("Actors initialized")
         "Actors initialized..."
       case Failure(t) =>
-        logger.error("Impossible to initialize the actors", t)
+        logger.error("Impossible to initialize the actors : ", t)
         "Impossible to initialize the actors, verify that all phidgets are connected...\n" +
           "More info : " + t.toString
     }
@@ -56,9 +57,11 @@ class MainServlet(system: ActorSystem) extends ScalatraServlet with ScalateSuppo
   get("/actors/stop") {
     contentType = "text"
     Await.ready(cityActor ? Stop(), Duration.Inf).value.get match {
-      case Success(_) => "Actors stopped..."
+      case Success(_) =>
+        logger.debug("Actors stopped")
+        "Actors stopped..."
       case Failure(t) =>
-        logger.error("Impossible to stop the actors", t)
+        logger.error("Impossible to stop the actors : ", t)
         "Impossible to stop the actors, you should restart everything...\n" +
           "More info : " + t.getMessage
     }

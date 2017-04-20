@@ -14,9 +14,9 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
   val sm = new AdvancedServoPhidget()
 
   override def receive: Receive = {
-    /**
-      * Initializes a basic situation. The barrier is closed by default.
-      */
+    /*
+     * Initializes a basic situation. The barrier is closed by default.
+     */
     case Initialize() =>
       sm openAny()
       sm waitForAttachment()
@@ -28,30 +28,31 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
 
       sender ! Initialized()
 
-    /**
-      * Opens the barrier.
-      */
+    /*
+     * Opens the barrier.
+     */
     case OpenBarrier() =>
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
 
-    /**
-      *  Waits 5 seconds after the loss of the signal and closes the barrier.
-      */
+    /*
+     *  Waits 5 seconds after the loss of the signal and closes the barrier.
+     */
     case CloseBarrier() =>
       Thread sleep BarrierActor.WaitingTime
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
 
-    /**
-      * Stops the servo motor
-      */
+    /*
+     * Stops the servo motor
+     */
     case Stop() =>
       sm close()
       sender ! Stopped()
   }
 }
 
-/**
-  * Companion object for the barrier actor
+/** Companion object for the barrier actor
+  *
+  * @author Noé Picard
   */
 object BarrierActor {
   /* Constants */

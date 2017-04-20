@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>be.info.unamur</groupId>
@@ -58,6 +58,9 @@
         <jetty.orbit.version>3.0.0.v201112011016</jetty.orbit.version>
         <jetty.version>9.4.2.v20170220</jetty.version>
         <akka-actor.version>2.5.0-RC1</akka-actor.version>
+        <phidgets.version>2.1</phidgets.version>
+        <scalikejdbc.version>3.0.0-RC3</scalikejdbc.version>
+        <mysql.version>5.1.41</mysql.version>
     </properties>
 
     <build>
@@ -153,8 +156,23 @@
         <dependency>
             <groupId>com.phidgets</groupId>
             <artifactId>phidget</artifactId>
-            <version>2.1</version>
+            <version>${phidgets.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc_2.11</artifactId>
+            <version>${scalikejdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc-config_2.11</artifactId>
+            <version>${scalikejdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
     </dependencies>
 </project>
