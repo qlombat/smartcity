@@ -1,8 +1,10 @@
 package be.info.unamur.api
 
+import be.info.unamur.persistence.entities.Zone
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
 import org.scalatra.json._
+import scalikejdbc._
 
 
 /**
@@ -17,6 +19,7 @@ class ZoneEndpoint extends ScalatraServlet with JacksonJsonSupport {
   }
 
   get("/") {
-    //TODO : Implement this
+    "zones" ->
+      Zone.findAllDistinct().filter(_.opened).map(_.name)
   }
 }

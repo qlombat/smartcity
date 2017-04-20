@@ -13,13 +13,10 @@ case class Zone(id: Long,
                 createdAt: Timestamp)
 
 object Zone extends SQLSyntaxSupport[Zone] {
-  override val tableName = "zones"
-
-  override val columns = Seq("id", "name", "opened", "created_at")
-
+  override val tableName   = "zones"
+  override val columns     = Seq("id", "name", "opened", "created_at")
   override val autoSession = AutoSession
-
-  val zone = Zone.syntax("z")
+  val zone: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[Zone], Zone] = Zone.syntax("z")
 
 
   def apply(z: ResultName[Zone])(rs: WrappedResultSet): Zone = new Zone(
@@ -37,6 +34,17 @@ object Zone extends SQLSyntaxSupport[Zone] {
 
   def findAll()(implicit session: DBSession = autoSession): List[Zone] = {
     withSQL(select.from(Zone as zone)).map(Zone(zone.resultName)).list.apply()
+  }
+
+  def findAllDistinct()(implicit session: DBSession = autoSession): List[Zone] = {
+    sql"""
+    SELECT ${zone.result.*}
+    FROM ${Zone.as(zone)}
+    WHERE ${zone.createdAt} = (
+        SELECT MAX(zone_tmp.created_at)
+        FROM zones zone_tmp
+        WHERE zone_tmp.name = ${zone.name}
+    )""".map(Zone(zone.resultName)).list.apply()
   }
 
   def countAll()(implicit session: DBSession = autoSession): Long = {
