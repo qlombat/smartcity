@@ -24,12 +24,12 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
 
       this.sensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > 500)
+          if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > MainRoadCarDetectorActor.valueCarDetection)
             // Not used currently
             senderRef ! OpenMainRoad()
         }
       }
-      ik setSensorChangeTrigger(index, 500)
+      ik setSensorChangeTrigger(index, MainRoadCarDetectorActor.trigger)
 
       sender ! Initialized()
 
@@ -54,4 +54,14 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
       ik removeSensorChangeListener this.sensorChangeListener
       sender ! Stopped()
   }
+}
+
+/** Companion object for the AuxiliaryCarDetectorActor
+  *
+  * @author Justin SIRJACQUES
+  */
+object MainRoadCarDetectorActor {
+  /* Constants */
+  val valueCarDetection: Int = 750
+  val trigger: Int = 100
 }

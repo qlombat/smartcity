@@ -24,7 +24,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   // The TrafficLightsActor that handles the two traffic lights of the main road of the model.
-  val trafficLightsMainActor     : ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)), name = "trafficLightsMainActor")
+  val trafficLightsMainActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)), name = "trafficLightsMainActor")
   // The TrafficLightsActor that handles the two traffic lights of the auxiliary road of the model.
   val trafficLightsAuxiliaryActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 2, 3)), name = "trafficLightsAuxiliaryActor")
 
@@ -32,12 +32,12 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val pedestrianCrossingActor: ActorRef = context.actorOf(Props(new PedestrianTrafficLightActor(ik, 4)), name = "pedestrianCrossingActor")
 
   // The two MainRoadCarDetectorActors that handle the detection sensors on each side of the main road of the model.
-  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik,2)), name = "mainCarDetectorActor1")
-  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik,3)), name = "mainCarDetectorActor2")
+  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 0)), name = "mainCarDetectorActor1")
+  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)), name = "mainCarDetectorActor2")
 
   // The two AuxiliaryCarDetectorActors that handle the detection sensors on each side of the auxiliary road of the model.
-  val secondaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 0)), name = "secondaryCarDetectorActor1")
-  val secondaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 1)), name = "secondaryCarDetectorActor2")
+  val secondaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)), name = "secondaryCarDetectorActor1")
+  val secondaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)), name = "secondaryCarDetectorActor2")
 
   // The two PedestrianTouchActors that handle the touch sensors on each side of the auxiliary road of the model.
   val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 4)), name = "pedestrianTouchDetectorActor1")
@@ -47,24 +47,16 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   implicit val timeout = Timeout(5 seconds)
 
   // A DateTime variable that checks if the last time the two traffic lights have switched was not enough long ago.
-  var timeOfLastAuxiliaryGreenLight:DateTime = _
+  var timeOfLastAuxiliaryGreenLight: DateTime = _
+
   // A DateTime variable that checks if the last time the two pedestrians crossroads have been green was not enough long ago.
-  var timeOfLastPedestrianGreenLight:DateTime = _
-
-  // The minimum time since the last time the auxiliary trafficlights has been switched on.
-  val differenceBetweenGreenAuxiliaryTrafficLights = 180
-
-  // The minimum time since the last time the pedestrians could cross the road.
-  val differenceBetweenGreenPedestrianCrossRoads = 40
-
-  // The minimum time for the system to accept another similar message.
-  val minimumTimeSinceLastRequest = 20
+  var timeOfLastPedestrianGreenLight: DateTime = _
 
   // The last time the OpenAuxiliary Message has been received.
-  var lastOpenAuxiliaryMessage:DateTime = _
+  var lastOpenAuxiliaryMessage: DateTime = _
 
   //the last time the Pedestrian Message has been received.
-  var lastPedestrianMessage:DateTime = _
+  var lastPedestrianMessage: DateTime = _
 
 
   override def receive: Receive = {
@@ -127,37 +119,78 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
 
     /*
      * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
-     */
+     *
     case OpenAuxiliary() =>
       // Checks if the request has been sent few minutes ago. If yes, does not add it to the message queue.
-      if (lastOpenAuxiliaryMessage.getSecondOfDay + minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
+      if (lastOpenAuxiliaryMessage.getSecondOfDay + CrossroadsActor.minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
         lastOpenAuxiliaryMessage = DateTime.now()
 
         //If there is no car on the main road, no need to wait the entire usual waiting time.
         val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetected()
         val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetected()
 
-        val results:Future[(Any,Any)] = for {
+        val results: Future[(Any, Any)] = for {
           resultMainCarDetection1 <- requestMainCarDetector1
           resultMainCarDetection2 <- requestMainCarDetector2
-        } yield (resultMainCarDetection1,resultMainCarDetection2)
+        } yield (resultMainCarDetection1, resultMainCarDetection2)
 
-        Await.result(results,5000 millis) match {
-          case (false,false) => openAuxiliary()
+        Await.result(results, 5000 millis) match {
+          case (false, false) => openAuxiliary()
           case _ =>
-            Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, differenceBetweenGreenAuxiliaryTrafficLights)
+            Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights)
             openAuxiliary()
         }
+      }*/
+
+
+    /*
+   * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
+   */
+    case OpenAuxiliary() =>
+
+      /* Once a carDetected in Auxiliary, turn off listener to not receive too much request "OpenAuxiliary". These listener
+         will be turned on again when the red light will be on. */
+      secondaryCarDetectorActor1 ! Stop()
+      secondaryCarDetectorActor2 ! Stop()
+
+      //If there is no car on the main road, no need to wait the entire usual waiting time.
+      val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetected()
+      val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetected()
+
+      val results: Future[(Any, Any)] = for {
+        resultMainCarDetection1 <- requestMainCarDetector1
+        resultMainCarDetection2 <- requestMainCarDetector2
+      } yield (resultMainCarDetection1, resultMainCarDetection2)
+
+      Await.result(results, (CrossroadsActor.waitingTimeForFuture * 1000) millis) match {
+        // It there is not traffic jam, Auxiliary just waits the regulatory time
+        case (false, false) =>
+          if (timeOfLastAuxiliaryGreenLight.getSecondOfDay + CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights < new DateTime().getSecondOfDay) {
+            openAuxiliary()
+          } else {
+            Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights)
+            openAuxiliary()
+          }
+        // It there is traffic jam, Auxiliary waits more time to let the MainRoad progress.
+        case (true, _) | (_, true) =>
+          if (timeOfLastAuxiliaryGreenLight.getSecondOfDay + CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights < new DateTime().getSecondOfDay) {
+            Thread sleep (CrossroadsActor.waitingTimeWhenTrafficJam * 1000)
+            openAuxiliary()
+          } else {
+            Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights)
+            openAuxiliary()
+          }
       }
+
 
     /*
      * When the touch sensors are triggered, closes the auxiliary road if it is opened, opens the main road, and let the pedestrians pass.
      */
     case Pedestrian() =>
       // Checks if the request has been sent few minutes ago. If yes, does not add it to the message queue.
-      if (lastPedestrianMessage.getSecondOfDay + minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
+      if (lastPedestrianMessage.getSecondOfDay + CrossroadsActor.minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
         lastPedestrianMessage = DateTime.now()
-        Thread sleep switchTheLights(timeOfLastPedestrianGreenLight, differenceBetweenGreenPedestrianCrossRoads)
+        Thread sleep switchTheLights(timeOfLastPedestrianGreenLight, CrossroadsActor.differenceBetweenGreenPedestrianCrossRoads)
         timeOfLastPedestrianGreenLight = DateTime.now()
         trafficLightsAuxiliaryActor ! SetRed()
         Thread sleep 4000
@@ -207,30 +240,58 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
    */
   def openAuxiliary(): Unit = {
     pedestrianCrossingActor ! SetOff()
-    Thread sleep 4000
+    Thread sleep 3000
     trafficLightsMainActor ! SetRed()
+    Thread sleep 2000
     trafficLightsAuxiliaryActor ! SetGreen()
     Thread sleep 20000
-    trafficLightsMainActor ! SetGreen()
     trafficLightsAuxiliaryActor ! SetRed()
-    timeOfLastAuxiliaryGreenLight = DateTime.now()
     Thread sleep 2000
+    trafficLightsMainActor ! SetGreen()
     pedestrianCrossingActor ! SetOn()
+
+    timeOfLastAuxiliaryGreenLight = DateTime.now()
+
+    // Turn on listeners
+    secondaryCarDetectorActor1 ! Start()
+    secondaryCarDetectorActor2 ! Start()
   }
 
   /** Return the time the system has to wait before switching the lights on.
     *
-    * @param timeOfLast The last time the lights were switched on.
+    * @param timeOfLast        The last time the lights were switched on.
     * @param differenceBetween The minimum difference between two switches.
     * @return The remaining time before the lights switch on, in milliseconds.
     */
-  def switchTheLights(timeOfLast:DateTime, differenceBetween:Long): Long = {
-    val currentDifference:Integer = Seconds.secondsBetween(timeOfLastAuxiliaryGreenLight,new DateTime).getSeconds
+  def switchTheLights(timeOfLast: DateTime, differenceBetween: Long): Long = {
+    val currentDifference: Integer = Seconds.secondsBetween(timeOfLastAuxiliaryGreenLight, new DateTime).getSeconds
     if (currentDifference > differenceBetween) {
       0
     } else {
-      (differenceBetween - currentDifference)*1000
+      (differenceBetween - currentDifference) * 1000
     }
   }
+}
 
+/** Companion object for the AuxiliaryCarDetectorActor
+  *
+  * @author Justin SIRJACQUES
+  */
+object CrossroadsActor {
+  /* Constants */
+
+  // The minimum time since the last time the auxiliary trafficlights has been switched on. (seconds)
+  val differenceBetweenGreenAuxiliaryTrafficLights = 30
+
+  // The minimum time since the last time the pedestrians could cross the road. (seconds)
+  val differenceBetweenGreenPedestrianCrossRoads = 45
+
+  // The minimum time for the system to accept another similar message. (seconds)
+  val minimumTimeSinceLastRequest = 20
+
+  // The time auxiliaryStreet has to wait more if there is traffic jam in main street. (seconds)
+  val waitingTimeWhenTrafficJam = 30
+
+  // The waiting time for Future results. (seconds)
+  val waitingTimeForFuture = 5
 }

@@ -25,11 +25,11 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fai
 
       this.sensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > 500)
+          if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) < AuxiliaryCarDetectorActor.valueCarDetection)
             senderRef ! OpenAuxiliary()
         }
       }
-      ik setSensorChangeTrigger(index, 500)
+      ik setSensorChangeTrigger(index, AuxiliaryCarDetectorActor.trigger)
 
       sender ! Initialized()
 
@@ -38,6 +38,9 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fai
      */
     case Start() =>
       ik addSensorChangeListener this.sensorChangeListener
+      if (ik.getSensorValue(index) < AuxiliaryCarDetectorActor.valueCarDetection){
+        sender ! OpenAuxiliary()
+      }
 
     /*
      * Removes the listener from the interface kit.
@@ -46,5 +49,14 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fai
       ik removeSensorChangeListener this.sensorChangeListener
       sender ! Stopped()
   }
+}
 
+/** Companion object for the AuxiliaryCarDetectorActor
+  *
+  * @author Justin SIRJACQUES
+  */
+object AuxiliaryCarDetectorActor {
+  /* Constants */
+  val valueCarDetection: Int = 500
+  val trigger: Int = 500
 }
