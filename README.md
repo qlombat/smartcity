@@ -49,16 +49,16 @@ Utilisation des ports sur l'arduino :
 
 ### Phidgets
 
-Port | Sensor                                |Input       |Output
------|---------------------------------------|------------|-------------------------------------------------
-0    | MainCarDetector West :car:            |:no_entry:  |MainTrafficLight :red_circle:
-1    | MainCarDetector East :blue_car:       |:no_entry:  |MainTrafficLight :white_check_mark:
-2    | SecondaryCarDetector South :car:      |:no_entry:  |AuxiliaryTrafficLight :red_circle:
-3    | SecondaryCarDetector North :blue_car: |:no_entry:  |AuxiliaryTrafficLight :white_check_mark:
-4    | IndorLightSensor :bulb:               |:no_entry:  |PedestrianTrafficLight :large_orange_diamond:
-5    | :no_entry:                            |:no_entry:  |PublicLight1 :low_brightness:
-6    | :no_entry:                            |:no_entry:  |PublicLight2 :low_brightness: / :high_brightness:
-7    | :no_entry:                            |:no_entry:  |PublicLight3 :high_brightness:
+Port | Sensor                                |Input |Output
+-----|---------------------------------------|------|-------------------------------------------------
+0    | MainCarDetector West :car:            |/     |MainTrafficLight :red_circle:
+1    | MainCarDetector East :blue_car:       |/     |MainTrafficLight :white_check_mark:
+2    | SecondaryCarDetector South :car:      |/     |AuxiliaryTrafficLight :red_circle:
+3    | SecondaryCarDetector North :blue_car: |/     |AuxiliaryTrafficLight :white_check_mark:
+4    | IndorLightSensor :bulb:               |/     |PedestrianTrafficLight :large_orange_diamond:
+5    | /                                     |/     |PublicLight1 :low_brightness:
+6    | /                                     |/     |PublicLight2 :low_brightness: / :high_brightness:
+7    | /                                     |/     |PublicLight3 :high_brightness:
 
 ## Phase 3 : Scala
 Pour pouvoir compiler le projet, il faut installer la librairie Phidgets dans votre repository local Maven :
