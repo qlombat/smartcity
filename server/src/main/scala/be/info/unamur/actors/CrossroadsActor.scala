@@ -32,16 +32,16 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val pedestrianCrossingActor: ActorRef = context.actorOf(Props(new PedestrianTrafficLightActor(ik, 4)), name = "pedestrianCrossingActor")
 
   // The two MainRoadCarDetectorActors that handle the detection sensors on each side of the main road of the model.
-  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik,5)), name = "mainCarDetectorActor1")
-  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik,6)), name = "mainCarDetectorActor2")
+  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik,2)), name = "mainCarDetectorActor1")
+  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik,3)), name = "mainCarDetectorActor2")
 
   // The two AuxiliaryCarDetectorActors that handle the detection sensors on each side of the auxiliary road of the model.
   val secondaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 0)), name = "secondaryCarDetectorActor1")
   val secondaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 1)), name = "secondaryCarDetectorActor2")
 
   // The two PedestrianTouchActors that handle the touch sensors on each side of the auxiliary road of the model.
-  val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 2)), name = "pedestrianTouchDetectorActor1")
-  val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 3)), name = "pedestrianTouchDetectorActor2")
+  val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 4)), name = "pedestrianTouchDetectorActor1")
+  val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 5)), name = "pedestrianTouchDetectorActor2")
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
