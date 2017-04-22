@@ -46,7 +46,7 @@ class CityActor extends FailureSpreadingActor {
      */
     case Initialize() =>
       if (stopped) {
-        ik openAny()
+        ik open 445876
         ik waitForAttachment()
 
         val initCrossroads = crossroadsActor ? Initialize()
@@ -63,6 +63,7 @@ class CityActor extends FailureSpreadingActor {
 
         crossroadsActor ! Start()
         publicLightingActor ! Start()
+        parkingActor ! Start()
 
         results pipeTo sender
 

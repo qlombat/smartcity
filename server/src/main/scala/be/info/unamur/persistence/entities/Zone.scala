@@ -20,14 +20,14 @@ object Zone extends SQLSyntaxSupport[Zone] {
 
 
   def apply(z: ResultName[Zone])(rs: WrappedResultSet): Zone = new Zone(
-    id = rs.int(z.id),
+    id = rs.long(z.id),
     name = rs.string(z.name),
     opened = rs.boolean(z.opened),
     createdAt = rs.timestamp(z.createdAt)
   )
 
 
-  def find(id: Int)(implicit session: DBSession = autoSession): Option[Zone] = {
+  def find(id: Long)(implicit session: DBSession = autoSession): Option[Zone] = {
     withSQL {
       select.from(Zone as zone).where.eq(zone.id, id)
     }.map(Zone(zone.resultName)).single.apply()
@@ -79,7 +79,7 @@ object Zone extends SQLSyntaxSupport[Zone] {
     }.updateAndReturnGeneratedKey.apply()
 
     Zone(
-      id = generatedKey.toInt,
+      id = generatedKey,
       name = name,
       opened = opened,
       createdAt = createdAt)

@@ -15,24 +15,21 @@ case class Sensor(id: Long,
                   createdAt: Timestamp)
 
 object Sensor extends SQLSyntaxSupport[Sensor] {
-  override val tableName = "sensors"
-
-  override val columns = Seq("id", "name", "value", "gross_value", "created_at")
-
+  override val tableName   = "sensors"
+  override val columns     = Seq("id", "name", "value", "gross_value", "created_at")
   override val autoSession = AutoSession
-
-  val sensor = Sensor.syntax("s")
+  val sensor: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[Sensor], Sensor] = Sensor.syntax("s")
 
 
   def apply(s: ResultName[Sensor])(rs: WrappedResultSet): Sensor = new Sensor(
-    id = rs.int(s.id),
+    id = rs.long(s.id),
     name = rs.string(s.name),
     value = rs.double(s.value),
     grossValue = rs.double(s.grossValue),
     createdAt = rs.timestamp(s.createdAt)
   )
 
-  def find(id: Int)(implicit session: DBSession = autoSession): Option[Sensor] = {
+  def find(id: Long)(implicit session: DBSession = autoSession): Option[Sensor] = {
     withSQL {
       select.from(Sensor as sensor).where.eq(sensor.id, id)
     }.map(Sensor(sensor.resultName)).single.apply()
@@ -76,7 +73,7 @@ object Sensor extends SQLSyntaxSupport[Sensor] {
     }.updateAndReturnGeneratedKey.apply()
 
     Sensor(
-      id = generatedKey.toInt,
+      id = generatedKey,
       name = name,
       value = value,
       grossValue = grossValue,

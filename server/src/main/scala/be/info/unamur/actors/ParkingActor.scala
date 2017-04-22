@@ -34,11 +34,11 @@ class ParkingActor extends FailureSpreadingActor {
   }
 
   // Sends the "close barrier" message when a RFID tag is lost.
-  val tagLostListener = new TagLossListener {
+  /*val tagLostListener = new TagLossListener {
     override def tagLost(tagLossEvent: TagLossEvent): Unit = {
       barrierActor ! CloseBarrier()
     }
-  }
+  }*/
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
@@ -50,12 +50,8 @@ class ParkingActor extends FailureSpreadingActor {
      * Initializes the RFID listeners and the BarrierActor
      */
     case Initialize() =>
-      rfid openAny()
+      rfid open 384608
       rfid waitForAttachment()
-
-      rfid setAntennaOn true
-      rfid addTagGainListener this.tagGainListener
-      rfid addTagLossListener this.tagLostListener
 
       val initBarrierActor = barrierActor ? Initialize()
 
@@ -65,6 +61,10 @@ class ParkingActor extends FailureSpreadingActor {
 
       results pipeTo sender
 
+    case Start()=>
+      rfid setAntennaOn true
+      rfid addTagGainListener this.tagGainListener
+      //rfid addTagLossListener this.tagLostListener
 
     /*
      * Stops the BarrierActor.

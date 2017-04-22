@@ -18,12 +18,13 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
      * Initializes a basic situation. The barrier is closed by default.
      */
     case Initialize() =>
-      sm openAny()
+      sm open 305869
       sm waitForAttachment()
 
+      sm setServoType(BarrierActor.MotorIndex, AdvancedServoPhidget.PHIDGET_SERVO_HITEC_HS422)
       sm setEngaged(BarrierActor.MotorIndex, false)
-      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
       sm setSpeedRampingOn(BarrierActor.MotorIndex, false)
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
       sm setEngaged(BarrierActor.MotorIndex, true)
 
       sender ! Initialized()
@@ -32,7 +33,10 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
      * Opens the barrier.
      */
     case OpenBarrier() =>
+      sm setEngaged(BarrierActor.MotorIndex, true)
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
+      Thread sleep BarrierActor.WaitingTime
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
 
     /*
      *  Waits 5 seconds after the loss of the signal and closes the barrier.

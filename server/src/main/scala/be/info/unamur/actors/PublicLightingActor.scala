@@ -6,7 +6,6 @@ import be.info.unamur.utils.Times._
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 
-//TODO : Test this actor
 /** Controls the three LEDs that represent the public lighting, connected to the interface kit.
   *
   * @author Noé Picard
@@ -25,22 +24,22 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex))
             ik.getSensorValue(sensorChangeEvent.getIndex) match {
-              case sv if sv < 250 =>
-                allPinDown()
-              case sv if sv < 500 =>
-                ik setOutputState(level1Pin, true)
-                ik setOutputState(level2Pin, false)
-                ik setOutputState(level3Pin, false)
-              case sv if sv < 750 =>
+              case sv if sv < PublicLightingActor.Level0Value =>
+                allPinUp()
+              case sv if sv < PublicLightingActor.Level1Value =>
                 ik setOutputState(level1Pin, true)
                 ik setOutputState(level2Pin, true)
                 ik setOutputState(level3Pin, false)
-              case sv if sv < 1000 =>
-                allPinUp()
+              case sv if sv < PublicLightingActor.Level2Value =>
+                ik setOutputState(level1Pin, true)
+                ik setOutputState(level2Pin, false)
+                ik setOutputState(level3Pin, false)
+              case sv if sv < PublicLightingActor.Level3Value =>
+                allPinDown()
             }
         }
       }
-      //TODO : Change the trigger value if necessary
+      allPinUp()
       ik setSensorChangeTrigger(index, PublicLightingActor.triggerValue)
 
       sender ! Initialized()
@@ -49,13 +48,20 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
      * Makes blinking the 3 LEDs 3 times at the launch of the system and adds the listener to the interface kit.
      */
     case Start() =>
-      3 times {
-        allPinUp()
-        Thread sleep PublicLightingActor.blinkingSpeed / 2
-        allPinDown()
-        Thread sleep PublicLightingActor.blinkingSpeed / 2
+      ik.getSensorValue(index) match {
+        case sv if sv < PublicLightingActor.Level0Value =>
+          allPinUp()
+        case sv if sv < PublicLightingActor.Level1Value =>
+          ik setOutputState(level1Pin, true)
+          ik setOutputState(level2Pin, true)
+          ik setOutputState(level3Pin, false)
+        case sv if sv < PublicLightingActor.Level2Value =>
+          ik setOutputState(level1Pin, true)
+          ik setOutputState(level2Pin, false)
+          ik setOutputState(level3Pin, false)
+        case sv if sv < PublicLightingActor.Level3Value =>
+          allPinDown()
       }
-
       ik addSensorChangeListener this.lightSensorChangeListener
 
 
@@ -63,8 +69,13 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
      * Stops the LEDs and remove the listener.
      */
     case Stop() =>
+      3 times {
+        allPinUp()
+        Thread sleep PublicLightingActor.blinkingSpeed / 2
+        allPinDown()
+        Thread sleep PublicLightingActor.blinkingSpeed / 2
+      }
       ik removeSensorChangeListener this.lightSensorChangeListener
-      allPinDown()
       sender ! Stopped()
   }
 
@@ -85,7 +96,6 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
     ik setOutputState(level2Pin, false)
     ik setOutputState(level3Pin, false)
   }
-
 }
 
 /** Companion object for the public lighting actor
@@ -94,6 +104,10 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
   */
 object PublicLightingActor {
   /* Constants */
-  val triggerValue : Int = 100
+  val triggerValue : Int = 20
   val blinkingSpeed: Int = 1000 //in milliseconds
+  val Level0Value: Int = 30
+  val Level1Value: Int = 190
+  val Level2Value: Int = 370
+  val Level3Value: Int = 1000
 }

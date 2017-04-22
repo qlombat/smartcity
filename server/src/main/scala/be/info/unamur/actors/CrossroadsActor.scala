@@ -6,13 +6,12 @@ import akka.util.Timeout
 import be.info.unamur.messages._
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, Seconds}
 import org.slf4j.{Logger, LoggerFactory}
-import org.joda.time.Seconds
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 
 /** This actor handles the behaviour of the crossroads. It controls all the sub-actors needed by the crossroads.
@@ -36,12 +35,12 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)), name = "mainCarDetectorActor2")
 
   // The two AuxiliaryCarDetectorActors that handle the detection sensors on each side of the auxiliary road of the model.
-  val secondaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)), name = "secondaryCarDetectorActor1")
+  //val secondaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)), name = "secondaryCarDetectorActor1")
   val secondaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)), name = "secondaryCarDetectorActor2")
 
   // The two PedestrianTouchActors that handle the touch sensors on each side of the auxiliary road of the model.
-  val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 4)), name = "pedestrianTouchDetectorActor1")
-  val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 5)), name = "pedestrianTouchDetectorActor2")
+  val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 6)), name = "pedestrianTouchDetectorActor1")
+  val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 7)), name = "pedestrianTouchDetectorActor2")
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
@@ -70,7 +69,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       val initPedestrianCrossingActor = pedestrianCrossingActor ? Initialize()
       val initMainRoadCarDetectorActor1 = mainCarDetectorActor1 ? Initialize()
       val initMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Initialize()
-      val initSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Initialize()
+      //val initSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Initialize()
       val initSecondaryCarDetectorActor2 = secondaryCarDetectorActor2 ? Initialize()
       val initPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Initialize()
       val initPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Initialize()
@@ -85,7 +84,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         resultInitPedestrianCrossingActor <- initPedestrianCrossingActor
         resultInitMainRoadCarDetectorActor1 <- initMainRoadCarDetectorActor1
         resultInitMainRoadCarDetectorActor2 <- initMainRoadCarDetectorActor2
-        resultInitSecondaryCarDetectorActor1 <- initSecondaryCarDetectorActor1
+        //resultInitSecondaryCarDetectorActor1 <- initSecondaryCarDetectorActor1
         resultInitSecondaryCarDetectorActor2 <- initSecondaryCarDetectorActor2
         resultInitPedestrianTouchDetectorActor1 <- initPedestrianTouchDetectorActor1
         resultInitPedestrianTouchDetectorActor2 <- initPedestrianTouchDetectorActor2
@@ -94,7 +93,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         resultInitPedestrianCrossingActor,
         resultInitMainRoadCarDetectorActor1,
         resultInitMainRoadCarDetectorActor2,
-        resultInitSecondaryCarDetectorActor1,
+        //resultInitSecondaryCarDetectorActor1,
         resultInitSecondaryCarDetectorActor2,
         resultInitPedestrianTouchDetectorActor1,
         resultInitPedestrianTouchDetectorActor2)
@@ -111,7 +110,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       pedestrianCrossingActor ! SetOn()
       mainCarDetectorActor1 ! Start()
       mainCarDetectorActor2 ! Start()
-      secondaryCarDetectorActor1 ! Start()
+      //secondaryCarDetectorActor1 ! Start()
       secondaryCarDetectorActor2 ! Start()
       pedestrianTouchDetectorActor1 ! Start()
       pedestrianTouchDetectorActor2 ! Start()
@@ -150,7 +149,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
 
       /* Once a carDetected in Auxiliary, turn off listener to not receive too much request "OpenAuxiliary". These listener
          will be turned on again when the red light will be on. */
-      secondaryCarDetectorActor1 ! Stop()
+      //secondaryCarDetectorActor1 ! Stop()
       secondaryCarDetectorActor2 ! Stop()
 
       //If there is no car on the main road, no need to wait the entire usual waiting time.
@@ -207,7 +206,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       val stopPedestrianCrossingActor = pedestrianCrossingActor ? Stop()
       val stopMainRoadCarDetectorActor1 = mainCarDetectorActor1 ? Stop()
       val stopMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Stop()
-      val stopSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Stop()
+      //val stopSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Stop()
       val stopSecondaryCarDetectorActor2 = secondaryCarDetectorActor2 ? Stop()
       val stopPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Stop()
       val stopPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Stop()
@@ -218,7 +217,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         resultStopPedestrianCrossingActor <- stopPedestrianCrossingActor
         resultStopMainRoadCarDetectorActor1 <- stopMainRoadCarDetectorActor1
         resultStopMainRoadCarDetectorActor2 <- stopMainRoadCarDetectorActor2
-        resultStopSecondaryCarDetectorActor1 <- stopSecondaryCarDetectorActor1
+        //resultStopSecondaryCarDetectorActor1 <- stopSecondaryCarDetectorActor1
         resultStopSecondaryCarDetectorActor2 <- stopSecondaryCarDetectorActor2
         resultStopPedestrianTouchDetectorActor1 <- stopPedestrianTouchDetectorActor1
         resultStopPedestrianTouchDetectorActor2 <- stopPedestrianTouchDetectorActor2
@@ -227,7 +226,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         resultStopPedestrianCrossingActor,
         resultStopMainRoadCarDetectorActor1,
         resultStopMainRoadCarDetectorActor2,
-        resultStopSecondaryCarDetectorActor1,
+        //resultStopSecondaryCarDetectorActor1,
         resultStopSecondaryCarDetectorActor2,
         resultStopPedestrianTouchDetectorActor1,
         resultStopPedestrianTouchDetectorActor2)
@@ -253,7 +252,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
     timeOfLastAuxiliaryGreenLight = DateTime.now()
 
     // Turn on listeners
-    secondaryCarDetectorActor1 ! Start()
+    //secondaryCarDetectorActor1 ! Start()
     secondaryCarDetectorActor2 ! Start()
   }
 
@@ -281,16 +280,16 @@ object CrossroadsActor {
   /* Constants */
 
   // The minimum time since the last time the auxiliary trafficlights has been switched on. (seconds)
-  val differenceBetweenGreenAuxiliaryTrafficLights = 30
+  val differenceBetweenGreenAuxiliaryTrafficLights = 10
 
   // The minimum time since the last time the pedestrians could cross the road. (seconds)
-  val differenceBetweenGreenPedestrianCrossRoads = 45
+  val differenceBetweenGreenPedestrianCrossRoads = 15
 
   // The minimum time for the system to accept another similar message. (seconds)
-  val minimumTimeSinceLastRequest = 20
+  val minimumTimeSinceLastRequest = 10
 
   // The time auxiliaryStreet has to wait more if there is traffic jam in main street. (seconds)
-  val waitingTimeWhenTrafficJam = 30
+  val waitingTimeWhenTrafficJam = 10
 
   // The waiting time for Future results. (seconds)
   val waitingTimeForFuture = 5
