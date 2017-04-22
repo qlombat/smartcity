@@ -11,18 +11,18 @@ Endpoints :
 ### `GET` /zones/closed
 Returns the closed zones in the city.
 
-##### Responses :
+#### Responses :
 Code | Description
 -----|------
 **200** | OK, see structure below.
 
-###### Structure :
+#### Structure :
 ```
 {
     "zones": [ String ]
 }
 ```
-Example :
+###### Example :
 ```
 { 
     "zones": ["NO", "SE", "BUS"] 
@@ -34,20 +34,20 @@ Example :
 ### `POST` /sensors
 Add a new sensor with its value.
 
-##### Parameters
+#### Parameters
 Name | Type | Description
 -----|------|-------------
 **name**\* | String | The name of the sensor.
 **value**\* | Double | The value of the sensor (in the conventional unit, for example Celsius degree for a temperature sensor)
 **gross_value**\* | Double | The gross value of the sensor (as it was taken, with no conversion whatsoever)
 
-##### Responses
+#### Responses
 Code | Description
 -----|------
 **200** | OK, see structure below.
 **400** | One (or more) parameter(s) is (are) missing. <br><br> ```{ "error": "Missing parameter(s)" }```
 
-##### Structure :
+#### Structure :
 ```
 {
   "id": Long,
@@ -57,7 +57,7 @@ Code | Description
   "createdAt": String
 }
 ```
-Example :
+###### Example :
 ```
 {
   "id": 6,
