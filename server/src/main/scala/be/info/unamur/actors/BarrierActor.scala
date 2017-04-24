@@ -35,13 +35,12 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
     case OpenBarrier() =>
       sm setEngaged(BarrierActor.MotorIndex, true)
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
-      Thread sleep BarrierActor.WaitingTime
-      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
 
     /*
      *  Waits 5 seconds after the loss of the signal and closes the barrier.
      */
     case CloseBarrier() =>
+      sm setEngaged(BarrierActor.MotorIndex, true)
       Thread sleep BarrierActor.WaitingTime
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
 
@@ -61,7 +60,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
 object BarrierActor {
   /* Constants */
   val MotorIndex    : Int = 0
-  val OpenedPosition: Int = 3
-  val ClosedPosition: Int = 105
+  val OpenedPosition: Int = 0
+  val ClosedPosition: Int = 66
   val WaitingTime   : Int = 5000 //in milliseconds
 }

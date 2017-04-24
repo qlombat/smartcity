@@ -23,7 +23,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   // The TrafficLightsActor that handles the two traffic lights of the main road of the model.
-  val trafficLightsMainActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)), name = "trafficLightsMainActor")
+  val trafficLightsMainActor     : ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)), name = "trafficLightsMainActor")
   // The TrafficLightsActor that handles the two traffic lights of the auxiliary road of the model.
   val trafficLightsAuxiliaryActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 2, 3)), name = "trafficLightsAuxiliaryActor")
 
@@ -35,12 +35,12 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)), name = "mainCarDetectorActor2")
 
   // The two AuxiliaryCarDetectorActors that handle the detection sensors on each side of the auxiliary road of the model.
-  //val secondaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)), name = "secondaryCarDetectorActor1")
-  val secondaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)), name = "secondaryCarDetectorActor2")
+  val auxiliaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)), name = "auxiliaryCarDetectorActor1")
+  val auxiliaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)), name = "auxiliaryCarDetectorActor2")
 
   // The two PedestrianTouchActors that handle the touch sensors on each side of the auxiliary road of the model.
-  val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 6)), name = "pedestrianTouchDetectorActor1")
-  val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 7)), name = "pedestrianTouchDetectorActor2")
+  //val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 6)), name = "pedestrianTouchDetectorActor1")
+  //val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 7)), name = "pedestrianTouchDetectorActor2")
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
@@ -69,10 +69,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       val initPedestrianCrossingActor = pedestrianCrossingActor ? Initialize()
       val initMainRoadCarDetectorActor1 = mainCarDetectorActor1 ? Initialize()
       val initMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Initialize()
-      //val initSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Initialize()
-      val initSecondaryCarDetectorActor2 = secondaryCarDetectorActor2 ? Initialize()
-      val initPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Initialize()
-      val initPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Initialize()
+      val initAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Initialize()
+      val initAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Initialize()
+      //val initPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Initialize()
+      //val initPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Initialize()
       timeOfLastAuxiliaryGreenLight = new DateTime()
       timeOfLastPedestrianGreenLight = new DateTime()
       lastOpenAuxiliaryMessage = new DateTime()
@@ -84,19 +84,20 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         resultInitPedestrianCrossingActor <- initPedestrianCrossingActor
         resultInitMainRoadCarDetectorActor1 <- initMainRoadCarDetectorActor1
         resultInitMainRoadCarDetectorActor2 <- initMainRoadCarDetectorActor2
-        //resultInitSecondaryCarDetectorActor1 <- initSecondaryCarDetectorActor1
-        resultInitSecondaryCarDetectorActor2 <- initSecondaryCarDetectorActor2
-        resultInitPedestrianTouchDetectorActor1 <- initPedestrianTouchDetectorActor1
-        resultInitPedestrianTouchDetectorActor2 <- initPedestrianTouchDetectorActor2
+        resultInitAuxiliaryCarDetectorActor1 <- initAuxiliaryCarDetectorActor1
+        resultInitAuxiliaryCarDetectorActor2 <- initAuxiliaryCarDetectorActor2
+      //resultInitPedestrianTouchDetectorActor1 <- initPedestrianTouchDetectorActor1
+      //resultInitPedestrianTouchDetectorActor2 <- initPedestrianTouchDetectorActor2
       } yield (resultInitTrafficLightsMainActor,
         resultInitTrafficLightsAuxiliaryActor,
         resultInitPedestrianCrossingActor,
         resultInitMainRoadCarDetectorActor1,
         resultInitMainRoadCarDetectorActor2,
-        //resultInitSecondaryCarDetectorActor1,
-        resultInitSecondaryCarDetectorActor2,
-        resultInitPedestrianTouchDetectorActor1,
-        resultInitPedestrianTouchDetectorActor2)
+        resultInitAuxiliaryCarDetectorActor1,
+        resultInitAuxiliaryCarDetectorActor2
+        //resultInitPedestrianTouchDetectorActor1,
+        //resultInitPedestrianTouchDetectorActor2
+      )
 
       results pipeTo sender
 
@@ -110,10 +111,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       pedestrianCrossingActor ! SetOn()
       mainCarDetectorActor1 ! Start()
       mainCarDetectorActor2 ! Start()
-      //secondaryCarDetectorActor1 ! Start()
-      secondaryCarDetectorActor2 ! Start()
-      pedestrianTouchDetectorActor1 ! Start()
-      pedestrianTouchDetectorActor2 ! Start()
+      auxiliaryCarDetectorActor1 ! Start()
+      auxiliaryCarDetectorActor2 ! Start()
+    //pedestrianTouchDetectorActor1 ! Start()
+    //pedestrianTouchDetectorActor2 ! Start()
 
 
     /*
@@ -149,8 +150,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
 
       /* Once a carDetected in Auxiliary, turn off listener to not receive too much request "OpenAuxiliary". These listener
          will be turned on again when the red light will be on. */
-      //secondaryCarDetectorActor1 ! Stop()
-      secondaryCarDetectorActor2 ! Stop()
+      auxiliaryCarDetectorActor1 ! Stop()
+      auxiliaryCarDetectorActor2 ! Stop()
 
       //If there is no car on the main road, no need to wait the entire usual waiting time.
       val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetected()
@@ -206,10 +207,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
       val stopPedestrianCrossingActor = pedestrianCrossingActor ? Stop()
       val stopMainRoadCarDetectorActor1 = mainCarDetectorActor1 ? Stop()
       val stopMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Stop()
-      //val stopSecondaryCarDetectorActor1 = secondaryCarDetectorActor1 ? Stop()
-      val stopSecondaryCarDetectorActor2 = secondaryCarDetectorActor2 ? Stop()
-      val stopPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Stop()
-      val stopPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Stop()
+      val stopAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Stop()
+      val stopAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Stop()
+      //val stopPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Stop()
+      //val stopPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Stop()
 
       val results = for {
         resultStopTrafficLightsMainActor <- stopTrafficLightsMainActor
@@ -217,19 +218,20 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
         resultStopPedestrianCrossingActor <- stopPedestrianCrossingActor
         resultStopMainRoadCarDetectorActor1 <- stopMainRoadCarDetectorActor1
         resultStopMainRoadCarDetectorActor2 <- stopMainRoadCarDetectorActor2
-        //resultStopSecondaryCarDetectorActor1 <- stopSecondaryCarDetectorActor1
-        resultStopSecondaryCarDetectorActor2 <- stopSecondaryCarDetectorActor2
-        resultStopPedestrianTouchDetectorActor1 <- stopPedestrianTouchDetectorActor1
-        resultStopPedestrianTouchDetectorActor2 <- stopPedestrianTouchDetectorActor2
+        resultStopAuxiliaryCarDetectorActor1 <- stopAuxiliaryCarDetectorActor1
+        resultStopAuxiliaryCarDetectorActor2 <- stopAuxiliaryCarDetectorActor2
+      //resultStopPedestrianTouchDetectorActor1 <- stopPedestrianTouchDetectorActor1
+      //resultStopPedestrianTouchDetectorActor2 <- stopPedestrianTouchDetectorActor2
       } yield (resultStopTrafficLightsMainActor,
         resultStopTrafficLightsAuxiliaryActor,
         resultStopPedestrianCrossingActor,
         resultStopMainRoadCarDetectorActor1,
         resultStopMainRoadCarDetectorActor2,
-        //resultStopSecondaryCarDetectorActor1,
-        resultStopSecondaryCarDetectorActor2,
-        resultStopPedestrianTouchDetectorActor1,
-        resultStopPedestrianTouchDetectorActor2)
+        resultStopAuxiliaryCarDetectorActor1,
+        resultStopAuxiliaryCarDetectorActor2
+        //resultStopPedestrianTouchDetectorActor1,
+        //resultStopPedestrianTouchDetectorActor2
+      )
 
       results pipeTo sender
   }
@@ -252,8 +254,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
     timeOfLastAuxiliaryGreenLight = DateTime.now()
 
     // Turn on listeners
-    //secondaryCarDetectorActor1 ! Start()
-    secondaryCarDetectorActor2 ! Start()
+    auxiliaryCarDetectorActor1 ! Start()
+    auxiliaryCarDetectorActor2 ! Start()
   }
 
   /** Return the time the system has to wait before switching the lights on.
