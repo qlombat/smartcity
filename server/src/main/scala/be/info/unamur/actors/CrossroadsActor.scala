@@ -116,33 +116,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
     //pedestrianTouchDetectorActor1 ! Start()
     //pedestrianTouchDetectorActor2 ! Start()
 
-
-    /*
-     * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
-     *
-    case OpenAuxiliary() =>
-      // Checks if the request has been sent few minutes ago. If yes, does not add it to the message queue.
-      if (lastOpenAuxiliaryMessage.getSecondOfDay + CrossroadsActor.minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
-        lastOpenAuxiliaryMessage = DateTime.now()
-
-        //If there is no car on the main road, no need to wait the entire usual waiting time.
-        val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetected()
-        val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetected()
-
-        val results: Future[(Any, Any)] = for {
-          resultMainCarDetection1 <- requestMainCarDetector1
-          resultMainCarDetection2 <- requestMainCarDetector2
-        } yield (resultMainCarDetection1, resultMainCarDetection2)
-
-        Await.result(results, 5000 millis) match {
-          case (false, false) => openAuxiliary()
-          case _ =>
-            Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights)
-            openAuxiliary()
-        }
-      }*/
-
-
     /*
    * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
    */
@@ -282,7 +255,7 @@ object CrossroadsActor {
   /* Constants */
 
   // The minimum time since the last time the auxiliary trafficlights has been switched on. (seconds)
-  val differenceBetweenGreenAuxiliaryTrafficLights = 10
+  val differenceBetweenGreenAuxiliaryTrafficLights = 1
 
   // The minimum time since the last time the pedestrians could cross the road. (seconds)
   val differenceBetweenGreenPedestrianCrossRoads = 15
@@ -291,7 +264,7 @@ object CrossroadsActor {
   val minimumTimeSinceLastRequest = 10
 
   // The time auxiliaryStreet has to wait more if there is traffic jam in main street. (seconds)
-  val waitingTimeWhenTrafficJam = 10
+  val waitingTimeWhenTrafficJam = 30
 
   // The waiting time for Future results. (seconds)
   val waitingTimeForFuture = 5

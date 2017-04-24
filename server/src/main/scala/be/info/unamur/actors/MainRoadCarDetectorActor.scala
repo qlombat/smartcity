@@ -1,6 +1,9 @@
 package be.info.unamur.actors
 
+import java.sql.Timestamp
+
 import be.info.unamur.messages._
+import be.info.unamur.persistence.entities.Sensor
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
@@ -12,6 +15,7 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
 
   var sensorChangeListener: SensorChangeListener = _
+  var sensorChangeListenerDB: SensorChangeListener = _
 
   override def receive: Receive = {
 
@@ -19,16 +23,24 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
      * Initializes the listener.
      */
     case Initialize() =>
-      // Necessary sender reference for the listener below
-      val senderRef = sender
-
       this.sensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > MainRoadCarDetectorActor.valueCarDetection)
-            // Not used currently
-            senderRef ! OpenMainRoad()
+          //if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > MainRoadCarDetectorActor.valueCarDetection)
+            //context.parent ! OpenAuxiliary()
         }
       }
+
+      this.sensorChangeListenerDB = new SensorChangeListener {
+        override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
+          if (index.equals(sensorChangeEvent.getIndex)) {
+            ik.getSensorValue(sensorChangeEvent.getIndex) > AuxiliaryCarDetectorActor.valueCarDetection match {
+              case true => Sensor.create(context.self.path.name, 1, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+              case false => Sensor.create(context.self.path.name, 0, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+            }
+          }
+        }
+      }
+
       ik setSensorChangeTrigger(index, MainRoadCarDetectorActor.trigger)
 
       sender ! Initialized()
@@ -38,12 +50,13 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
      */
     case Start() =>
       ik addSensorChangeListener this.sensorChangeListener
+      ik addSensorChangeListener this.sensorChangeListenerDB
 
     /*
      * Checks if there is a car on the street.
      */
     case MainCarDetected() =>
-      if (ik.getSensorValue(index) < 400) {
+      if (ik.getSensorValue(index) > MainRoadCarDetectorActor.valueCarDetection) {
         sender ! true
       } else sender ! false
 
@@ -62,6 +75,6 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
   */
 object MainRoadCarDetectorActor {
   /* Constants */
-  val valueCarDetection: Int = 750
+  val valueCarDetection: Int = 500
   val trigger: Int = 100
 }
