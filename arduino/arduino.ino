@@ -10,8 +10,8 @@
 #include <LiquidCrystal_I2C.h>
 
 //Change following information
-char ssid[] = "JuMad";          // your network SSID (name)
-char pass[] = "TP-LINK1994";    // your network password (use for WPA, or use as key for WEP)
+char ssid[] = "SwagDePoulet";          // your network SSID (name)
+char pass[] = "raspberry";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;               // your network key Index number (needed only for WEP)
 
 
@@ -22,11 +22,11 @@ float humidity                = 0;    //Don't change
 float temperature             = 0;    //Don't change
 bool humidityValueChanged     = true; //Don't change
 bool temperatureValueChanged  = true; //Don't change
-int temperatureTrigger        = 1;    // celcius
+int temperatureTrigger        = 2;    // celcius
 int humidityTrigger           = 5;    // %
 DHT_Unified dht(DHTPIN, DHTTYPE);     //Don't change
 
-//LCD screen config 
+//LCD screen config
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 //Zones configuration
@@ -44,10 +44,11 @@ int pinLed[7][3] = {
 };
 
 //API configuration
-const char* server = "jsonplaceholder.typicode.com";  // server's address
-const char* pathGetZones = "/users/1";
-const char* pathPostTemperature = "/users/1";
-const char* pathPostHumidity = "/users/1";
+const char* server = "192.168.3.1";  // server's address
+const int defaultPort = 8080;
+const char* pathGetZones = "/smartcity/api/zones/closed";
+const char* pathPostTemperature = "/smartcity/api/sensors";
+const char* pathPostHumidity = "/smartcity/api/sensors";
 const unsigned long HTTP_TIMEOUT = 10000;  // max respone time from server
 const size_t MAX_CONTENT_SIZE = 256;       // max size of the HTTP response
 
@@ -58,32 +59,53 @@ const unsigned long BAUD_RATE = 9600;
 
 void setup() {
   initSerial();
+  initLCD();
   initWifi();
   initLed();
-  initLCD();
+
 }
 
 void loop() {
   updateTemperatureAndHumidity();
-  if (connect(server)) {
+
+
+  Serial.println();
+  Serial.println("Get zones closed");
+  if (connect(server, defaultPort)) {
     if (getRequest(server, pathGetZones) && skipResponseHeaders()) {
       readReponseContentForZone();
     }
   }
   disconnect();
+
+  Serial.println();
+  Serial.println("Post humidity");
+  if (connect(server, defaultPort)) {
+    if (postHumidity(server, pathPostHumidity)) {
+      client.flush();
+    }
+  }
+  disconnect();
+
+  Serial.println();
+  Serial.println("Post temperature");
+  if (connect(server, defaultPort)) {
+    if (postTemperature(server, pathPostTemperature)) {
+      client.flush();
+    }
+  }
+  disconnect();
+
   delay(3000);
 }
 
 // Initialize Serial port
 void initSerial() {
   Serial.begin(BAUD_RATE);
-  while (!Serial) {
-    ;  // wait for serial port to initialize
-  }
   Serial.println("Serial ready");
 }
 
-void initLCD(){
+void initLCD() {
   lcd.init();
   lcd.backlight();
 }
@@ -91,6 +113,10 @@ void initLCD(){
 // Initialize Led
 void initLed() {
   Serial.println("init led");
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Open all leds");
 
   //Open all leds
   Serial.print("open leds : ");
@@ -107,6 +133,10 @@ void initLed() {
   Serial.println();
   delay(5000);
 
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Close all leds");
+
   //Close all leds
   Serial.print("close leds : ");
   for (int i = 0; i < (int) (sizeof(zones) / sizeof(char*)); i++) {
@@ -119,6 +149,7 @@ void initLed() {
     }
   }
   Serial.println();
+  delay(1000);
 }
 
 void initWifi() {
@@ -133,6 +164,13 @@ void initWifi() {
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Connection to :");
+    lcd.setCursor(0, 1);
+    lcd.print(ssid);
+
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
     status = WiFi.begin(ssid, pass);
 
@@ -161,11 +199,13 @@ void printWiFiStatus() {
 }
 
 // Open connection to the HTTP server
-bool connect(const char* hostName) {
-  Serial.print("Connect to ");
-  Serial.println(hostName);
+bool connect(const char* hostName, const int port) {
+  Serial.print("Connection to : ");
+  Serial.print(hostName);
+  Serial.print(":");
+  Serial.println(port);
 
-  bool ok = client.connect(hostName, 80);
+  bool ok = client.connect(hostName, port);
 
   Serial.println(ok ? "Connected" : "Connection Failed!");
   return ok;
@@ -176,6 +216,7 @@ bool getRequest(const char* host, const char* resource) {
   Serial.print("GET ");
   Serial.println(resource);
 
+  client.setTimeout(HTTP_TIMEOUT);
   client.print("GET ");
   client.print(resource);
   client.println(" HTTP/1.1");
@@ -183,22 +224,66 @@ bool getRequest(const char* host, const char* resource) {
   client.println(host);
   client.println("Connection: close");
   client.println();
-
   return true;
+}
+
+boolean postTemperature(const char* host, const char* resource) {
+  if (temperatureValueChanged) {
+    char content[40] = "";
+    char temp[2];
+    sprintf(temp, "%d", (int) temperature); //Temperature to string
+
+    strcpy(content, "name=temperature&value=");
+    strcat(content, temp);
+    strcat(content, "&gross_value=");
+    strcat(content, temp);
+
+    temperatureValueChanged = !postRequest(host, resource, content);
+    return !temperatureValueChanged;
+  } else {
+    Serial.println("Temperature value has not changed");
+    return true;
+  }
+}
+
+boolean postHumidity(const char* host, const char* resource) {
+  if (humidityValueChanged) {
+    char content[37] = "";
+    char hum[2];
+    sprintf(hum, "%d", (int) humidity); //Humidity to string
+
+    strcpy(content, "name=humidity&value=");
+    strcat(content, hum);
+    strcat(content, "&gross_value=");
+    strcat(content, hum);
+    humidityValueChanged = !postRequest(host, resource, content);
+    return !humidityValueChanged;
+  } else {
+    Serial.println("Humidity value has not changed");
+    return true;
+  }
 }
 
 bool postRequest(const char* host, const char* resource, const char* content) {
   Serial.print("POST ");
   Serial.println(resource);
-  
-  client.print("GET ");
+  Serial.print("content ");
+  Serial.println(content);
+
+
+  client.setTimeout(HTTP_TIMEOUT);
+  client.print("POST ");
   client.print(resource);
   client.println(" HTTP/1.1");
   client.print("Host: ");
   client.println(host);
-  client.println("Accept: */*");
-  client.println("Content-Length: " + (int) (sizeof(content) / sizeof(char)));
-  client.println("Content-Type: application/x-www-form-urlencoded");
+  client.println("User-Agent: Arduino/1.0");
+  client.println("Connection: close");
+
+  client.println("Content-Type: application/x-www-form-urlencoded;");
+  client.print("Content-Length: ");
+  client.print((int) strlen(content));
+  client.println();
   client.println();
   client.println(content);
 
@@ -209,9 +294,7 @@ bool postRequest(const char* host, const char* resource, const char* content) {
 bool skipResponseHeaders() {
   // HTTP headers end with an empty line
   char endOfHeaders[] = "\r\n\r\n";
-
   bool ok = client.find(endOfHeaders);
-
   if (!ok) {
     Serial.println("No response or invalid response!");
   }
@@ -225,8 +308,8 @@ bool readReponseContentForZone() {
   delay(1000);
   DynamicJsonBuffer jsonBuffer(MAX_CONTENT_SIZE);
 
-  //JsonObject& root = jsonBuffer.parseObject(client);
-  JsonObject& root = jsonBuffer.parseObject("{\"zones\" : [ \"S\", \"BUS\", \"NO\"]}");
+  JsonObject& root = jsonBuffer.parseObject(client);
+  //JsonObject& root = jsonBuffer.parseObject("{\"zones\" : [ \"SO\", \"BUS\", \"NE\"]}");
 
   if (!root.success()) {
     Serial.println("JSON parsing failed!");
