@@ -50,7 +50,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
      */
     case Start() =>
       ik addSensorChangeListener this.sensorChangeListener
-      ik addSensorChangeListener this.sensorChangeListenerDB
+     // ik addSensorChangeListener this.sensorChangeListenerDB
 
     /*
      * Checks if there is a car on the street.

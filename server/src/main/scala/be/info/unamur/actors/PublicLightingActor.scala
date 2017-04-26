@@ -44,14 +44,14 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
         }
       }
 
-      this.lightSensorChangeListenerDB = new SensorChangeListener {
+    /*  this.lightSensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex)) {
               Sensor.create(context.self.path.name, ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
 
           }
         }
-      }
+      }*/
 
       allPinUp()
       ik setSensorChangeTrigger(index, PublicLightingActor.triggerValue)

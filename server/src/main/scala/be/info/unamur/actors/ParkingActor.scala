@@ -1,9 +1,12 @@
 package be.info.unamur.actors
 
+import java.sql.Timestamp
+
 import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages._
+import be.info.unamur.persistence.entities.Sensor
 import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.RFIDPhidget
 import com.phidgets.event.{TagGainEvent, TagGainListener, TagLossEvent, TagLossListener}
@@ -30,6 +33,12 @@ class ParkingActor extends FailureSpreadingActor {
   val tagGainListener = new TagGainListener {
     override def tagGained(tagGainEvent: TagGainEvent): Unit = {
       barrierActor ! OpenBarrier()
+    }
+  }
+
+  val tagGainListenerDB = new TagGainListener {
+    override def tagGained(tagGainEvent: TagGainEvent): Unit = {
+//      Sensor.create(context.self.path.name, 0, rfid.getLastTag(), new Timestamp(System.currentTimeMillis()))
     }
   }
 
