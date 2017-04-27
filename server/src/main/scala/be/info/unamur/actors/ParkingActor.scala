@@ -59,29 +59,34 @@ class ParkingActor extends FailureSpreadingActor {
       // Sends the "open barrier" message when a RFID tag is read.
       this.tagGainListener = new TagGainListener {
         override def tagGained(tagGainEvent: TagGainEvent): Unit = {
-          RfidTag.create(context.self.path.name, rfid.getLastTag, new Timestamp(System.currentTimeMillis()))
+         // RfidTag.create(context.self.path.name, rfid.getLastTag, new Timestamp(System.currentTimeMillis()))
+          println("TagGain")
           barrierActor ! OpenBarrier()
+          rfid removeTagGainListener tagGainListener
+          rfid addTagLossListener tagLossListener
         }
       }
 
       // Sends the "close barrier" message when a RFID tag is lost.
       this.tagLossListener = new TagLossListener {
         override def tagLost(tagLossEvent: TagLossEvent): Unit = {
+          println("TagLoss")
           barrierActor ! CloseBarrier()
+          rfid removeTagLossListener tagLossListener
+
+
         }
       }
 
       results pipeTo sender
 
-    case Opened() =>
-      rfid setAntennaOn true
-      rfid removeTagGainListener this.tagGainListener
-      rfid addTagLossListener this.tagLossListener
+  /*  case Opened() =>
+      println ("Opened")
+      rfid addTagLossListener this.tagLossListener*/
 
     case Closed() =>
-      rfid setAntennaOn true
+      println ("Closed")
       rfid addTagGainListener this.tagGainListener
-      rfid removeTagLossListener this.tagLossListener
 
     case Start() =>
       rfid setAntennaOn true
