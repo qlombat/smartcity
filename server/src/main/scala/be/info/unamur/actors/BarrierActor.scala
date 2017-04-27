@@ -18,7 +18,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
      * Initializes a basic situation. The barrier is closed by default.
      */
     case Initialize() =>
-      sm open 305869
+      sm open BarrierActor.MotorPhidgetId
       sm waitForAttachment()
 
       sm setServoType(BarrierActor.MotorIndex, AdvancedServoPhidget.PHIDGET_SERVO_HITEC_HS422)
@@ -62,6 +62,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
   */
 object BarrierActor {
   /* Constants */
+  val MotorPhidgetId: Int = 305869
   val MotorIndex    : Int = 0
   val OpenedPosition: Int = 0
   val ClosedPosition: Int = 66

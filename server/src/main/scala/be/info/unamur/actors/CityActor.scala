@@ -91,3 +91,7 @@ class CityActor extends FailureSpreadingActor {
       }
   }
 }
+
+object CityActor {
+  val IKPhidgetId: Int = 445876
+}

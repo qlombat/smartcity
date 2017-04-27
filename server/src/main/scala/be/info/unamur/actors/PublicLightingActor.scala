@@ -15,7 +15,7 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
   */
 class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, level2Pin: Int, level3Pin: Int) extends FailureSpreadingActor {
 
-  var lightSensorChangeListener: SensorChangeListener = _
+  var lightSensorChangeListener  : SensorChangeListener = _
   var lightSensorChangeListenerDB: SensorChangeListener = _
 
   override def receive: Receive = {
@@ -27,47 +27,31 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
       this.lightSensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex))
-            ik.getSensorValue(sensorChangeEvent.getIndex) match {
-              case sv if sv < PublicLightingActor.Level0Value =>
-                allPinUp()
-              case sv if sv < PublicLightingActor.Level1Value =>
-                ik setOutputState(level1Pin, true)
-                ik setOutputState(level2Pin, true)
-                ik setOutputState(level3Pin, false)
-              case sv if sv < PublicLightingActor.Level2Value =>
-                ik setOutputState(level1Pin, true)
-                ik setOutputState(level2Pin, false)
-                ik setOutputState(level3Pin, false)
-              case sv if sv < PublicLightingActor.Level3Value =>
-                allPinDown()
-            }
+            setPin(ik.getSensorValue(sensorChangeEvent.getIndex))
         }
       }
+
+      this.lightSensorChangeListenerDB = new SensorChangeListener {
+        override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
+          if (index.equals(sensorChangeEvent.getIndex))
+            Sensor.create("light", ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+        }
+      }
+
 
       allPinUp()
       ik setSensorChangeTrigger(index, PublicLightingActor.triggerValue)
 
       sender ! Initialized()
 
+
     /*
      * Makes blinking the 3 LEDs 3 times at the launch of the system and adds the listener to the interface kit.
      */
     case Start() =>
-      ik.getSensorValue(index) match {
-        case sv if sv < PublicLightingActor.Level0Value =>
-          allPinUp()
-        case sv if sv < PublicLightingActor.Level1Value =>
-          ik setOutputState(level1Pin, true)
-          ik setOutputState(level2Pin, true)
-          ik setOutputState(level3Pin, false)
-        case sv if sv < PublicLightingActor.Level2Value =>
-          ik setOutputState(level1Pin, true)
-          ik setOutputState(level2Pin, false)
-          ik setOutputState(level3Pin, false)
-        case sv if sv < PublicLightingActor.Level3Value =>
-          allPinDown()
-      }
+      setPin(ik.getSensorValue(index))
       ik addSensorChangeListener this.lightSensorChangeListener
+      ik addSensorChangeListener this.lightSensorChangeListenerDB
 
 
     /*
@@ -100,6 +84,23 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
     ik setOutputState(level1Pin, false)
     ik setOutputState(level2Pin, false)
     ik setOutputState(level3Pin, false)
+  }
+
+  def setPin(value: Int): Unit = {
+    value match {
+      case sv if sv < PublicLightingActor.Level0Value =>
+        allPinUp()
+      case sv if sv < PublicLightingActor.Level1Value =>
+        ik setOutputState(level1Pin, true)
+        ik setOutputState(level2Pin, true)
+        ik setOutputState(level3Pin, false)
+      case sv if sv < PublicLightingActor.Level2Value =>
+        ik setOutputState(level1Pin, true)
+        ik setOutputState(level2Pin, false)
+        ik setOutputState(level3Pin, false)
+      case sv if sv < PublicLightingActor.Level3Value =>
+        allPinDown()
+    }
   }
 }
 

@@ -2,8 +2,6 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
-import akka.actor.FSM.Failure
-import akka.actor.Status.Success
 import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
@@ -14,7 +12,6 @@ import com.phidgets.RFIDPhidget
 import com.phidgets.event._
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -47,7 +44,7 @@ class ParkingActor extends FailureSpreadingActor {
      * Initializes the RFID listeners and the BarrierActor
      */
     case Initialize() =>
-      rfid open 384608
+      rfid open ParkingActor.RfidPhidgetId
       rfid waitForAttachment()
 
       val initBarrierActor = barrierActor ? Initialize()
@@ -59,34 +56,28 @@ class ParkingActor extends FailureSpreadingActor {
       // Sends the "open barrier" message when a RFID tag is read.
       this.tagGainListener = new TagGainListener {
         override def tagGained(tagGainEvent: TagGainEvent): Unit = {
-         // RfidTag.create(context.self.path.name, rfid.getLastTag, new Timestamp(System.currentTimeMillis()))
-          println("TagGain")
           barrierActor ! OpenBarrier()
           rfid removeTagGainListener tagGainListener
           rfid addTagLossListener tagLossListener
+          RfidTag.create(context.self.path.name, tagGainEvent.getValue, new Timestamp(System.currentTimeMillis()))
         }
       }
 
       // Sends the "close barrier" message when a RFID tag is lost.
       this.tagLossListener = new TagLossListener {
         override def tagLost(tagLossEvent: TagLossEvent): Unit = {
-          println("TagLoss")
           barrierActor ! CloseBarrier()
           rfid removeTagLossListener tagLossListener
-
-
         }
       }
 
       results pipeTo sender
 
-  /*  case Opened() =>
-      println ("Opened")
-      rfid addTagLossListener this.tagLossListener*/
 
     case Closed() =>
-      println ("Closed")
+      println("Closed")
       rfid addTagGainListener this.tagGainListener
+
 
     case Start() =>
       rfid setAntennaOn true
@@ -116,7 +107,5 @@ class ParkingActor extends FailureSpreadingActor {
   */
 object ParkingActor {
   /* Constants */
-
-  // Minimum delay between two DB updates (seconds)
-  val delayDBUpdate = 3
+  val RfidPhidgetId: Int = 384608
 }
