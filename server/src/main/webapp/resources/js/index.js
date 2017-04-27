@@ -6,6 +6,7 @@
  */
 $(document).ready(function () {
     function updateSensors(){
+        console.log("coucou");
         $.getJSON("http://localhost:8080/api/sensors/temperature", function (data) {
             if(data.value == null){
                 $("#temp-value").text("Unavailable");
@@ -29,6 +30,7 @@ $(document).ready(function () {
 
         });
     }
+
     updateSensors();
-    setInterval(updateSensors(), 3000);
+    setInterval(updateSensors, 3000);
 });
