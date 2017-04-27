@@ -27,7 +27,6 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
       this.lightSensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex))
-            Sensor.create(context.self.path.name, ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
             ik.getSensorValue(sensorChangeEvent.getIndex) match {
               case sv if sv < PublicLightingActor.Level0Value =>
                 allPinUp()

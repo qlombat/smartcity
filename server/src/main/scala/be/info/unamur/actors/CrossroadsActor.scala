@@ -264,7 +264,7 @@ object CrossroadsActor {
   val minimumTimeSinceLastRequest = 10
 
   // The time auxiliaryStreet has to wait more if there is traffic jam in main street. (seconds)
-  val waitingTimeWhenTrafficJam = 30
+  val waitingTimeWhenTrafficJam = 5
 
   // The waiting time for Future results. (seconds)
   val waitingTimeForFuture = 5
