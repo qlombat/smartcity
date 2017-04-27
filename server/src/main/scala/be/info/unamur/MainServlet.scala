@@ -18,7 +18,8 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
   get("/") {
     contentType = "text/html"
     logger.debug("Main page loaded")
-    layoutTemplate("/WEB-INF/views/index.ssp")
+    layoutTemplate("/WEB-INF/views/index.ssp",
+      ("customScriptPath", "/resources/js/index.js"))
   }
 
 }

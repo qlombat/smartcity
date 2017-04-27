@@ -49,6 +49,18 @@ object Sensor extends SQLSyntaxSupport[Sensor] {
     }.map(Sensor(sensor.resultName)).list.apply()
   }
 
+  def findLastByName(name: String)(implicit session: DBSession = autoSession): Option[Sensor] = {
+    sql"""
+    SELECT ${sensor.result.*}
+    FROM ${Sensor.as(sensor)}
+    WHERE $name = ${sensor.name} AND
+       ${sensor.createdAt} = (
+        SELECT MAX(sensor_tmp.created_at)
+        FROM sensors sensor_tmp
+        WHERE sensor_tmp.name = ${sensor.name}
+    )""".map(Sensor(sensor.resultName)).single.apply()
+  }
+
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
     withSQL {
       select(sqls"count(1)").from(Sensor as sensor).where.append(sqls"$where")

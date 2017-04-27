@@ -20,7 +20,6 @@ class PedestrianTouchActor(ik: InterfaceKitPhidget, index: Int) extends FailureS
      * Initializes the listener.
      */
     case Initialize() =>
-
       this.sensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > 500)

@@ -33,9 +33,10 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
       this.sensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex)) {
-            ik.getSensorValue(sensorChangeEvent.getIndex) > AuxiliaryCarDetectorActor.valueCarDetection match {
-              case true => Sensor.create(context.self.path.name, 1, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
-              case false => Sensor.create(context.self.path.name, 0, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+            if (ik.getSensorValue(sensorChangeEvent.getIndex) > AuxiliaryCarDetectorActor.valueCarDetection) {
+              Sensor.create(context.self.path.name, 1, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+            } else {
+              Sensor.create(context.self.path.name, 0, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
             }
           }
         }
