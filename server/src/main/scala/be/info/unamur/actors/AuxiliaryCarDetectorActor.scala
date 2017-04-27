@@ -58,7 +58,7 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fai
       if (ik.getSensorValue(index) < AuxiliaryCarDetectorActor.valueCarDetection) {
         sender ! OpenAuxiliary()
       }
-     // ik addSensorChangeListener this.sensorChangeListenerDB
+     ik addSensorChangeListener this.sensorChangeListenerDB
 
     /*
      * Removes the listener from the interface kit.

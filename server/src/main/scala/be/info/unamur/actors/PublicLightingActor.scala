@@ -15,7 +15,7 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
   */
 class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, level2Pin: Int, level3Pin: Int) extends FailureSpreadingActor {
 
-  var lightSensorChangeListener  : SensorChangeListener = _
+  var lightSensorChangeListener: SensorChangeListener = _
   var lightSensorChangeListenerDB: SensorChangeListener = _
 
   override def receive: Receive = {
@@ -27,6 +27,7 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
       this.lightSensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex))
+            Sensor.create(context.self.path.name, ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
             ik.getSensorValue(sensorChangeEvent.getIndex) match {
               case sv if sv < PublicLightingActor.Level0Value =>
                 allPinUp()
@@ -43,13 +44,6 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
             }
         }
       }
-
-    /*  this.lightSensorChangeListenerDB = new SensorChangeListener {
-        override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex))
-            Sensor.create(context.self.path.name, ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
-        }
-      }*/
 
       allPinUp()
       ik setSensorChangeTrigger(index, PublicLightingActor.triggerValue)

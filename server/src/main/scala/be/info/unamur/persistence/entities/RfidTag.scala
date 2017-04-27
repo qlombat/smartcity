@@ -13,17 +13,17 @@ case class RfidTag(id: Long,
                    createdAt: Timestamp)
 
 object RfidTag extends SQLSyntaxSupport[RfidTag] {
-  override val tableName = "rfidtags"
+  override val tableName = "rfidtag"
   override val columns = Seq("id", "name", "tag", "created_at")
   override val autoSession = AutoSession
   val rfidtag: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[RfidTag], RfidTag] = RfidTag.syntax("r")
 
 
-  def apply(s: ResultName[RfidTag])(rs: WrappedResultSet): RfidTag = new RfidTag(
-    id = rs.long(s.id),
-    name = rs.string(s.name),
-    tag = rs.string(s.tag),
-    createdAt = rs.timestamp(s.createdAt)
+  def apply(r: ResultName[RfidTag])(rs: WrappedResultSet): RfidTag = new RfidTag(
+    id = rs.long(r.id),
+    name = rs.string(r.name),
+    tag = rs.string(r.tag),
+    createdAt = rs.timestamp(r.createdAt)
   )
 
   def find(id: Long)(implicit session: DBSession = autoSession): Option[RfidTag] = {
@@ -56,7 +56,7 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
              tag: String,
              createdAt: Timestamp)(implicit session: DBSession = autoSession): RfidTag = {
     val generatedKey = withSQL {
-      insert.into(Sensor).columns(
+      insert.into(RfidTag).columns(
         column.name,
         column.tag,
         column.createdAt
@@ -73,21 +73,21 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
       createdAt = createdAt)
   }
 
-  def save(s: RfidTag)(implicit session: DBSession = autoSession): RfidTag = {
+  def save(r: RfidTag)(implicit session: DBSession = autoSession): RfidTag = {
     withSQL {
       update(RfidTag as rfidtag).set(
-        rfidtag.id -> s.id,
-        rfidtag.name -> s.name,
-        rfidtag.tag -> s.tag,
-        rfidtag.createdAt -> s.createdAt
+        rfidtag.id -> r.id,
+        rfidtag.name -> r.name,
+        rfidtag.tag -> r.tag,
+        rfidtag.createdAt -> r.createdAt
       )
     }.update().apply()
-    s
+    r
   }
 
-  def destroy(s: RfidTag)(implicit session: DBSession = autoSession): Unit = {
+  def destroy(r: RfidTag)(implicit session: DBSession = autoSession): Unit = {
     withSQL {
-      delete.from(RfidTag).where.eq(column.id, s.id)
+      delete.from(RfidTag).where.eq(column.id, r.id)
     }.update.apply()
   }
 }

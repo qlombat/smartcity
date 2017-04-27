@@ -26,7 +26,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
       this.sensorChangeListener = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           //if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > MainRoadCarDetectorActor.valueCarDetection)
-            //context.parent ! OpenAuxiliary()
+          //context.parent ! OpenAuxiliary()
         }
       }
 
