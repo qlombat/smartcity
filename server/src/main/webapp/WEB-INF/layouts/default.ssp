@@ -2,55 +2,98 @@
 
 <%@ var body: String %>
 <%@ var title: String = "SmartCity" %>
+<%@ var customScriptPath : String %>
 
 <html>
+
 <head>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title>
+<!-- Bootstrap Core CSS -->
+<link href="${uri("/resources/vendor/bootstrap/css/bootstrap.min.css")}" rel="stylesheet">
+<!-- MetisMenu CSS -->
+<link href="${uri("/resources/vendor/metisMenu/metisMenu.min.css")}" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="${uri("/resources/css/sb-admin-2.css")}" rel="stylesheet">
+<!-- Morris Charts CSS -->
+<link href="${uri("/resources/vendor/morrisjs/morris.css") }" rel="stylesheet">
+<!-- Custom Fonts -->
+<link href="${uri("/resources/vendor/font-awesome/css/font-awesome.css") }" rel="stylesheet" type="text/css">
 </head>
 
-<body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
+<body>
+    <div id="wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#">${title}</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                    aria-haspopup="true" aria-expanded="false">Actors <span
-                    class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a target="_blank" href="${uri("/actors/init")}">Initialize actors</a></li>
-                        <li><a target="_blank" href="${uri("/actors/stop")}">Stop actors</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-    </nav>
+        </div><!-- /.navbar-header -->
 
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href=""><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="#sensors"><i class="fa fa-bar-chart-o fa-fw"></i> Sensors<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                        <li>
+                            <a href="#temp">Temperature</a>
+                        </li>
+                        <li>
+                            <a href="#hum">Humidity</a>
+                        </li>
+                        <li>
+                            <a href="#pres">Presence</a>
+                        </li>
+                        </ul><!-- /.nav-second-level -->
+                    </li>
+                    <li>
+                        <a href="#sensors"><i class="fa fa-cogs fa-fw"></i> Actors<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                        <li>
+                            <a href="${uri("/actors/init")}">Start</a>
+                        </li>
+                        <li>
+                            <a href="${uri("/actors/stop")}">Stop</a>
+                        </li>
+                        </ul><!-- /.nav-second-level -->
+                    </li>
+                </ul>
+            </div><!-- /.sidebar-collapse -->
+        </div><!-- /.navbar-static-side -->
+    </nav><!-- /.navbar-->
 
-    <div class="container theme-showcase" role="main">
-    <div style="margin-top: 256px;">
-        ${ unescape(body) }
-    </div>
-    </div>
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
 
+            ${unescape(body)}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        </div><!-- /.container-fluid -->
+    </div><!-- /#page-wrapper -->
+    </div><!-- /#wrapper -->
 
+    <!-- jQuery -->
+    <script src="${uri("/resources/vendor/jquery/jquery.min.js")}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="${uri("/resources/vendor/bootstrap/js/bootstrap.min.js")}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="${uri("/resources/vendor/metisMenu/metisMenu.min.js")}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="${uri("/resources/js/sb-admin-2.js")}"></script>
+    <!-- Custom script-->
+    <script type="text/javascript" src="${uri(customScriptPath)}"></script>
 </body>
 </html>

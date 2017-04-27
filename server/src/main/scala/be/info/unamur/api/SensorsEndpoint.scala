@@ -29,8 +29,13 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
       case (Some(name), Some(value), Some(grossValue)) => Sensor.create(name, value, grossValue, new Timestamp(System.currentTimeMillis()))
       case (_, _, _) => halt(400, "error" -> "Missing parameter(s)")
     }
+  }
 
-
+  get("/:name") {
+    Sensor.findLastByName(params("name")) match {
+      case Some(s) => s
+      case None => "error" -> "Sensor not found"
+    }
   }
 }
 
