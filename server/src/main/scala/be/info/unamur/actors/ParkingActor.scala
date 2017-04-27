@@ -2,6 +2,8 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
+import akka.actor.FSM.Failure
+import akka.actor.Status.Success
 import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
@@ -12,6 +14,7 @@ import com.phidgets.RFIDPhidget
 import com.phidgets.event._
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -56,8 +59,8 @@ class ParkingActor extends FailureSpreadingActor {
       // Sends the "open barrier" message when a RFID tag is read.
       this.tagGainListener = new TagGainListener {
         override def tagGained(tagGainEvent: TagGainEvent): Unit = {
-          barrierActor ! OpenBarrier()
           RfidTag.create(context.self.path.name, rfid.getLastTag, new Timestamp(System.currentTimeMillis()))
+          barrierActor ! OpenBarrier()
         }
       }
 
@@ -70,10 +73,20 @@ class ParkingActor extends FailureSpreadingActor {
 
       results pipeTo sender
 
+    case Opened() =>
+      rfid setAntennaOn true
+      rfid removeTagGainListener this.tagGainListener
+      rfid addTagLossListener this.tagLossListener
+
+    case Closed() =>
+      rfid setAntennaOn true
+      rfid addTagGainListener this.tagGainListener
+      rfid removeTagLossListener this.tagLossListener
+
     case Start() =>
       rfid setAntennaOn true
       rfid addTagGainListener this.tagGainListener
-      rfid addTagLossListener this.tagLossListener
+      rfid removeTagLossListener this.tagLossListener
 
 
     /*
@@ -87,6 +100,7 @@ class ParkingActor extends FailureSpreadingActor {
       } yield resultStopBarrierActor
 
       results pipeTo sender
+
 
   }
 }

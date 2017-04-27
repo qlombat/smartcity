@@ -35,6 +35,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
     case OpenBarrier() =>
       sm setEngaged(BarrierActor.MotorIndex, true)
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
+      sender ! Opened()
 
     /*
      *  Waits 5 seconds after the loss of the signal and closes the barrier.
@@ -43,6 +44,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
       sm setEngaged(BarrierActor.MotorIndex, true)
       Thread sleep BarrierActor.WaitingTime
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
+      sender ! Opened()
 
     /*
      * Stops the servo motor
