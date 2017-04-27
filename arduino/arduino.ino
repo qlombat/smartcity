@@ -16,8 +16,8 @@ int keyIndex = 0;               // your network key Index number (needed only fo
 
 
 //Humidity and temperature configuration
-#define DHTPIN            A0        // Pin which is connected to the DHT sensor.
-#define DHTTYPE           DHT11     // DHT 11 
+#define DHTPIN                  A0    // Pin which is connected to the DHT sensor.
+#define DHTTYPE                 DHT11 // DHT 11 
 float humidity                = 0;    //Don't change
 float temperature             = 0;    //Don't change
 bool humidityValueChanged     = true; //Don't change
