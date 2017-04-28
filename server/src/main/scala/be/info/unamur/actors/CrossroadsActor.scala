@@ -214,13 +214,15 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
    */
   def openAuxiliary(): Unit = {
     pedestrianCrossingActor ! SetOff()
-    Thread sleep 3000
+    Thread sleep CrossroadsActor.pedestrianCrossingTime*1000
     trafficLightsMainActor ! SetRed()
-    Thread sleep 2000
+    Thread sleep CrossroadsActor.carCrossingTime*1000
     trafficLightsAuxiliaryActor ! SetGreen()
-    Thread sleep 20000
+    auxiliaryCarDetectorActor1 ! GreenLigth()
+    auxiliaryCarDetectorActor2 ! GreenLigth()
+    Thread sleep CrossroadsActor.auxiliaryGreenLightTime*1000
     trafficLightsAuxiliaryActor ! SetRed()
-    Thread sleep 2000
+    Thread sleep CrossroadsActor.carCrossingTime*1000
     trafficLightsMainActor ! SetGreen()
     pedestrianCrossingActor ! SetOn()
 
@@ -268,4 +270,13 @@ object CrossroadsActor {
 
   // The waiting time for Future results. (seconds)
   val waitingTimeForFuture = 5
+
+  // The time that pedestrians need to cross the road. (seconds)
+  val pedestrianCrossingTime = 3
+
+  // The time that cars need to cross the crossroad. (seconds)
+  val carCrossingTime = 2
+
+  // The time that green light stay green for auxiliary. (seconds)
+  val auxiliaryGreenLightTime = 20
 }

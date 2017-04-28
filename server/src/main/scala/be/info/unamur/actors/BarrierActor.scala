@@ -51,6 +51,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
      * Stops the servo motor
      */
     case Stop() =>
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
       sm close()
       sender ! Stopped()
   }
