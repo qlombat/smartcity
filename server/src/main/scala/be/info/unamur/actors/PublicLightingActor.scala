@@ -2,21 +2,23 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
+import akka.actor.Actor
 import be.info.unamur.messages._
 import be.info.unamur.persistence.entities.Sensor
-import be.info.unamur.utils.FailureSpreadingActor
 import be.info.unamur.utils.Times._
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
+
 
 /** Controls the three LEDs that represent the public lighting, connected to the interface kit.
   *
   * @author Noé Picard
   */
-class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, level2Pin: Int, level3Pin: Int) extends FailureSpreadingActor {
+class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, level2Pin: Int, level3Pin: Int) extends Actor {
 
   var lightSensorChangeListener  : SensorChangeListener = _
   var lightSensorChangeListenerDB: SensorChangeListener = _
+  var lastDBUpdate               : Long                 = 0
 
   override def receive: Receive = {
 
@@ -33,8 +35,10 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
 
       this.lightSensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex))
-            Sensor.create("light", ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+          if (index.equals(sensorChangeEvent.getIndex) && (System.currentTimeMillis() - lastDBUpdate > PublicLightingActor.timeBetweenDBUpdate * 1000)) {
+            Sensor.create("light", ik.getSensorValue(index), ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))()
+            lastDBUpdate = System.currentTimeMillis()
+          }
         }
       }
 
@@ -116,4 +120,7 @@ object PublicLightingActor {
   val Level1Value: Int = 190
   val Level2Value: Int = 370
   val Level3Value: Int = 1000
+
+  //Minimum time between two DB updates. (seconds)
+  val timeBetweenDBUpdate: Int = 3
 }

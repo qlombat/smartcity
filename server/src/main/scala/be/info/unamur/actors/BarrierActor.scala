@@ -1,15 +1,16 @@
 package be.info.unamur.actors
 
+import akka.actor.Actor
 import be.info.unamur.messages._
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.{AdvancedServoPhidget, RFIDPhidget}
+
 
 /** Implements the behaviour of the barrier that controls the parking access.
   *
   * @author Noé Picard
   * @author jeremyduchesne
   */
-class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
+class BarrierActor(ik: RFIDPhidget) extends Actor {
 
   val sm = new AdvancedServoPhidget()
 

@@ -1,17 +1,18 @@
 package be.info.unamur
 
-import grizzled.slf4j.Logger
 import org.scalatra.ScalatraServlet
 import org.scalatra.scalate.ScalateSupport
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.language.postfixOps
+
 
 /** The main servlet.
   *
   * @author Noé Picard
   */
 class MainServlet extends ScalatraServlet with ScalateSupport {
-  val logger: Logger = Logger[MainServlet]
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
 
   /* Displays the index page */

@@ -5,11 +5,13 @@ import java.sql.Timestamp
 import be.info.unamur.persistence.entities.Sensor
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
-import org.scalatra.{FutureSupport, ScalatraServlet}
+import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-/**
+
+/** Api endpoint to retrieve sensors information.
+  *
   * @author Noé Picard
   */
 class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureSupport {
@@ -23,18 +25,26 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   }
 
   post("/") {
-    (params.get(SensorsEndpoint.NameParamIdentifier),
-      params.getAs[Double](SensorsEndpoint.ValueParamIdentifier),
-      params.getAs[Double](SensorsEndpoint.GrossValueParamIdentifier)) match {
-      case (Some(name), Some(value), Some(grossValue)) => Sensor.create(name, value, grossValue, new Timestamp(System.currentTimeMillis()))
-      case (_, _, _) => halt(400, "error" -> "Missing parameter(s)")
+    new AsyncResult() {
+      override val is = Future {
+        (params.get(SensorsEndpoint.NameParamIdentifier),
+          params.getAs[Double](SensorsEndpoint.ValueParamIdentifier),
+          params.getAs[Double](SensorsEndpoint.GrossValueParamIdentifier)) match {
+          case (Some(name), Some(value), Some(grossValue)) => Sensor.create(name, value, grossValue, new Timestamp(System.currentTimeMillis()))
+          case (_, _, _) => halt(400, "error" -> "Missing parameter(s)")
+        }
+      }
     }
   }
 
   get("/:name") {
-    Sensor.findLastByName(params("name")) match {
-      case Some(s) => s
-      case None => "error" -> "Sensor not found"
+    new AsyncResult() {
+      override val is = Future {
+        Sensor.findLastByName(params("name")) match {
+          case Some(s) => s
+          case None => halt(400, "error" -> "Sensor not found")
+        }
+      }
     }
   }
 }

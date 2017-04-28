@@ -2,9 +2,9 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
+import akka.actor.Actor
 import be.info.unamur.messages._
 import be.info.unamur.persistence.entities.Sensor
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
 
@@ -14,11 +14,11 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
   * @author Quentin Lombat
   * @author Justin SIRJACQUES
   */
-class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
+class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Actor {
 
-  var sensorChangeListener: SensorChangeListener = _
+  var sensorChangeListener  : SensorChangeListener = _
   var sensorChangeListenerDB: SensorChangeListener = _
-  var lastDBUpdate: Long = 0
+  var lastDBUpdate          : Long                 = 0
 
   override def receive: Receive = {
 

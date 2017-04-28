@@ -2,20 +2,21 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
+import akka.actor.Actor
 import be.info.unamur.messages._
 import be.info.unamur.persistence.entities.Sensor
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
+
 
 /** This actor handles the behaviour of the main road detection sensor. If it detects a car, the CrossroadsActor will handle the LEDs.
   *
   * @author jeremyduchesne
   */
-class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
+class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Actor {
 
   var sensorChangeListenerDB: SensorChangeListener = _
-  var lastDBUpdate: Long = 0
+  var lastDBUpdate          : Long                 = 0
 
   override def receive: Receive = {
 

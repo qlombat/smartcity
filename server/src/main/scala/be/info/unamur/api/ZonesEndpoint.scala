@@ -1,5 +1,7 @@
 package be.info.unamur.api
 
+import java.sql.Timestamp
+
 import be.info.unamur.persistence.entities.Zone
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
@@ -26,8 +28,23 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
   get("/closed") {
     new AsyncResult() {
       override val is = Future {
-        "zones" ->
-          Zone.findAllDistinct().filter(!_.opened).map(_.name)
+        "zones" -> Zone.findAllLast().filter(!_.opened).map(_.name)
+      }
+    }
+  }
+
+  get("/:name/close") {
+    new AsyncResult() {
+      override val is = Future {
+        Zone.create(params("name"), opened = false, new Timestamp(System.currentTimeMillis()))
+      }
+    }
+  }
+
+  get("/:name/open") {
+    new AsyncResult() {
+      override val is = Future {
+        Zone.create(params("name"), opened = true, new Timestamp(System.currentTimeMillis()))
       }
     }
   }

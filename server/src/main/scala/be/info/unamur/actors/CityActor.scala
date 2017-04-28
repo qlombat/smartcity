@@ -1,16 +1,16 @@
 package be.info.unamur.actors
 
-import akka.actor.{ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages.{Initialize, Start, Stop}
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.language.postfixOps
+
 
 /** Master actor that controls the other city sub-actors. It is directly called by the servlet.
   * This actor begins the initialization of all the sub-actors, and stops them when it is needed.
@@ -18,25 +18,27 @@ import scala.language.postfixOps
   * @author jeremyduchesne
   * @author Noé Picard
   */
-class CityActor extends FailureSpreadingActor {
+class CityActor extends Actor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   val ik = new InterfaceKitPhidget()
 
   // The sub-actor that handles the crossroads.
-  val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)), name = "crossroadsActor")
+  val crossroadsActor: ActorRef = context.actorOf(Props(new CrossroadsActor(ik)).withDispatcher("application-dispatcher"), name = "crossroadsActor")
 
   // The sub-actor that handles the parking.
-  val parkingActor: ActorRef = context.actorOf(Props(new ParkingActor()), name = "parkingActor")
+  val parkingActor: ActorRef = context.actorOf(Props(new ParkingActor()).withDispatcher("application-dispatcher"), name = "parkingActor")
 
   // The sub-actor that handles the parking.
-  val publicLightingActor: ActorRef = context.actorOf(Props(new PublicLightingActor(ik, 4, 5, 6, 7)), name = "publicLightningActor")
+  val publicLightingActor: ActorRef = context.actorOf(Props(new PublicLightingActor(ik, 4, 5, 6, 7)).withDispatcher("application-dispatcher"), name = "publicLightningActor")
 
   // To know if the city is already stopped.
   var stopped: Boolean = true
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
+
+  implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
 
   override def receive: Receive = {

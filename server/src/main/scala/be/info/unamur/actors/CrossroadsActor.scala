@@ -1,42 +1,41 @@
 package be.info.unamur.actors
 
-import akka.actor.{ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages._
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import org.joda.time.{DateTime, Seconds}
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.language.postfixOps
+
 
 /** This actor handles the behaviour of the crossroads. It controls all the sub-actors needed by the crossroads.
   *
   * @author jeremyduchesne
   * @author Quentin Lombat
   */
-class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
+class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   // The TrafficLightsActor that handles the two traffic lights of the main road of the model.
-  val trafficLightsMainActor     : ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)), name = "trafficLightsMainActor")
+  val trafficLightsMainActor     : ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)).withDispatcher("application-dispatcher"), name = "trafficLightsMainActor")
   // The TrafficLightsActor that handles the two traffic lights of the auxiliary road of the model.
-  val trafficLightsAuxiliaryActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 2, 3)), name = "trafficLightsAuxiliaryActor")
+  val trafficLightsAuxiliaryActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 2, 3)).withDispatcher("application-dispatcher"), name = "trafficLightsAuxiliaryActor")
 
   // The PedestrianTrafficLightActor that handles the two pedestrian passages located on the auxiliary road of the model.
-  val pedestrianCrossingActor: ActorRef = context.actorOf(Props(new PedestrianTrafficLightActor(ik, 4)), name = "pedestrianCrossingActor")
+  val pedestrianCrossingActor: ActorRef = context.actorOf(Props(new PedestrianTrafficLightActor(ik, 4)).withDispatcher("application-dispatcher"), name = "pedestrianCrossingActor")
 
   // The two MainRoadCarDetectorActors that handle the detection sensors on each side of the main road of the model.
-  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 0)), name = "mainCarDetectorActor1")
-  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)), name = "mainCarDetectorActor2")
+  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 0)).withDispatcher("application-dispatcher"), name = "mainCarDetectorActor1")
+  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)).withDispatcher("application-dispatcher"), name = "mainCarDetectorActor2")
 
   // The two AuxiliaryCarDetectorActors that handle the detection sensors on each side of the auxiliary road of the model.
-  val auxiliaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)), name = "auxiliaryCarDetectorActor1")
-  val auxiliaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)), name = "auxiliaryCarDetectorActor2")
+  val auxiliaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActor1")
+  val auxiliaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActor2")
 
   // The two PedestrianTouchActors that handle the touch sensors on each side of the auxiliary road of the model.
   //val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 6)), name = "pedestrianTouchDetectorActor1")
@@ -57,6 +56,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
   //the last time the Pedestrian Message has been received.
   var lastPedestrianMessage: DateTime = _
 
+  implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
   override def receive: Receive = {
 
@@ -214,15 +214,15 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends FailureSpreadingActor {
    */
   def openAuxiliary(): Unit = {
     pedestrianCrossingActor ! SetOff()
-    Thread sleep CrossroadsActor.pedestrianCrossingTime*1000
+    Thread sleep CrossroadsActor.pedestrianCrossingTime * 1000
     trafficLightsMainActor ! SetRed()
-    Thread sleep CrossroadsActor.carCrossingTime*1000
+    Thread sleep CrossroadsActor.carCrossingTime * 1000
     trafficLightsAuxiliaryActor ! SetGreen()
     auxiliaryCarDetectorActor1 ! GreenLigth()
     auxiliaryCarDetectorActor2 ! GreenLigth()
-    Thread sleep CrossroadsActor.auxiliaryGreenLightTime*1000
+    Thread sleep CrossroadsActor.auxiliaryGreenLightTime * 1000
     trafficLightsAuxiliaryActor ! SetRed()
-    Thread sleep CrossroadsActor.carCrossingTime*1000
+    Thread sleep CrossroadsActor.carCrossingTime * 1000
     trafficLightsMainActor ! SetGreen()
     pedestrianCrossingActor ! SetOn()
 

@@ -1,16 +1,17 @@
 package be.info.unamur.actors
 
+import akka.actor.Actor
 import be.info.unamur.messages._
-import be.info.unamur.utils.FailureSpreadingActor
 import be.info.unamur.utils.Times._
 import com.phidgets.InterfaceKitPhidget
+
 
 /** This actor handles the behaviour of the traffic lights.
   *
   * @author jeremyduchesne
   * @author Noé Picard
   */
-class TrafficLightsActor(ik: InterfaceKitPhidget, redPin: Int, greenPin: Int) extends FailureSpreadingActor {
+class TrafficLightsActor(ik: InterfaceKitPhidget, redPin: Int, greenPin: Int) extends Actor {
 
   // The green LED.
   val lightRedPin  : Int = redPin
