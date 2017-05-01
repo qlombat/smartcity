@@ -40,7 +40,7 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   get("/:name") {
     new AsyncResult() {
       override val is = Future {
-        Sensor.findLastByName(params("name")) match {
+        Sensor.findLastByName(params(SensorsEndpoint.NameParamIdentifier)) match {
           case Some(s) => s
           case None => halt(400, "error" -> "Sensor not found")
         }

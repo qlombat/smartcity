@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
 <%@ var body: String %>
+<%@ var styles: List[String] = List() %>
+<%@ var scripts: List[String]= List() %>
 <%@ var title: String = "SmartCity" %>
-<%@ var customScriptPath : String %>
 
 <html>
 
@@ -11,6 +12,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
+<link rel="shortcut icon" href="${uri("/resources/img/smartcity-favicon.ico")}" />
 <!-- Bootstrap Core CSS -->
 <link href="${uri("/resources/vendor/bootstrap/css/bootstrap.min.css")}" rel="stylesheet">
 <!-- MetisMenu CSS -->
@@ -21,8 +23,14 @@
 <link href="${uri("/resources/vendor/morrisjs/morris.css") }" rel="stylesheet">
 <!-- Custom Fonts -->
 <link href="${uri("/resources/vendor/font-awesome/css/font-awesome.css") }" rel="stylesheet" type="text/css">
-</head>
 
+<!-- Custom styles-->
+<% styles.foreach((style: String) => {
+    val url = uri(style)
+    unescape(s"""<link rel="stylesheet" type="text/css" href="$url" />""" + "\n")
+}) %>
+
+</head>
 
 <body>
     <div id="wrapper">
@@ -36,14 +44,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">${title}</a>
+            <a class="navbar-brand" href="#"><i class="fa fa-map-o fa-fw"></i> ${title}</a>
         </div><!-- /.navbar-header -->
 
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
                     <li>
-                        <a href=""><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        <a href="${uri("/")}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="#sensors"><i class="fa fa-bar-chart-o fa-fw"></i> Sensors<span class="fa arrow"></span></a>
@@ -70,6 +78,9 @@
                         </li>
                         </ul><!-- /.nav-second-level -->
                     </li>
+                    <li>
+                        <a href="${uri("/api/doc")}"><i class="fa fa-file fa-fw"></i> API Documentation</a>
+                    </li>
                 </ul>
             </div><!-- /.sidebar-collapse -->
         </div><!-- /.navbar-static-side -->
@@ -93,7 +104,13 @@
     <script src="${uri("/resources/vendor/metisMenu/metisMenu.min.js")}"></script>
     <!-- Custom Theme JavaScript -->
     <script src="${uri("/resources/js/sb-admin-2.js")}"></script>
-    <!-- Custom script-->
-    <script type="text/javascript" src="${uri(customScriptPath)}"></script>
+
+    <!-- Custom scripts-->
+<% scripts.foreach((script: String) => {
+    val url = uri(script)
+    unescape(s"""<script type="text/javascript" src="$url"></script>""" + "\n")
+}) %>
+
 </body>
+
 </html>
