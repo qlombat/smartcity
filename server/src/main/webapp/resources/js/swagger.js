@@ -1,7 +1,7 @@
 window.onload = function () {
     // Build a system
     const ui = SwaggerUIBundle({
-        url: window.location.href + ".json",
+        url: window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + window.location.pathname + ".json",
         dom_id: '#swagger-ui',
         presets: [
             SwaggerUIBundle.presets.apis,

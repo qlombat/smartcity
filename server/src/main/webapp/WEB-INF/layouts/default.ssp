@@ -12,7 +12,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
-<link rel="shortcut icon" href="${uri("/resources/img/smartcity-favicon.ico")}" />
+<link rel="shortcut icon" href="${uri("/resources/img/favicon.ico")}">
 <!-- Bootstrap Core CSS -->
 <link href="${uri("/resources/vendor/bootstrap/css/bootstrap.min.css")}" rel="stylesheet">
 <!-- MetisMenu CSS -->
@@ -20,9 +20,11 @@
 <!-- Custom CSS -->
 <link href="${uri("/resources/css/sb-admin-2.css")}" rel="stylesheet">
 <!-- Morris Charts CSS -->
-<link href="${uri("/resources/vendor/morrisjs/morris.css") }" rel="stylesheet">
+<link href="${uri("/resources/vendor/morrisjs/morris.css")}" rel="stylesheet">
 <!-- Custom Fonts -->
-<link href="${uri("/resources/vendor/font-awesome/css/font-awesome.css") }" rel="stylesheet" type="text/css">
+<link href="${uri("/resources/vendor/font-awesome/css/font-awesome.css")}" rel="stylesheet" type="text/css">
+
+<link href="${uri("/resources/css/main.css")}" rel="stylesheet" type="text/css">
 
 <!-- Custom styles-->
 <% styles.foreach((style: String) => {
@@ -44,7 +46,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><i class="fa fa-map-o fa-fw"></i> ${title}</a>
+            <a class="navbar-brand" href="#"><i id="favicon" class="fa fa-connectdevelop fa-fw"></i> ${title}</a>
         </div><!-- /.navbar-header -->
 
         <div class="navbar-default sidebar" role="navigation">
@@ -79,7 +81,7 @@
                         </ul><!-- /.nav-second-level -->
                     </li>
                     <li>
-                        <a href="${uri("/api/doc")}"><i class="fa fa-file fa-fw"></i> API Documentation</a>
+                        <a href="${uri("/api/doc")}"><i class="fa fa-code fa-fw"></i> API Documentation</a>
                     </li>
                 </ul>
             </div><!-- /.sidebar-collapse -->
