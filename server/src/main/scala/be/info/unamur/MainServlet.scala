@@ -37,4 +37,10 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
     contentType = "application/json"
     servletContext.getResourceAsStream("/WEB-INF/api-doc.json")
   }
+
+  get("/chart/test") {
+    contentType = "text/html"
+    layoutTemplate("/WEB-INF/views/chart-test.ssp", ("styles", Nil), ("scripts",List("/resources/js/chart.bundle.min.js",
+    "/resources/js/chart.js") ))
+  }
 }

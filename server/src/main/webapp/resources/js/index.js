@@ -6,7 +6,6 @@
  */
 $(document).ready(function () {
     function updateSensors(){
-        console.log("coucou");
         $.getJSON("http://192.168.3.1:8080/smartcity/api/sensors/temperature", function (data) {
             if(typeof data.value === 'undefined'){
                 $("#temp-value").text("Unavailable");

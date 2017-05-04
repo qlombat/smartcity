@@ -6,8 +6,8 @@ import be.info.unamur.persistence.entities.Sensor
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
-
 import scala.concurrent.{ExecutionContext, Future}
+import scalikejdbc._
 
 
 /** Api endpoint to retrieve sensors information.
@@ -43,6 +43,17 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
         Sensor.findLastByName(params(SensorsEndpoint.NameParamIdentifier)) match {
           case Some(s) => s
           case None => halt(400, "error" -> "Sensor not found")
+        }
+      }
+    }
+  }
+
+  get("/all/:name") {
+    new AsyncResult() {
+      override val is = Future {
+        Sensor.findAllBy(sqls"name = ${params(SensorsEndpoint.NameParamIdentifier)}") match {
+          case Nil => halt(400, "error" -> "Sensor not found")
+          case s => s
         }
       }
     }
