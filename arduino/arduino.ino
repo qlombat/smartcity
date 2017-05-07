@@ -30,17 +30,19 @@ DHT_Unified dht(DHTPIN, DHTTYPE);     //Don't change
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 //Zones configuration
-char* zones[7] = {"NO", "NE", "N", "SO", "SE", "S", "BUS"}; //Zone managed by this arduino
+char* zones[9] = {"NW", "NE", "N", "SW", "SE", "S", "BUS", "MainRoadWest", "MainRoadEast"}; //Zone managed by this arduino
 
 //Pin to open foreach zone
-int pinLed[7][3] = {
-  {1, -1, -1},    //NO
+int pinLed[9][3] = {
+  {1, -1, -1},    //NW
   {2, -1, -1},    //NE
   {1, 2, 3},      //N
-  {5, -1, -1},    //SO
+  {5, -1, -1},    //SW
   {6, -1, -1},    //SE
   {4, 5, 6},      //S
   {7, -1, -1},    //BUS
+  {A6, -1, -1},    //MainRoadWest
+  {0, -1, -1},    //MainRoadEast
 };
 
 //API configuration
@@ -60,7 +62,10 @@ const unsigned long BAUD_RATE = 9600;
 void setup() {
   initSerial();
   initLCD();
-  initWifi();
+
+  initLed();
+  ConnectToWifiIfNecessary();
+  printWiFiStatus();
   initLed();
 
 }
@@ -71,6 +76,7 @@ void loop() {
 
   Serial.println();
   Serial.println("Get zones closed");
+  ConnectToWifiIfNecessary();
   if (connect(server, defaultPort)) {
     if (getRequest(server, pathGetZones) && skipResponseHeaders()) {
       readReponseContentForZone();
@@ -80,6 +86,7 @@ void loop() {
 
   Serial.println();
   Serial.println("Post humidity");
+  ConnectToWifiIfNecessary();
   if (connect(server, defaultPort)) {
     if (postHumidity(server, pathPostHumidity)) {
       client.flush();
@@ -89,6 +96,7 @@ void loop() {
 
   Serial.println();
   Serial.println("Post temperature");
+  ConnectToWifiIfNecessary();
   if (connect(server, defaultPort)) {
     if (postTemperature(server, pathPostTemperature)) {
       client.flush();
@@ -152,7 +160,7 @@ void initLed() {
   delay(1000);
 }
 
-void initWifi() {
+void ConnectToWifiIfNecessary() {
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");
@@ -177,8 +185,6 @@ void initWifi() {
     // wait 10 seconds for connection:
     delay(10000);
   }
-  // you're connected now, so print out the status:
-  printWiFiStatus();
 }
 
 void printWiFiStatus() {
@@ -301,7 +307,6 @@ bool skipResponseHeaders() {
 
   return ok;
 }
-
 
 bool readReponseContentForZone() {
   Serial.println("readReponseContentForZone");
