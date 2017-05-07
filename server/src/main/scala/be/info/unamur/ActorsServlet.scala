@@ -5,26 +5,26 @@ import akka.pattern.ask
 import akka.util.Timeout
 import be.info.unamur.actors.CityActor
 import be.info.unamur.messages.{Initialize, Stop}
-import grizzled.slf4j.Logger
 import org.scalatra.ScalatraServlet
 import org.scalatra.scalate.ScalateSupport
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
 
+
 /** Controls the actors system, for now it just serves to initialize/stop the actors and displays
   * the index page.
   *
   * @author Noé Picard
-  * @param system the actor system
   */
 class ActorsServlet(system: ActorSystem) extends ScalatraServlet with ScalateSupport {
-  val logger: Logger = Logger[ActorsServlet]
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
   // The master actor (normally, other actors will be children of this one)
-  val cityActor: ActorRef = system.actorOf(Props[CityActor], name = "cityActor")
+  val cityActor: ActorRef = system.actorOf(Props[CityActor].withDispatcher("application-dispatcher"), name = "cityActor")
 
   // Timeout for the ask messages to actors
   implicit val timeout = Timeout(10 seconds)

@@ -1,15 +1,16 @@
 package be.info.unamur.actors
 
+import akka.actor.Actor
 import be.info.unamur.messages._
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.{AdvancedServoPhidget, RFIDPhidget}
+
 
 /** Implements the behaviour of the barrier that controls the parking access.
   *
   * @author Noé Picard
   * @author jeremyduchesne
   */
-class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
+class BarrierActor(ik: RFIDPhidget) extends Actor {
 
   val sm = new AdvancedServoPhidget()
 
@@ -18,7 +19,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
      * Initializes a basic situation. The barrier is closed by default.
      */
     case Initialize() =>
-      sm open 305869
+      sm open BarrierActor.MotorPhidgetId
       sm waitForAttachment()
 
       sm setServoType(BarrierActor.MotorIndex, AdvancedServoPhidget.PHIDGET_SERVO_HITEC_HS422)
@@ -36,6 +37,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
       sm setEngaged(BarrierActor.MotorIndex, true)
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
 
+
     /*
      *  Waits 5 seconds after the loss of the signal and closes the barrier.
      */
@@ -43,11 +45,14 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
       sm setEngaged(BarrierActor.MotorIndex, true)
       Thread sleep BarrierActor.WaitingTime
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
+      sender ! Closed()
+
 
     /*
      * Stops the servo motor
      */
     case Stop() =>
+      sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
       sm close()
       sender ! Stopped()
   }
@@ -59,6 +64,7 @@ class BarrierActor(ik: RFIDPhidget) extends FailureSpreadingActor {
   */
 object BarrierActor {
   /* Constants */
+  val MotorPhidgetId: Int = 305869
   val MotorIndex    : Int = 0
   val OpenedPosition: Int = 0
   val ClosedPosition: Int = 66

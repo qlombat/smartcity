@@ -5,7 +5,8 @@ import java.sql.Timestamp
 import scalikejdbc._
 
 
-/**
+/** Sensor entity that represents the 'sensors' table in the database.
+  *
   * @author Noé Picard
   */
 case class Sensor(id: Long,
@@ -14,6 +15,11 @@ case class Sensor(id: Long,
                   grossValue: Double,
                   createdAt: Timestamp)
 
+/**
+  * Sensor DAO to query the 'sensors' table in the database.
+  *
+  * @author Noé Picard
+  */
 object Sensor extends SQLSyntaxSupport[Sensor] {
   override val tableName   = "sensors"
   override val columns     = Seq("id", "name", "value", "gross_value", "created_at")
@@ -32,7 +38,7 @@ object Sensor extends SQLSyntaxSupport[Sensor] {
   def find(id: Long)(implicit session: DBSession = autoSession): Option[Sensor] = {
     withSQL {
       select.from(Sensor as sensor).where.eq(sensor.id, id)
-    }.map(Sensor(sensor.resultName)).single.apply()
+    }.map(Sensor(sensor.resultName)).first.apply()
   }
 
   def findAll()(implicit session: DBSession = autoSession): List[Sensor] = {
@@ -58,7 +64,7 @@ object Sensor extends SQLSyntaxSupport[Sensor] {
         SELECT MAX(sensor_tmp.created_at)
         FROM sensors sensor_tmp
         WHERE sensor_tmp.name = ${sensor.name}
-    )""".map(Sensor(sensor.resultName)).single.apply()
+    )""".map(Sensor(sensor.resultName)).first.apply()
   }
 
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {

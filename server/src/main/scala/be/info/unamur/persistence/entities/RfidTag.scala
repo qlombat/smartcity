@@ -4,17 +4,24 @@ import java.sql.Timestamp
 
 import scalikejdbc._
 
-/**
-  * Created by Justin SIRJACQUES on 24-04-17.
+
+/** RfidTag entity that represents the 'rfidtag' table in the database.
+  *
+  * @author Justin Sirjacques
   */
 case class RfidTag(id: Long,
                    name: String,
                    tag: String,
                    createdAt: Timestamp)
 
+/**
+  * RfidTag DAO to query the 'rfidtag' table in the database.
+  *
+  * @author Justin Sirjacques
+  */
 object RfidTag extends SQLSyntaxSupport[RfidTag] {
-  override val tableName = "rfidtag"
-  override val columns = Seq("id", "name", "tag", "created_at")
+  override val tableName   = "rfidtag"
+  override val columns     = Seq("id", "name", "tag", "created_at")
   override val autoSession = AutoSession
   val rfidtag: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[RfidTag], RfidTag] = RfidTag.syntax("r")
 

@@ -4,7 +4,9 @@ import java.sql.Timestamp
 
 import scalikejdbc._
 
-/**
+
+/** Zone entity that represents the 'zones' table in the database.
+  *
   * @author Noé Picard
   */
 case class Zone(id: Long,
@@ -12,6 +14,11 @@ case class Zone(id: Long,
                 opened: Boolean,
                 createdAt: Timestamp)
 
+/**
+  * Zone DAO to query the 'zones' table in the database.
+  *
+  * @author Noé Picard
+  */
 object Zone extends SQLSyntaxSupport[Zone] {
   override val tableName   = "zones"
   override val columns     = Seq("id", "name", "opened", "created_at")
@@ -26,18 +33,23 @@ object Zone extends SQLSyntaxSupport[Zone] {
     createdAt = rs.timestamp(z.createdAt)
   )
 
-
   def find(id: Long)(implicit session: DBSession = autoSession): Option[Zone] = {
     withSQL {
       select.from(Zone as zone).where.eq(zone.id, id)
-    }.map(Zone(zone.resultName)).single.apply()
+    }.map(Zone(zone.resultName)).first.apply()
+  }
+
+  def findByName(name: String)(implicit session: DBSession = autoSession): Option[Zone] = {
+    withSQL {
+      select.from(Zone as zone).where.eq(zone.name, name)
+    }.map(Zone(zone.resultName)).first.apply()
   }
 
   def findAll()(implicit session: DBSession = autoSession): List[Zone] = {
     withSQL(select.from(Zone as zone)).map(Zone(zone.resultName)).list.apply()
   }
 
-  def findAllDistinct()(implicit session: DBSession = autoSession): List[Zone] = {
+  def findAllLast()(implicit session: DBSession = autoSession): List[Zone] = {
     sql"""
     SELECT ${zone.result.*}
     FROM ${Zone.as(zone)}

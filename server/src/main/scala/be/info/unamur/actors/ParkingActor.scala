@@ -2,50 +2,42 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
-import akka.actor.{ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages._
-import be.info.unamur.persistence.entities.{RfidTag}
-import be.info.unamur.utils.FailureSpreadingActor
+import be.info.unamur.persistence.entities.RfidTag
 import com.phidgets.RFIDPhidget
-import com.phidgets.event.{TagGainEvent, TagGainListener, TagLossEvent, TagLossListener}
+import com.phidgets.event._
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.language.postfixOps
+
 
 /** Implements the behaviour of the parking. Uses the RFID tag reader to pilot the barrier.
   *
   * @author Noé Picard
   * @author jeremyduchesne
   */
-class ParkingActor extends FailureSpreadingActor {
+class ParkingActor extends Actor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
+
+  var tagGainListener: TagGainListener = _
+
+  var tagLossListener: TagLossListener = _
+
 
   val rfid = new RFIDPhidget()
 
   // The BarrierActor that handles the RFID.
-  val barrierActor: ActorRef = context.actorOf(Props(new BarrierActor(rfid)), name = "barrierActor")
-
-  // Sends the "open barrier" message when a RFID tag is read.
-  val tagGainListener = new TagGainListener {
-    override def tagGained(tagGainEvent: TagGainEvent): Unit = {
-      RfidTag.create(context.self.path.name, rfid.getLastTag, new Timestamp(System.currentTimeMillis()))
-      barrierActor ! OpenBarrier()
-    }
-  }
-
-  // Sends the "close barrier" message when a RFID tag is lost.
-  val tagLostListener = new TagLossListener {
-    override def tagLost(tagLossEvent: TagLossEvent): Unit = {
-      barrierActor ! CloseBarrier()
-    }
-  }
+  val barrierActor: ActorRef = context.actorOf(Props(new BarrierActor(rfid)).withDispatcher("application-dispatcher"), name = "barrierActor")
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
+
+  implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
 
   override def receive: Receive = {
@@ -54,7 +46,7 @@ class ParkingActor extends FailureSpreadingActor {
      * Initializes the RFID listeners and the BarrierActor
      */
     case Initialize() =>
-      rfid open 384608
+      rfid open ParkingActor.RfidPhidgetId
       rfid waitForAttachment()
 
       val initBarrierActor = barrierActor ? Initialize()
@@ -63,12 +55,36 @@ class ParkingActor extends FailureSpreadingActor {
         resultInitBarrierActor <- initBarrierActor
       } yield resultInitBarrierActor
 
+      // Sends the "open barrier" message when a RFID tag is read.
+      this.tagGainListener = new TagGainListener {
+        override def tagGained(tagGainEvent: TagGainEvent): Unit = {
+          rfid removeTagGainListener ParkingActor.this.tagGainListener
+          rfid addTagLossListener ParkingActor.this.tagLossListener
+          barrierActor ! OpenBarrier()
+          RfidTag.create(context.self.path.name, tagGainEvent.getValue, new Timestamp(System.currentTimeMillis()))
+        }
+      }
+
+      // Sends the "close barrier" message when a RFID tag is lost.
+      this.tagLossListener = new TagLossListener {
+        override def tagLost(tagLossEvent: TagLossEvent): Unit = {
+          barrierActor ! CloseBarrier()
+          rfid removeTagLossListener ParkingActor.this.tagLossListener
+        }
+      }
+
       results pipeTo sender
 
-    case Start()=>
+
+    case Closed() =>
+      rfid addTagGainListener this.tagGainListener
+
+
+    case Start() =>
       rfid setAntennaOn true
       rfid addTagGainListener this.tagGainListener
-      rfid addTagLossListener this.tagLostListener
+      rfid removeTagLossListener this.tagLossListener
+
 
     /*
      * Stops the BarrierActor.
@@ -82,5 +98,15 @@ class ParkingActor extends FailureSpreadingActor {
 
       results pipeTo sender
 
+
   }
+}
+
+/** Companion object for the AuxiliaryCarDetectorActor
+  *
+  * @author Justin SIRJACQUES
+  */
+object ParkingActor {
+  /* Constants */
+  val RfidPhidgetId: Int = 384608
 }

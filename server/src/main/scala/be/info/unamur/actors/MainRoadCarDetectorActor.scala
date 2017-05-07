@@ -2,41 +2,32 @@ package be.info.unamur.actors
 
 import java.sql.Timestamp
 
+import akka.actor.Actor
 import be.info.unamur.messages._
 import be.info.unamur.persistence.entities.Sensor
-import be.info.unamur.utils.FailureSpreadingActor
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
+
 
 /** This actor handles the behaviour of the main road detection sensor. If it detects a car, the CrossroadsActor will handle the LEDs.
   *
   * @author jeremyduchesne
   */
-class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends FailureSpreadingActor {
+class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Actor {
 
-  var sensorChangeListener: SensorChangeListener = _
   var sensorChangeListenerDB: SensorChangeListener = _
+  var lastDBUpdate          : Long                 = 0
 
   override def receive: Receive = {
 
-    /*
-     * Initializes the listener.
-     */
     case Initialize() =>
-      this.sensorChangeListener = new SensorChangeListener {
-        override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          //if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) > MainRoadCarDetectorActor.valueCarDetection)
-          //context.parent ! OpenAuxiliary()
-        }
-      }
 
       this.sensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex)) {
-            if (ik.getSensorValue(sensorChangeEvent.getIndex) > AuxiliaryCarDetectorActor.valueCarDetection) {
+            if ((ik.getSensorValue(sensorChangeEvent.getIndex) > MainRoadCarDetectorActor.valueCarDetection) && (System.currentTimeMillis() - lastDBUpdate > MainRoadCarDetectorActor.timeBetweenCarDectection * 1000)) {
               Sensor.create(context.self.path.name, 1, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
-            } else {
-              Sensor.create(context.self.path.name, 0, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+              lastDBUpdate = System.currentTimeMillis()
             }
           }
         }
@@ -50,8 +41,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
      * Adds the listener to the interface kit.
      */
     case Start() =>
-      ik addSensorChangeListener this.sensorChangeListener
-     // ik addSensorChangeListener this.sensorChangeListenerDB
+      ik addSensorChangeListener sensorChangeListenerDB
 
     /*
      * Checks if there is a car on the street.
@@ -65,7 +55,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
      * Removes the listener from the interface kit.
      */
     case Stop() =>
-      ik removeSensorChangeListener this.sensorChangeListener
+      ik removeSensorChangeListener sensorChangeListenerDB
       sender ! Stopped()
   }
 }
@@ -76,6 +66,13 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Fail
   */
 object MainRoadCarDetectorActor {
   /* Constants */
-  val valueCarDetection: Int = 500
-  val trigger: Int = 100
+
+  //Under this value, there isn't any car. Upper, a car is present
+  val valueCarDetection: Int = 600
+
+  //Trigger for the listener
+  val trigger: Int = 300
+
+  //Minimum time between two car detections. (seconds)
+  val timeBetweenCarDectection: Int = 3
 }

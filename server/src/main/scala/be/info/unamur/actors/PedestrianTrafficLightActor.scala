@@ -1,16 +1,17 @@
 package be.info.unamur.actors
 
+import akka.actor.Actor
 import be.info.unamur.messages._
-import be.info.unamur.utils.FailureSpreadingActor
 import be.info.unamur.utils.Times._
 import com.phidgets.InterfaceKitPhidget
+
 
 /** This actor handles the behaviour of the pedestrian traffic lights. When the Yellow LED is opened, they can pass. Otherwise, they can not.
   *
   * @author Justin Sirjacques
   * @author Noé Picard
   */
-class PedestrianTrafficLightActor(ik: InterfaceKitPhidget, yellowPin: Int) extends FailureSpreadingActor {
+class PedestrianTrafficLightActor(ik: InterfaceKitPhidget, yellowPin: Int) extends Actor {
 
   val lightYellowPin: Int = yellowPin
 
