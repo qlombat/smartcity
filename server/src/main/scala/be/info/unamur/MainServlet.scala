@@ -54,4 +54,11 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
       ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js",
         "/resources/js/chart.js")))
   }
+
+  get("/charts/zones") {
+    layoutTemplate("/WEB-INF/views/charts/zones-charts.ssp",
+      ("styles", Nil),
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js",
+        "/resources/js/charts/zones-charts.js")))
+  }
 }
