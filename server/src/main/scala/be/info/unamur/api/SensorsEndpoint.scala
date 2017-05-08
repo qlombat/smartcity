@@ -51,17 +51,45 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   get("/all/:name") {
     new AsyncResult() {
       override val is = Future {
-        Sensor.findAllBy(sqls"name = ${params(SensorsEndpoint.NameParamIdentifier)}") match {
-          case Nil => halt(400, "error" -> "Sensor not found")
-          case s => s
+        params get (SensorsEndpoint.TimeParamIdentifier) match {
+          case Some(time) => getSensorsData(params(SensorsEndpoint.NameParamIdentifier), time) match {
+            case Nil => halt(400, "error" -> "No data for this sensor or this time")
+            case s => params get (SensorsEndpoint.CountParamIdentifier) match {
+              case Some("true") => "size" -> s.length
+              case _ => s
+            }
+          }
+          case _ => halt(400, "error" -> "Bad time : please use : 'hour' or 'day' or 'month'")
+
         }
       }
+    }
+  }
+
+
+  def getSensorsData(sensor : String, time: String):List[Sensor]={
+    val currentTime = System.currentTimeMillis()
+    val currentTimeHour = new Timestamp(currentTime - SensorsEndpoint.HourInMillis)
+    val currentTimeDay = new Timestamp(currentTime - SensorsEndpoint.DayInMillis)
+    val currentTimeMonth = new Timestamp(currentTime - SensorsEndpoint.MonthInMillis)
+    time match {
+      case "hour" => Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${currentTimeHour}")
+      case "day" => Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${currentTimeDay}")
+      case "month" => Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${currentTimeMonth}")
+      case "all" => Sensor.findAllBy(sqls"name = ${sensor}")
+
     }
   }
 }
 
 object SensorsEndpoint {
-  val NameParamIdentifier       = "name"
-  val ValueParamIdentifier      = "value"
+  val NameParamIdentifier = "name"
+  val CountParamIdentifier = "count"
+  val ValueParamIdentifier = "value"
+  val TimeParamIdentifier = "time"
   val GrossValueParamIdentifier = "gross_value"
+  val HourInMillis = 3600000
+  val DayInMillis = 86400000
+  val MonthInMillis = 2678400000L
+
 }

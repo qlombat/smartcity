@@ -48,11 +48,11 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
       body = servletContext.getResourceAsStream("/WEB-INF/api-doc.json"))
   }
 
-  get("/chart/test") {
-    layoutTemplate("/WEB-INF/views/chart-test.ssp",
-      ("styles", Nil),
-      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js",
-        "/resources/js/chart.js")))
+  get("/charts/presence") {
+    layoutTemplate("/WEB-INF/views/charts/presence-charts.ssp",
+      ("styles", List("/resources/css/presence-chart.css")),
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/presence-charts/chart-utils.js",
+        "/resources/js/presence-charts/all-bar-chart.js", "/resources/js/presence-charts/all-doughnut-chart.js")))
   }
 
   get("/charts/zones") {
