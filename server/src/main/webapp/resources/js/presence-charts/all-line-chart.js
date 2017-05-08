@@ -1,6 +1,48 @@
 /**
  * Created by jsirjacq on 8/05/17.
  */
+
+$("#btn-evolution-day").on("click", function () {
+    timeLapsLine = "day";
+    updateEvolutionValues(timeLapsLine, periods);
+    $(this).parent(".btn-group").find(".active").toggleClass("active");
+    $(this).toggleClass('active');
+});
+
+$("#btn-evolution-hour").on("click", function () {
+    timeLapsLine = "hour";
+    updateEvolutionValues(timeLapsLine, periods);
+    $(this).parent(".btn-group").find(".active").toggleClass("active");
+    $(this).toggleClass('active');
+});
+
+$("#btn-evolution-month").on("click", function () {
+    timeLapsLine = "month";
+    updateEvolutionValues(timeLapsLine, periods);
+    $(this).parent(".btn-group").find(".active").toggleClass("active");
+    $(this).toggleClass('active');
+});
+
+$("#btn-evolution-5").on("click", function () {
+    periods = "5";
+    updateEvolutionValues(timeLapsLine, periods);
+});
+
+$("#btn-evolution-10").on("click", function () {
+    periods = "10";
+    updateEvolutionValues(timeLapsLine, periods);
+});
+
+$("#btn-evolution-20").on("click", function () {
+    periods = "20";
+    updateEvolutionValues(timeLapsLine, periods);
+});
+
+$("#btn-evolution-50").on("click", function () {
+    periods = "50";
+    updateEvolutionValues(timeLapsLine, periods);
+});
+
 var ctx = document.getElementById("line-chart");
 var lineChart = new Chart(ctx, {
     type: 'line',
@@ -40,6 +82,6 @@ var lineChart = new Chart(ctx, {
     },
     options: {}
 });
-var timeLapsLine = "day";
+var timeLapsLine = "hour";
 var periods = "10";
 updateEvolutionValues(timeLapsLine, periods);

@@ -44,15 +44,14 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a>5 periods</a></li>
-                    <li><a>10 periods</a></li>
-                    <li><a>20 periods</a></li>
-                    <li><a>50 periods</a></li>
+                    <li><a id="btn-evolution-5">5 periods</a></li>
+                    <li><a id="btn-evolution-10">10 periods</a></li>
+                    <li><a id="btn-evolution-20">20 periods</a></li>
+                    <li><a id="btn-evolution-50">50 periods</a></li>
                 </ul>
             </div>
 
             <div class="btn-group pull-right">
-                <a id="btn-evolution-all" class="btn btn-default btn-sm">All time</a>
                 <a id="btn-evolution-month" class="btn btn-default btn-sm">Last month</a>
                 <a id="btn-evolution-day" class="btn btn-default btn-sm">Last day</a>
                 <a id="btn-evolution-hour" class="btn btn-default btn-sm">Last hour</a>

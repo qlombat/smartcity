@@ -6,9 +6,10 @@ import be.info.unamur.persistence.entities.Sensor
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
+
 import scala.concurrent.{ExecutionContext, Future}
 import scalikejdbc._
-import org.json4s.JsonDSL._
+import java.util.{Calendar, Date}
 
 /** Api endpoint to retrieve sensors information.
   *
@@ -145,19 +146,23 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   }
 
   def convertIntToDay(time: Timestamp): String = {
+
+    val cal = Calendar.getInstance
+    cal.setTime(new Date(time.getTime))
+    val day: Int = cal.get(Calendar.DAY_OF_MONTH)
     time.getMonth match {
-      case 0 => time.getDay.toString.concat(" January ").concat("20").concat(time.getYear().toString.substring(1))
-      case 1 => time.getDay.toString.concat(" February ").concat("20").concat(time.getYear().toString.substring(1))
-      case 2 => time.getDay.toString.concat(" March ").concat("20").concat(time.getYear().toString.substring(1))
-      case 3 => time.getDay.toString.concat(" April ").concat("20").concat(time.getYear().toString.substring(1))
-      case 4 => time.getDay.toString.concat(" May ").concat("20").concat(time.getYear().toString.substring(1))
-      case 5 => time.getDay.toString.concat(" June ").concat("20").concat(time.getYear().toString.substring(1))
-      case 6 => time.getDay.toString.concat(" July ").concat("20").concat(time.getYear().toString.substring(1))
-      case 7 => time.getDay.toString.concat(" August ").concat("20").concat(time.getYear().toString.substring(1))
-      case 8 => time.getDay.toString.concat(" September ").concat("20").concat(time.getYear().toString.substring(1))
-      case 9 => time.getDay.toString.concat(" October ").concat("20").concat(time.getYear().toString.substring(1))
-      case 10 => time.getDay.toString.concat(" November ").concat("20").concat(time.getYear().toString.substring(1))
-      case 11 => time.getDay.toString.concat(" December ").concat("20").concat(time.getYear().toString.substring(1))
+      case 0 => day.toString.concat(" January ").concat("20").concat(time.getYear().toString.substring(1))
+      case 1 => day.toString.concat(" February ").concat("20").concat(time.getYear().toString.substring(1))
+      case 2 => day.toString.concat(" March ").concat("20").concat(time.getYear().toString.substring(1))
+      case 3 => day.toString.concat(" April ").concat("20").concat(time.getYear().toString.substring(1))
+      case 4 => day.toString.concat(" May ").concat("20").concat(time.getYear().toString.substring(1))
+      case 5 => day.toString.concat(" June ").concat("20").concat(time.getYear().toString.substring(1))
+      case 6 => day.toString.concat(" July ").concat("20").concat(time.getYear().toString.substring(1))
+      case 7 => day.toString.concat(" August ").concat("20").concat(time.getYear().toString.substring(1))
+      case 8 => day.toString.concat(" September ").concat("20").concat(time.getYear().toString.substring(1))
+      case 9 => day.toString.concat(" October ").concat("20").concat(time.getYear().toString.substring(1))
+      case 10 => day.toString.concat(" November ").concat("20").concat(time.getYear().toString.substring(1))
+      case 11 => day.toString.concat(" December ").concat("20").concat(time.getYear().toString.substring(1))
     }
   }
 

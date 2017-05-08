@@ -2,7 +2,7 @@
  * Created by jsirjacq on 8/05/17.
  */
 function getSensorValue(sensor, index, time, chartToUpdate) {
-    $.getJSON("http://localhost:8080/api/sensors/all/".concat(sensor).concat("?count=true").concat("&time=").concat(time), function (data) {
+    $.getJSON("http://192.168.3.1:8080/smartcity/api/sensors/all/".concat(sensor).concat("?count=true").concat("&time=").concat(time), function (data) {
         updateChart(index, data.size, chartToUpdate);
 
     })
@@ -31,7 +31,7 @@ function updateEvolutionValues(time, periods) {
 }
 
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
-    $.getJSON("http://localhost:8080/api/sensors/all/evolution/".concat(sensor).concat("?time=")
+    $.getJSON("http://192.168.3.1:8080/smartcity/api/sensors/all/evolution/".concat(sensor).concat("?time=")
         .concat(time).concat("&periods=").concat(periods), function (data) {
         if (typeof data._1.evolutionValues === "undefined"){
             var nullArray = [];
