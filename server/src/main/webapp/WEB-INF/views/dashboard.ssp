@@ -111,7 +111,13 @@
         </div>
         <!-- /.panel-heading -->
         <div class="panel-body">
-            <div class="list-group" id="zones-alerts">
+            <div id="empty-zones-alerts">
+                <div class="text-center"><i>Empty zones history</i></div>
+            </div>
+            <div id="non-empty-zones-alerts" class="hidden">
+                <div class="list-group" id="zones-alerts">
+                </div>
+                <a href="#" class="btn btn-default btn-block">View Details</a>
             </div>
             <!-- /.list-group -->
         </div>

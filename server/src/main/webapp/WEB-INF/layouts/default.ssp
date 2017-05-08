@@ -60,10 +60,16 @@
                             <a id="temp" href="#temp">Temperature</a>
                         </li>
                         <li>
+                            <a id="lumi" href="#lumi">Luminosity</a>
+                        </li>
+                        <li>
                             <a id="humi" href="#humi">Humidity</a>
                         </li>
                         <li>
                             <a id="pres" href="#pres">Presence</a>
+                        </li>
+                        <li>
+                            <a id="zone" href="#zone">Zones</a>
                         </li>
                         </ul><!-- /.nav-second-level -->
                     </li>

@@ -26,3 +26,7 @@
     vertical-align: middle;
     float: none;
 }
+
+.hidden {
+    display: none
+}

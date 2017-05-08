@@ -11,6 +11,7 @@ import scalikejdbc._
   */
 case class Zone(id: Long,
                 name: String,
+                nameFull: String,
                 opened: Boolean,
                 createdAt: Timestamp)
 
@@ -21,7 +22,7 @@ case class Zone(id: Long,
   */
 object Zone extends SQLSyntaxSupport[Zone] {
   override val tableName   = "zones"
-  override val columns     = Seq("id", "name", "opened", "created_at")
+  override val columns     = Seq("id", "name", "name_full", "opened", "created_at")
   override val autoSession = AutoSession
   val zone: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[Zone], Zone] = Zone.syntax("z")
 
@@ -29,6 +30,7 @@ object Zone extends SQLSyntaxSupport[Zone] {
   def apply(z: ResultName[Zone])(rs: WrappedResultSet): Zone = new Zone(
     id = rs.long(z.id),
     name = rs.string(z.name),
+    nameFull = rs.string(z.nameFull),
     opened = rs.boolean(z.opened),
     createdAt = rs.timestamp(z.createdAt)
   )
@@ -83,15 +85,18 @@ object Zone extends SQLSyntaxSupport[Zone] {
   }
 
   def create(name: String,
+             nameFull: String,
              opened: Boolean,
              createdAt: Timestamp)(implicit session: DBSession = autoSession): Zone = {
     val generatedKey = withSQL {
       insert.into(Zone).columns(
         column.name,
+        column.nameFull,
         column.opened,
         column.createdAt
       ).values(
         name,
+        nameFull,
         opened,
         createdAt)
     }.updateAndReturnGeneratedKey.apply()
@@ -99,6 +104,7 @@ object Zone extends SQLSyntaxSupport[Zone] {
     Zone(
       id = generatedKey,
       name = name,
+      nameFull = nameFull,
       opened = opened,
       createdAt = createdAt)
   }
@@ -108,6 +114,7 @@ object Zone extends SQLSyntaxSupport[Zone] {
       update(Zone as zone).set(
         zone.id -> z.id,
         zone.name -> z.name,
+        zone.nameFull -> z.nameFull,
         zone.opened -> z.opened,
         zone.createdAt -> z.createdAt
       )

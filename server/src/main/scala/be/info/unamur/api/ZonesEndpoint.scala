@@ -9,7 +9,6 @@ import org.scalatra.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import scalikejdbc._
 
 
 /** Api endpoint to retrieve zones information.
@@ -37,7 +36,7 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
   get("/:name/close") {
     new AsyncResult() {
       override val is = Future {
-        Zone.create(params(ZonesEndpoint.NameParamIdentifier), opened = false, new Timestamp(System.currentTimeMillis()))
+        Zone.create(params(ZonesEndpoint.NameParamIdentifier), params(ZonesEndpoint.NameFullParamIdentifier), opened = false, new Timestamp(System.currentTimeMillis()))
       }
     }
   }
@@ -45,7 +44,7 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
   get("/:name/open") {
     new AsyncResult() {
       override val is = Future {
-        Zone.create(params(ZonesEndpoint.NameParamIdentifier), opened = true, new Timestamp(System.currentTimeMillis()))
+        Zone.create(params(ZonesEndpoint.NameParamIdentifier), params(ZonesEndpoint.NameFullParamIdentifier), opened = true, new Timestamp(System.currentTimeMillis()))
       }
     }
   }
@@ -53,12 +52,23 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
   get("/history") {
     new AsyncResult() {
       override val is = Future {
-        Zone.findAllDesc().take(5)
+        params.get(ZonesEndpoint.TakeParamIdentifier) match {
+          case Some(take) =>
+            try {
+              Zone.findAllDesc().take(Integer.parseInt(take))
+            }
+            catch {
+              case _: NumberFormatException => "error" -> "The take parameter is not a int"
+            }
+          case None => Zone.findAllDesc()
+        }
       }
     }
   }
 }
 
 object ZonesEndpoint {
-  val NameParamIdentifier = "name"
+  val NameParamIdentifier     = "name"
+  val NameFullParamIdentifier = "full_name"
+  val TakeParamIdentifier     = "take"
 }

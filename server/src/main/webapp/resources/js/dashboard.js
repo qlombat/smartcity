@@ -32,8 +32,38 @@ $(document).ready(function () {
 
     function updateZoneAlerts() {
         var zoneAlerts = $('#zones-alerts');
-        $.getJSON("http://localhost:8080/api/zones/history", function (data) {
+        $.getJSON("http://localhost:8080/api/zones/history?take=5", function (data) {
+            if (data.length > 0) {
+                zoneAlerts.parents().find('#non-empty-zones-alerts').removeClass('hidden');
+                zoneAlerts.parents().find('#empty-zones-alerts').addClass('hidden')
+            } else if (data.length < 1) {
+                zoneAlerts.parents().find('#empty-zones-alerts').removeClass('hidden');
+                zoneAlerts.parents().find('#non-empty-zones-alerts').addClass('hidden');
+            }
 
+            zoneAlerts.children().remove();
+
+            $.each(data, function (i, item) {
+                // Split timestamp into [ Y, M, D, h, m, s ]
+                var t = item.createdAt.split(/[- :]/);
+                // Apply each element to the Date function
+                var d = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
+                    t[3], t[4].split("Z")[0]));
+
+                if (item.opened === true) {
+                    zoneAlerts.append("<div class='list-group-item'>"
+                        + "<i class='fa fa-circle-o fa-fw'></i>  "
+                        + item.nameFull + " opened"
+                        + "<span class='pull-right text-muted small'><em> "
+                        + moment().from(d, true) + " ago </em> </span> </div>");
+                } else {
+                    zoneAlerts.append("<div class='list-group-item'>"
+                        + "<i class='fa fa-dot-circle-o fa-fw'></i>  "
+                        + item.nameFull + " closed"
+                        + "<span class='pull-right text-muted small'><em> "
+                        + moment().from(d, true) + " ago </em> </span> </div>");
+                }
+            });
         });
 
     }
