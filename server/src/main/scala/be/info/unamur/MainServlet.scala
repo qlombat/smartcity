@@ -52,7 +52,8 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
     layoutTemplate("/WEB-INF/views/charts/presence-charts.ssp",
       ("styles", List("/resources/css/presence-chart.css")),
       ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/presence-charts/chart-utils.js",
-        "/resources/js/presence-charts/all-bar-chart.js", "/resources/js/presence-charts/all-doughnut-chart.js")))
+        "/resources/js/presence-charts/all-bar-chart.js", "/resources/js/presence-charts/all-doughnut-chart.js",
+        "/resources/js/presence-charts/all-line-chart.js")))
   }
 
   get("/charts/zones") {
