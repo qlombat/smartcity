@@ -29,8 +29,7 @@
         "summary": "Close a specific zone",
         "description": "",
         "operationId": "closeZone",
-        "consumes": [
-        ],
+        "consumes": [],
         "produces": [
           "application/json"
         ],
@@ -61,8 +60,7 @@
         "summary": "Open a specific zone",
         "description": "",
         "operationId": "openZone",
-        "consumes": [
-        ],
+        "consumes": [],
         "produces": [
           "application/json"
         ],
@@ -93,13 +91,11 @@
         "summary": "Get the closed zones",
         "description": "",
         "operationId": "getClosedZones",
-        "consumes": [
-        ],
+        "consumes": [],
         "produces": [
           "application/json"
         ],
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -117,6 +113,9 @@
         ],
         "summary": "Add a new sensor with its value and its gross value",
         "operationId": "addNewSensorValueGrossValue",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
         "produces": [
           "application/json"
         ],
@@ -133,14 +132,14 @@
             "in": "formData",
             "description": "The value of the sensor (in the conventional unit, for example Celsius degree for a temperature sensor)",
             "required": true,
-            "type": "double"
+            "type": "number"
           },
           {
             "name": "gross_value",
             "in": "formData",
             "description": "The gross value of the sensor (as it was taken, with no conversion whatsoever)",
             "required": true,
-            "type": "double"
+            "type": "number"
           }
         ],
         "responses": {
@@ -167,8 +166,7 @@
         "summary": "Get the sensor last value",
         "description": "",
         "operationId": "getLastSensor",
-        "consumes": [
-        ],
+        "consumes": [],
         "produces": [
           "application/json"
         ],

@@ -1,0 +1,11 @@
+.panel.panel-primary {
+    background: #337AB7;
+}
+
+.panel.panel-green {
+    background: #5cb85c;
+}
+
+#page-wrapper {
+    padding-top: 40px;
+}

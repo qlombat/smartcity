@@ -18,27 +18,25 @@
 <!-- MetisMenu CSS -->
 <link href="${uri("/resources/vendor/metisMenu/metisMenu.min.css")}" rel="stylesheet">
 <!-- Custom CSS -->
-<link href="${uri("/resources/css/sb-admin-2.css")}" rel="stylesheet">
+<link href="${uri("/resources/vendor/sb-admin-2/sb-admin-2.css")}" rel="stylesheet">
 <!-- Morris Charts CSS -->
 <link href="${uri("/resources/vendor/morrisjs/morris.css")}" rel="stylesheet">
 <!-- Custom Fonts -->
-<link href="${uri("/resources/vendor/font-awesome/css/font-awesome.css")}" rel="stylesheet" type="text/css">
-
-<link href="${uri("/resources/css/main.css")}" rel="stylesheet" type="text/css">
-
-<!-- Custom styles-->
-<% styles.foreach((style: String) => {
-    val url = uri(style)
-    unescape(s"""<link rel="stylesheet" type="text/css" href="$url" />""" + "\n")
-}) %>
-
+<link href="${uri("/resources/vendor/font-awesome/css/font-awesome.min.css")}" rel="stylesheet" type="text/css">
+<!-- Default CSS -->
+<link href="${uri("/resources/css/default.css")}" rel="stylesheet" type="text/css">
+    <% if (styles.nonEmpty) unescape("<!-- Custom styles-->\n") %>
+    <% styles.foreach((style: String) => {
+        val url = uri(style)
+        unescape(s"""<link href="$url" rel="stylesheet" type="text/css">""" + "\n")
+        }) %>
 </head>
 
 <body>
     <div id="wrapper">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -59,24 +57,24 @@
                         <a href="#sensors"><i class="fa fa-bar-chart-o fa-fw"></i> Sensors<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                         <li>
-                            <a href="#temp">Temperature</a>
+                            <a id="temp" href="#temp">Temperature</a>
                         </li>
                         <li>
-                            <a href="#hum">Humidity</a>
+                            <a id="humi" href="#humi">Humidity</a>
                         </li>
                         <li>
-                            <a href="#pres">Presence</a>
+                            <a id="pres" href="#pres">Presence</a>
                         </li>
                         </ul><!-- /.nav-second-level -->
                     </li>
                     <li>
-                        <a href="#sensors"><i class="fa fa-cogs fa-fw"></i> Actors<span class="fa arrow"></span></a>
+                        <a id="sensors" href="#sensors"><i class="fa fa-cogs fa-fw"></i> Actors<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                         <li>
-                            <a href="${uri("/actors/init")}">Start</a>
+                            <a id="start-actor" href="#start-actor">Start</a>
                         </li>
                         <li>
-                            <a href="${uri("/actors/stop")}">Stop</a>
+                            <a id="stop-actor" href="#stop-actor">Stop</a>
                         </li>
                         </ul><!-- /.nav-second-level -->
                     </li>
@@ -90,29 +88,49 @@
 
     <!-- Page Content -->
     <div id="page-wrapper">
+
+        <div class="modal fade" id="actor-modal" data-keyboard="false" data-backdrop="static" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center"><i class="fa fa-refresh fa-spin fa-3x fa-fw text-center"></i></div>
+                        <p id="actor-modal-content" style="display: none"></p>
+                    </div>
+                    <div class="modal-footer" style="display: none">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
         <div class="container-fluid">
-
             ${unescape(body)}
-
         </div><!-- /.container-fluid -->
+
     </div><!-- /#page-wrapper -->
+
     </div><!-- /#wrapper -->
 
-    <!-- jQuery -->
-    <script src="${uri("/resources/vendor/jquery/jquery.min.js")}"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="${uri("/resources/vendor/bootstrap/js/bootstrap.min.js")}"></script>
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="${uri("/resources/vendor/metisMenu/metisMenu.min.js")}"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="${uri("/resources/js/sb-admin-2.js")}"></script>
 
-    <!-- Custom scripts-->
-<% scripts.foreach((script: String) => {
+    <!-- jQuery -->
+    <script type="text/javascript" src="${uri("/resources/vendor/jquery/jquery.min.js")}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script type="text/javascript" src="${uri("/resources/vendor/bootstrap/js/bootstrap.min.js")}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script type="text/javascript" src="${uri("/resources/vendor/metisMenu/metisMenu.min.js")}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script type="text/javascript" src="${uri("/resources/vendor/sb-admin-2/sb-admin-2.js")}"></script>
+    <!-- Default JavaScript -->
+    <script type="text/javascript" src="${uri("/resources/js/default.js")}"></script>
+    <% if (styles.nonEmpty) unescape("<!-- Custom scripts-->\n") %>
+    <% scripts.foreach((script: String) => {
     val url = uri(script)
     unescape(s"""<script type="text/javascript" src="$url"></script>""" + "\n")
-}) %>
-
+    }) %>
 </body>
 
 </html>

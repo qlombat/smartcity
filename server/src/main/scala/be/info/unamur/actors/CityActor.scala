@@ -48,7 +48,7 @@ class CityActor extends Actor {
      */
     case Initialize() =>
       if (stopped) {
-        ik open 445876
+        ik open CityActor.IKPhidgetId
         ik waitForAttachment()
 
         val initCrossroads = crossroadsActor ? Initialize()

@@ -27,11 +27,11 @@ class ActorsServlet(system: ActorSystem) extends ScalatraServlet with ScalateSup
   val cityActor: ActorRef = system.actorOf(Props[CityActor].withDispatcher("application-dispatcher"), name = "cityActor")
 
   // Timeout for the ask messages to actors
-  implicit val timeout = Timeout(10 seconds)
+  implicit val timeout = Timeout(5 seconds)
 
 
-  /* Initializes the actors (for example, by opening the necessary connections to the phidgets) */
-  get("/init") {
+  /* Starts the actors (for example, by opening the necessary connections to the phidgets) */
+  get("/start") {
     contentType = "text"
     Await.ready(cityActor ? Initialize(), Duration.Inf).value.get match {
       case Success(_) =>
@@ -39,8 +39,7 @@ class ActorsServlet(system: ActorSystem) extends ScalatraServlet with ScalateSup
         "Actors initialized..."
       case Failure(t) =>
         logger.error("Impossible to initialize the actors : ", t)
-        "Impossible to initialize the actors, verify that all phidgets are connected...\n" +
-          "More info : " + t.toString
+        "Impossible to initialize the actors, verify that all phidgets are connected..."
     }
 
   }
@@ -56,8 +55,7 @@ class ActorsServlet(system: ActorSystem) extends ScalatraServlet with ScalateSup
         "Actors stopped..."
       case Failure(t) =>
         logger.error("Impossible to stop the actors : ", t)
-        "Impossible to stop the actors, you should restart everything...\n" +
-          "More info : " + t.getMessage
+        "Impossible to stop the actors, you should restart everything..."
     }
   }
 }

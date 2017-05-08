@@ -1,0 +1,28 @@
+#favicon {
+    color: #337ab7;
+}
+
+.navbar.navbar-default.navbar-static-top {
+    margin-bottom: 0;
+}
+
+.panel-heading {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+
+.panel.panel-yellow {
+    border-top-width: 0;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}

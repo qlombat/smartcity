@@ -70,6 +70,12 @@ object Zone extends SQLSyntaxSupport[Zone] {
     }.map(Zone(zone.resultName)).list.apply()
   }
 
+  def findAllDesc()(implicit session: DBSession = autoSession): List[Zone] = {
+    withSQL {
+      select.from(Zone as zone).orderBy(zone.createdAt).desc
+    }.map(Zone(zone.resultName)).list.apply()
+  }
+
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {
     withSQL {
       select(sqls"count(1)").from(Zone as zone).where.append(sqls"$where")

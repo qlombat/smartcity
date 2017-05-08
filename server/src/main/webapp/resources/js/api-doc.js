@@ -11,7 +11,7 @@ window.onload = function () {
             SwaggerUIBundle.plugins.DownloadUrl
         ],
         layout: "StandaloneLayout"
-    })
+    });
 
     window.ui = ui
-}
+};

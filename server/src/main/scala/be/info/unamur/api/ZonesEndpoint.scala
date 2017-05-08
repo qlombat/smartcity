@@ -9,6 +9,7 @@ import org.scalatra.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import scalikejdbc._
 
 
 /** Api endpoint to retrieve zones information.
@@ -45,6 +46,14 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
     new AsyncResult() {
       override val is = Future {
         Zone.create(params(ZonesEndpoint.NameParamIdentifier), opened = true, new Timestamp(System.currentTimeMillis()))
+      }
+    }
+  }
+
+  get("/history") {
+    new AsyncResult() {
+      override val is = Future {
+        Zone.findAllDesc().take(5)
       }
     }
   }
