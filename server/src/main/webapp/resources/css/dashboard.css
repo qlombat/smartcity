@@ -23,3 +23,18 @@
 #page-wrapper {
     padding-top: 40px;
 }
+
+#city-map-panel #city-map{
+    overflow: hidden;
+    position: relative;
+    max-height: 500px;
+}
+#city-map-panel #city-map #city-map-svg{
+    background: #fff;
+    vertical-align:top;
+    margin: 0;
+    padding: 0;
+}
+#city-map-panel .panel-body{
+    padding: 0;
+}

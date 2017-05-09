@@ -22,7 +22,7 @@ float humidity                = 0;    //Don't change
 float temperature             = 0;    //Don't change
 bool humidityValueChanged     = true; //Don't change
 bool temperatureValueChanged  = true; //Don't change
-int temperatureTrigger        = 2;    // celcius
+int temperatureTrigger        = 1;    // celcius
 int humidityTrigger           = 5;    // %
 DHT_Unified dht(DHTPIN, DHTTYPE);     //Don't change
 

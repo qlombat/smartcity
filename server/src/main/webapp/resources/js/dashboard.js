@@ -8,33 +8,40 @@ $(document).ready(function () {
     function updateSensors() {
         $.getJSON("http://localhost:8080/api/sensors/temperature", function (data) {
             if (typeof data.value === 'undefined') {
-                $("#temp-value").text("Unavailable");
+                $("#temp-value").text("N/A");
             } else {
                 $("#temp-value").text(data.value + "° C");
             }
+        }).fail(function(){
+            $("#temp-value").text("N/A");
         });
         $.getJSON("http://localhost:8080/api/sensors/light", function (data) {
             if (typeof data.value === 'undefined') {
-                $("#luminosity").text("Unavailable");
+                $("#luminosity").text("N/A");
             } else {
                 $("#luminosity").text(data.value + " lux");
             }
+        }).fail(function(){
+            $("#luminosity").text("N/A");
         });
         $.getJSON("http://localhost:8080/api/sensors/humidity", function (data) {
             if (typeof data.value === 'undefined') {
-                $("#humidity").text("Unavailable");
+                $("#humidity").text("N/A");
             } else {
                 $("#humidity").text(data.value + " %");
             }
 
+        }).fail(function(){
+            $("#humidity").text("N/A");
         });
         $.getJSON("http://localhost:8080/api/rfid/parking/accessibility", function (data) {
             if (typeof data._1.taken === 'undefined') {
-                $("#parking").text("Unavailable");
+                $("#parking").text("N/A");
             } else {
                 $("#parking").text(data._2.totalplaces - data._1.taken + " of " + data._2.totalplaces);
             }
-
+        }).fail(function(){
+            $("#parking").text("N/A");
         });
     }
 

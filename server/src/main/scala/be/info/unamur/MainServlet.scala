@@ -24,8 +24,7 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
     logger.debug("Main page loaded")
     layoutTemplate("/WEB-INF/views/dashboard.ssp",
       ("styles", List("/resources/css/dashboard.css")),
-      ("scripts", List("/resources/vendor/momentjs/moment.min.js",
-        "/resources/js/dashboard.js")))
+      ("scripts", List("/resources/vendor/momentjs/moment.min.js", "/resources/js/dashboard.js", "/resources/vendor/jquery/jquery.mousewheel.min.js", "/resources/vendor/snapsvg/snap.svg-min.js", "/resources/js/map.js")))
   }
 
   get("/api/doc") {
