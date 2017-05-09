@@ -30,3 +30,11 @@
 .hidden {
     display: none
 }
+
+.panel-margin{
+    margin-top: 10px;
+}
+
+.btn-group-time{
+    margin-left: 5px;
+}

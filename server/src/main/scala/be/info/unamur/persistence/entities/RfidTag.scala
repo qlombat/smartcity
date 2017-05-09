@@ -12,6 +12,7 @@ import scalikejdbc._
 case class RfidTag(id: Long,
                    name: String,
                    tag: String,
+                   entry: Double,
                    createdAt: Timestamp)
 
 /**
@@ -20,8 +21,8 @@ case class RfidTag(id: Long,
   * @author Justin Sirjacques
   */
 object RfidTag extends SQLSyntaxSupport[RfidTag] {
-  override val tableName   = "rfidtag"
-  override val columns     = Seq("id", "name", "tag", "created_at")
+  override val tableName = "rfidtag"
+  override val columns = Seq("id", "name", "tag", "entry", "created_at")
   override val autoSession = AutoSession
   val rfidtag: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[RfidTag], RfidTag] = RfidTag.syntax("r")
 
@@ -30,6 +31,7 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
     id = rs.long(r.id),
     name = rs.string(r.name),
     tag = rs.string(r.tag),
+    entry = rs.double(r.entry),
     createdAt = rs.timestamp(r.createdAt)
   )
 
@@ -66,10 +68,19 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
       insert.into(RfidTag).columns(
         column.name,
         column.tag,
+        column.entry,
         column.createdAt
       ).values(
         name,
         tag,
+        (RfidTag.findAllBy(sqls"tag = ${tag} ORDER BY created_at DESC LIMIT 1")) match {
+          case Nil => 1
+          case l => if (l.head.entry == 1) {
+            0
+          } else {
+            1
+          }
+        },
         createdAt)
     }.updateAndReturnGeneratedKey.apply()
 
@@ -77,6 +88,14 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
       id = generatedKey,
       name = name,
       tag = tag,
+      entry = (RfidTag.findAllBy(sqls"tag = ${tag} ORDER BY created_at DESC LIMIT 1")) match {
+        case Nil => 1
+        case l => if (l.head.entry == 1) {
+          0
+        } else {
+          1
+        }
+      },
       createdAt = createdAt)
   }
 
@@ -86,6 +105,7 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
         rfidtag.id -> r.id,
         rfidtag.name -> r.name,
         rfidtag.tag -> r.tag,
+        rfidtag.entry -> r.entry,
         rfidtag.createdAt -> r.createdAt
       )
     }.update().apply()

@@ -1,3 +1,4 @@
+<h1>Presence charts</h1>
 <div class="row">
 <div class="col-lg-7">
     <div class="panel panel-default panel-margin">
@@ -38,7 +39,7 @@
         <div class="panel-heading clearfix">
             <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Evolution on all axes</h4>
 
-            <div id="btn-group-time" class="btn-group pull-right btn-group-sm" role="group">
+            <div class="btn-group pull-right btn-group-sm btn-group-time" role="group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Periods
                     <span class="caret"></span>
@@ -51,10 +52,10 @@
                 </ul>
             </div>
 
-            <div class="btn-group pull-right">
-                <a id="btn-evolution-month" class="btn btn-default btn-sm">Last month</a>
-                <a id="btn-evolution-day" class="btn btn-default btn-sm">Last day</a>
-                <a id="btn-evolution-hour" class="btn btn-default btn-sm">Last hour</a>
+            <div class="btn-group pull-right" >
+                <a id="btn-evolution-month" class="btn btn-default btn-sm">Last months</a>
+                <a id="btn-evolution-day" class="btn btn-default btn-sm">Last days</a>
+                <a id="btn-evolution-hour" class="btn btn-default btn-sm">Last hours</a>
             </div>
 
         </div>

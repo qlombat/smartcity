@@ -6,10 +6,11 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages._
-import be.info.unamur.persistence.entities.RfidTag
+import be.info.unamur.persistence.entities.{RfidSubscription, RfidTag}
 import com.phidgets.RFIDPhidget
 import com.phidgets.event._
 import org.slf4j.{Logger, LoggerFactory}
+import scalikejdbc._
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
@@ -60,16 +61,20 @@ class ParkingActor extends Actor {
         override def tagGained(tagGainEvent: TagGainEvent): Unit = {
           rfid removeTagGainListener ParkingActor.this.tagGainListener
           rfid addTagLossListener ParkingActor.this.tagLossListener
-          barrierActor ! OpenBarrier()
-          RfidTag.create(context.self.path.name, tagGainEvent.getValue, new Timestamp(System.currentTimeMillis()))
+          if (!RfidSubscription.findAllBy(sqls"tag = ${tagGainEvent.getValue}").isEmpty) {
+            barrierActor ! OpenBarrier()
+            RfidTag.create(context.self.path.name, tagGainEvent.getValue, new Timestamp(System.currentTimeMillis()))
+          }
         }
       }
 
       // Sends the "close barrier" message when a RFID tag is lost.
       this.tagLossListener = new TagLossListener {
         override def tagLost(tagLossEvent: TagLossEvent): Unit = {
-          barrierActor ! CloseBarrier()
-          rfid removeTagLossListener ParkingActor.this.tagLossListener
+          if (!RfidSubscription.findAllBy(sqls"tag = ${tagLossEvent.getValue}").isEmpty) {
+            barrierActor ! CloseBarrier()
+            rfid removeTagLossListener ParkingActor.this.tagLossListener
+          }
         }
       }
 

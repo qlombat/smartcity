@@ -51,9 +51,9 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
   get("/charts/presence") {
     layoutTemplate("/WEB-INF/views/charts/presence-charts.ssp",
       ("styles", List("/resources/css/presence-chart.css")),
-      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/presence-charts/chart-utils.js",
-        "/resources/js/presence-charts/all-bar-chart.js", "/resources/js/presence-charts/all-doughnut-chart.js",
-        "/resources/js/presence-charts/all-line-chart.js")))
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/charts/presence-charts/presence-chart-utils.js",
+        "/resources/js/charts/presence-charts/all-bar-chart.js", "/resources/js/charts/presence-charts/all-doughnut-chart.js",
+        "/resources/js/charts/presence-charts/all-line-chart.js")))
   }
 
   get("/charts/zones") {
@@ -62,4 +62,26 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
       ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js",
         "/resources/js/charts/zones-charts.js")))
   }
+
+  get("/charts/luminosity") {
+    layoutTemplate("/WEB-INF/views/charts/luminosity-charts.ssp",
+      ("styles", Nil),
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js", "/resources/js/charts/charts-utils.js",
+        "/resources/js/charts/luminosity-charts.js")))
+  }
+
+  get("/charts/humidity") {
+    layoutTemplate("/WEB-INF/views/charts/humidity-charts.ssp",
+      ("styles", Nil),
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/charts/charts-utils.js",
+        "/resources/js/charts/humidity-charts.js")))
+  }
+
+  get("/charts/temperature") {
+    layoutTemplate("/WEB-INF/views/charts/temperature-charts.ssp",
+      ("styles", Nil),
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/charts/charts-utils.js",
+        "/resources/js/charts/temperature-charts.js")))
+  }
+
 }

@@ -6,6 +6,20 @@
     background: #5cb85c;
 }
 
+.panel.panel-blue-light {
+    background: #00bfff;
+}
+.panel-blue-light {
+    border-color: #0099cc;
+}
+.panel-blue-light > .panel-heading {
+    border-color: #0099cc;
+    color: white;
+    background-color: #0099cc;
+}
+.panel-blue-light > a {
+    color: #0099cc;
+}
 #page-wrapper {
     padding-top: 40px;
 }

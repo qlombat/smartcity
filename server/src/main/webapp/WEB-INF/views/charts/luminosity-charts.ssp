@@ -1,0 +1,32 @@
+<div class="row">
+<div class="col-lg-12">
+    <div class="panel panel-default panel-margin">
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Luminosity evolution</h4>
+
+            <div class="btn-group pull-right btn-group-sm btn-group-time" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Periods
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a id="btn-5">5 periods</a></li>
+                    <li><a id="btn-10">10 periods</a></li>
+                    <li><a id="btn-20">20 periods</a></li>
+                    <li><a id="btn-50">50 periods</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group pull-right">
+                <a id="btn-month" class="btn btn-default btn-sm">Last months</a>
+                <a id="btn-day" class="btn btn-default btn-sm">Last days</a>
+                <a id="btn-hour" class="btn btn-default btn-sm">Last hours</a>
+            </div>
+
+        </div>
+        <div class="panel-body">
+            <canvas id="line-chart" ></canvas>
+        </div>
+    </div>
+</div>
+</div>

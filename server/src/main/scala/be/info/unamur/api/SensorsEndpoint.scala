@@ -52,10 +52,10 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   get("/all/:name") {
     new AsyncResult() {
       override val is = Future {
-        params get (SensorsEndpoint.TimeParamIdentifier) match {
+        params get SensorsEndpoint.TimeParamIdentifier match {
           case Some(time) => getSensorsData(params(SensorsEndpoint.NameParamIdentifier), time) match {
             case Nil => halt(400, "error" -> "No data for this sensor or this time")
-            case s => params get (SensorsEndpoint.CountParamIdentifier) match {
+            case s => params get SensorsEndpoint.CountParamIdentifier match {
               case Some("true") => "size" -> s.length
               case _ => s
             }
@@ -70,9 +70,9 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   get("/all/evolution/:name") {
     new AsyncResult() {
       override val is = Future {
-        params get (SensorsEndpoint.NameParamIdentifier) match {
-          case Some(n) => params get (SensorsEndpoint.PeriodParamIdentifier) match {
-            case Some(p) => params get (SensorsEndpoint.TimeParamIdentifier) match {
+        params get SensorsEndpoint.NameParamIdentifier match {
+          case Some(n) => params get SensorsEndpoint.PeriodParamIdentifier match {
+            case Some(p) => params get SensorsEndpoint.TimeParamIdentifier match {
               case Some(t) => t match {
                 case "hour" => ("evolutionValues" -> getValuesArray(n, p.toInt, SensorsEndpoint.HourInMillis), "periods" -> getPeriodsArray(p.toInt, SensorsEndpoint.HourInMillis, t))
                 case "day" => ("evolutionValues" -> getValuesArray(n, p.toInt, SensorsEndpoint.DayInMillis), "periods" -> getPeriodsArray(p.toInt, SensorsEndpoint.DayInMillis, t))
@@ -95,10 +95,10 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
     val currentTimeDay = new Timestamp(currentTime - SensorsEndpoint.DayInMillis)
     val currentTimeMonth = new Timestamp(currentTime - SensorsEndpoint.MonthInMillis)
     time match {
-      case "hour" => Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${currentTimeHour}")
-      case "day" => Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${currentTimeDay}")
-      case "month" => Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${currentTimeMonth}")
-      case "all" => Sensor.findAllBy(sqls"name = ${sensor}")
+      case "hour" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeHour")
+      case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay")
+      case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth")
+      case "all" => Sensor.findAllBy(sqls"name = $sensor")
 
     }
   }
@@ -107,8 +107,8 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   def getValuesArray(sensor: String, period: Integer, interval: Long): Array[Integer] = {
     var upperTime = System.currentTimeMillis()
     var valuesList: Array[Integer] = new Array[Integer](period)
-    for (p <- 0 to period - 1) {
-      valuesList(p) = Sensor.findAllBy(sqls"name = ${sensor} and created_at > ${new Timestamp(upperTime - interval)} and created_at < ${new Timestamp(upperTime)}").size
+    for (p <- 0 until period) {
+      valuesList(p) = Sensor.findAllBy(sqls"name = $sensor and created_at > ${new Timestamp(upperTime - interval)} and created_at < ${new Timestamp(upperTime)}").size
       upperTime = upperTime - interval
     }
     valuesList.reverse
@@ -117,7 +117,7 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   def getPeriodsArray(period: Integer, interval: Long, time: String): Array[String] = {
     var upperTime = System.currentTimeMillis()
     var periodsList: Array[String] = new Array[String](period)
-    for (p <- 0 to period - 1) {
+    for (p <- 0 until period) {
       time match {
         case "hour" => periodsList(p) = new Timestamp(upperTime).getHours.toString.concat("h")
         case "day" => periodsList(p) = convertIntToDay(new Timestamp(upperTime))
@@ -129,19 +129,23 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   }
 
   def convertIntToMonth(time: Timestamp): String = {
-    time.getMonth match {
-      case 0 => "January ".concat("20").concat(time.getYear().toString.substring(1))
-      case 1 => "February ".concat("20").concat(time.getYear().toString.substring(1))
-      case 2 => "March ".concat("20").concat(time.getYear().toString.substring(1))
-      case 3 => "April ".concat("20").concat(time.getYear().toString.substring(1))
-      case 4 => "May ".concat("20").concat(time.getYear().toString.substring(1))
-      case 5 => "June ".concat("20").concat(time.getYear().toString.substring(1))
-      case 6 => "July ".concat("20").concat(time.getYear().toString.substring(1))
-      case 7 => "August ".concat("20").concat(time.getYear().toString.substring(1))
-      case 8 => "September ".concat("20").concat(time.getYear().toString.substring(1))
-      case 9 => "October ".concat("20").concat(time.getYear().toString.substring(1))
-      case 10 => "November ".concat("20").concat(time.getYear().toString.substring(1))
-      case 11 => "December ".concat("20").concat(time.getYear().toString.substring(1))
+    val cal = Calendar.getInstance
+    cal.setTime(new Date(time.getTime))
+    val month: Int = cal.get(Calendar.MONTH)
+    val year: Int = cal.get(Calendar.YEAR)
+    month match {
+      case 0 => "January ".concat(year.toString)
+      case 1 => "February ".concat(year.toString)
+      case 2 => "March ".concat(year.toString)
+      case 3 => "April ".concat(year.toString)
+      case 4 => "May ".concat(year.toString)
+      case 5 => "June ".concat(year.toString)
+      case 6 => "July ".concat(year.toString)
+      case 7 => "August ".concat(year.toString)
+      case 8 => "September ".concat(year.toString)
+      case 9 => "October ".concat(year.toString)
+      case 10 => "November ".concat(year.toString)
+      case 11 => "December ".concat(year.toString)
     }
   }
 
@@ -150,19 +154,21 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
     val cal = Calendar.getInstance
     cal.setTime(new Date(time.getTime))
     val day: Int = cal.get(Calendar.DAY_OF_MONTH)
-    time.getMonth match {
-      case 0 => day.toString.concat(" January ").concat("20").concat(time.getYear().toString.substring(1))
-      case 1 => day.toString.concat(" February ").concat("20").concat(time.getYear().toString.substring(1))
-      case 2 => day.toString.concat(" March ").concat("20").concat(time.getYear().toString.substring(1))
-      case 3 => day.toString.concat(" April ").concat("20").concat(time.getYear().toString.substring(1))
-      case 4 => day.toString.concat(" May ").concat("20").concat(time.getYear().toString.substring(1))
-      case 5 => day.toString.concat(" June ").concat("20").concat(time.getYear().toString.substring(1))
-      case 6 => day.toString.concat(" July ").concat("20").concat(time.getYear().toString.substring(1))
-      case 7 => day.toString.concat(" August ").concat("20").concat(time.getYear().toString.substring(1))
-      case 8 => day.toString.concat(" September ").concat("20").concat(time.getYear().toString.substring(1))
-      case 9 => day.toString.concat(" October ").concat("20").concat(time.getYear().toString.substring(1))
-      case 10 => day.toString.concat(" November ").concat("20").concat(time.getYear().toString.substring(1))
-      case 11 => day.toString.concat(" December ").concat("20").concat(time.getYear().toString.substring(1))
+    val month: Int = cal.get(Calendar.MONTH)
+    val year: Int = cal.get(Calendar.YEAR)
+    month match {
+      case 0 => day.toString.concat(" January ").concat(year.toString)
+      case 1 => day.toString.concat(" February ").concat(year.toString)
+      case 2 => day.toString.concat(" March ").concat(year.toString)
+      case 3 => day.toString.concat(" April ").concat(year.toString)
+      case 4 => day.toString.concat(" May ").concat(year.toString)
+      case 5 => day.toString.concat(" June ").concat(year.toString)
+      case 6 => day.toString.concat(" July ").concat(year.toString)
+      case 7 => day.toString.concat(" August ").concat(year.toString)
+      case 8 => day.toString.concat(" September ").concat(year.toString)
+      case 9 => day.toString.concat(" October ").concat(year.toString)
+      case 10 => day.toString.concat(" November ").concat(year.toString)
+      case 11 => day.toString.concat(" December ").concat(year.toString)
     }
   }
 

@@ -28,6 +28,14 @@ $(document).ready(function () {
             }
 
         });
+        $.getJSON("http://localhost:8080/api/rfid/parking/accessibility", function (data) {
+            if (typeof data._1.taken === 'undefined') {
+                $("#parking").text("Unavailable");
+            } else {
+                $("#parking").text(data._2.totalplaces - data._1.taken + " of " + data._2.totalplaces);
+            }
+
+        });
     }
 
     function updateZoneAlerts() {

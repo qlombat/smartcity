@@ -52,7 +52,6 @@ var lineChart = new Chart(ctx, {
             label: 'North',
             data: [0, 0, 0, 0],
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
-
             borderColor: 'rgba(255,99,132,1)',
             borderWidth: 1
         },
@@ -80,8 +79,17 @@ var lineChart = new Chart(ctx, {
 
         ]
     },
-    options: {}
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+    }
 });
 var timeLapsLine = "hour";
 var periods = "10";
+$("#btn-evolution-hour").toggleClass('active');
 updateEvolutionValues(timeLapsLine, periods);

@@ -57,16 +57,16 @@
                         <a href="#sensors"><i class="fa fa-bar-chart-o fa-fw"></i> Sensors<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                         <li>
-                            <a id="temp" href="#temp">Temperature</a>
+                            <a href="${uri("/charts/temperature")}">Temperature</a>
                         </li>
                         <li>
-                            <a id="lumi" href="#lumi">Luminosity</a>
+                            <a href="${uri("/charts/luminosity")}">Luminosity</a>
                         </li>
                         <li>
-                            <a id="humi" href="#humi">Humidity</a>
+                            <a href="${uri("/charts/humidity")}">Humidity</a>
                         </li>
                         <li>
-                            <a id="pres" href="#pres">Presence</a>
+                            <a href="${uri("/charts/presence")}">Presence</a>
                         </li>
                         <li>
                             <a href="${uri("/charts/zones")}">Zones</a>

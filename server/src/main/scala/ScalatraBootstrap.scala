@@ -1,7 +1,7 @@
 import javax.servlet.ServletContext
 
 import _root_.akka.actor.ActorSystem
-import be.info.unamur.api.{SensorsEndpoint, ZonesEndpoint}
+import be.info.unamur.api.{Fixtures, RfidEndpoint, SensorsEndpoint, ZonesEndpoint}
 import be.info.unamur.persistence.utils.DatabaseUtils
 import be.info.unamur.{ActorsServlet, MainServlet}
 import org.scalatra._
@@ -26,6 +26,8 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
     context mount(new ActorsServlet(system), "/actors/*")
     context mount(new ZonesEndpoint, "/api/zones/*")
     context mount(new SensorsEndpoint, "/api/sensors/*")
+    context mount(new RfidEndpoint, "/api/rfid/*")
+    context mount(new Fixtures, "/api/fixtures/*")
   }
 
   override def destroy(context: ServletContext) {
@@ -33,4 +35,3 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
     closeDatabase()
   }
 }
-
