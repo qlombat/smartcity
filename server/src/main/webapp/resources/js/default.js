@@ -20,6 +20,7 @@ $(document).ready(function () {
             }
 
             $("#actor-modal-content").text(data).removeClass('hidden');
+            setTimeout(function() {actorModal.modal('hide');}, 2500);
         })
     });
 
@@ -42,6 +43,7 @@ $(document).ready(function () {
             }
 
             $("#actor-modal-content").text(data).removeClass('hidden');
+            setTimeout(function() {actorModal.modal('hide');}, 2500);
         })
     });
 

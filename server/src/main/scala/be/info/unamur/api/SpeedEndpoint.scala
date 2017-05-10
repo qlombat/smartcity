@@ -21,14 +21,14 @@ class SpeedEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
     contentType = formats("json")
   }
 
-  get("/current") {
+  get("/") {
     new AsyncResult() {
       override val is = Future {
         (Sensor.findLastByName("Temperature"), Sensor.findLastByName("Humidity"), Sensor.findLastByName("Light")) match {
-          case (Some(temperature),Some(humidity),Some(light)) =>
-            (Property.find("TemperatureMin"),Property.find("HumidityMax"),Property.find("LightMin")) match {
-              case (Some(tempMin),Some(humidMax),Some(lightMin)) =>
-                if (((temperature.value < tempMin.value) && (humidity.value > humidMax.value)) || (light.value < lightMin.value))
+          case (Some(temperature), Some(humidity), Some(light)) =>
+            (Property.find("TemperatureMin"), Property.find("HumidityMax"), Property.find("LightMin")) match {
+              case (Some(tempMin), Some(humidMax), Some(lightMin)) =>
+                if (((temperature.value < tempMin.value.toDouble) && (humidity.value > humidMax.value.toDouble)) || (light.value < lightMin.value.toDouble))
                   "speed" -> 30
                 else
                   "speed" -> 50

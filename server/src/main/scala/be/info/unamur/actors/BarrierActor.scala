@@ -34,7 +34,6 @@ class BarrierActor(ik: RFIDPhidget) extends Actor {
      * Opens the barrier.
      */
     case OpenBarrier() =>
-      sm setEngaged(BarrierActor.MotorIndex, true)
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
 
 
@@ -42,7 +41,6 @@ class BarrierActor(ik: RFIDPhidget) extends Actor {
      *  Waits 5 seconds after the loss of the signal and closes the barrier.
      */
     case CloseBarrier() =>
-      sm setEngaged(BarrierActor.MotorIndex, true)
       Thread sleep BarrierActor.WaitingTime
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
       sender ! Closed()

@@ -4,6 +4,10 @@
  * @author Noe Picard
  */
 $(document).ready(function () {
+
+    /*
+     * Chart handling
+     */
     var zonesChart;
 
     function getDate(timestamp) {
@@ -148,37 +152,6 @@ $(document).ready(function () {
     }
 
 
-    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/zones/history?order=asc&time=all", function (result) {
-        var html = '';
-        $.each(result, function (index, item) {
-            var status;
-            if (item.opened === true) {
-                status = "Opened";
-            } else {
-                status = "Closed";
-            }
-
-            html += "<tr class='grade'" + item.name + ">" +
-                "<td>" + item.name + "</td>" +
-                "<td>" + item.nameFull + "</td>" +
-                "<td>" + status + "</td>" +
-                "<td>" + moment(getDate(item.createdAt)).format("dddd, MMMM Do YYYY, h:mm:ss a") + "</td>" +
-                "</tr>"
-
-        });
-
-        $('#datatables-zones-body').html(html);
-
-        $('#datatables-zones').DataTable({
-            responsive: true,
-            "order": [[3, "desc"]]
-        });
-
-        $('#loading-wrapper').hide();
-        $('#table-wrapper').removeClass('hidden')
-    });
-
-
     $("#btn-doughnut-hour").on("click", function () {
         updateValues(zonesChart, "hour");
         $(this).parent(".btn-group").find(".active").toggleClass("active");
@@ -238,4 +211,38 @@ $(document).ready(function () {
 
     $("#btn-doughnut-day").toggleClass('active');
     updateValues(zonesChart, "day");
+
+
+    /*
+     * DataTable handling
+     */
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/zones/history?order=asc&time=all", function (result) {
+        var html = '';
+        $.each(result, function (index, item) {
+            var status;
+            if (item.opened === true) {
+                status = "Opened";
+            } else {
+                status = "Closed";
+            }
+
+            html += "<tr class='grade'" + item.name + ">" +
+                "<td>" + item.name + "</td>" +
+                "<td>" + item.nameFull + "</td>" +
+                "<td>" + status + "</td>" +
+                "<td>" + moment(getDate(item.createdAt)).format("dddd, MMMM Do YYYY, h:mm:ss a") + "</td>" +
+                "</tr>"
+
+        });
+
+        $('#datatables-zones-body').html(html);
+
+        $('#datatables-zones').DataTable({
+            responsive: true,
+            "order": [[3, "desc"]]
+        });
+
+        $('#loading-wrapper').hide();
+        $('#table-wrapper').removeClass('hidden')
+    });
 });

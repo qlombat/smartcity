@@ -74,11 +74,11 @@ var lineChart = new Chart(ctx, {
                     return tooltipItem.yLabel;
                 }
             }
-        },
+        }
     }
 });
 var timeLapse = "hour";
 $("#btn-hour").toggleClass('active');
 var periods = "10";
-var sensor = "luminosity";
+var sensor = "light";
 updateValues(timeLapse, periods, sensor);

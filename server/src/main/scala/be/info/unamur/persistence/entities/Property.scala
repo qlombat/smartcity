@@ -2,21 +2,24 @@ package be.info.unamur.persistence.entities
 
 import scalikejdbc._
 
+
 /** Property entity that represents the 'properties' table in the database.
   *
   * @author jeremyduchesne
+  * @author Noe Picard
   */
-case class Property(id:String,value:Double)
+case class Property(id: String,
+                    value: String)
 
 object Property extends SQLSyntaxSupport[Property] {
   override val tableName   = "properties"
-  override val columns     = Seq("id","value")
+  override val columns     = Seq("id", "value")
   override val autoSession = AutoSession
   val property: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[Property], Property] = Property.syntax("p")
 
   def apply(p: ResultName[Property])(ps: WrappedResultSet): Property = new Property(
     id = ps.string(p.id),
-    value = ps.double(p.value)
+    value = ps.string(p.value)
   )
 
   def find(id: String)(implicit session: DBSession = autoSession): Option[Property] = {
@@ -25,7 +28,16 @@ object Property extends SQLSyntaxSupport[Property] {
     }.map(Property(property.resultName)).first.apply()
   }
 
-  def create(id:String,value:Double)(implicit session: DBSession = autoSession):Property = {
+  def create(id: String, value: String)(implicit session: DBSession = autoSession): Property = {
+    withSQL {
+      insert.into(Property).columns(
+        column.id,
+        column.value
+      ).values(
+        id,
+        value)
+    }.update().apply()
+
     Property(
       id = id,
       value = value)

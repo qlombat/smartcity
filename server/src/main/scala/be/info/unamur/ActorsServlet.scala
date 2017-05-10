@@ -27,7 +27,7 @@ class ActorsServlet(system: ActorSystem) extends ScalatraServlet with ScalateSup
   val cityActor: ActorRef = system.actorOf(Props[CityActor].withDispatcher("application-dispatcher"), name = "cityActor")
 
   // Timeout for the ask messages to actors
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(10 seconds)
 
 
   /* Starts the actors (for example, by opening the necessary connections to the phidgets) */
