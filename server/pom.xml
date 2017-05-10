@@ -117,8 +117,8 @@
                 <version>2.2</version>
                 <configuration>
                     <url>http://192.168.3.1:8080/manager/text</url>
-                    <server>smartcity</server>
-                    <path>/smartcity</path>
+                    <server>ROOT</server>
+                    <path>/ROOT</path>
                     <update>true</update>
                     <username>smartcity</username>
                     <password>smartcity8</password>

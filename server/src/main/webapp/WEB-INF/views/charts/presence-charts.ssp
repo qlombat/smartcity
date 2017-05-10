@@ -1,4 +1,4 @@
-<h1>Presence charts</h1>
+<h1>Presence charts</h1><hr>
 <div class="row">
 <div class="col-lg-7">
     <div class="panel panel-default panel-margin">
@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="panel-body">
-            <canvas id="dougnut-chart" ></canvas>
+            <canvas id="doughnut-chart" ></canvas>
         </div>
     </div>
 </div>

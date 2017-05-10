@@ -80,5 +80,5 @@ var lineChart = new Chart(ctx, {
 var timeLapse = "hour";
 $("#btn-hour").toggleClass('active');
 var periods = "10";
-var sensor = "luminosity"
+var sensor = "luminosity";
 updateValues(timeLapse, periods, sensor);

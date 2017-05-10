@@ -99,7 +99,6 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
       case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay")
       case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth")
       case "all" => Sensor.findAllBy(sqls"name = $sensor")
-
     }
   }
 

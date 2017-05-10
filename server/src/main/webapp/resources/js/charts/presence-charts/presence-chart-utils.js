@@ -2,7 +2,7 @@
  * Created by jsirjacq on 8/05/17.
  */
 function getSensorValue(sensor, index, time, chartToUpdate) {
-    $.getJSON("http://localhost:8080/api/sensors/all/".concat(sensor).concat("?count=true").concat("&time=").concat(time), function (data) {
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/".concat(sensor).concat("?count=true").concat("&time=").concat(time), function (data) {
         updateChart(index, data.size, chartToUpdate);
 
     })
@@ -31,7 +31,7 @@ function updateEvolutionValues(time, periods) {
 }
 
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
-    $.getJSON("http://localhost:8080/api/sensors/all/evolution/".concat(sensor).concat("?time=")
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/evolution/".concat(sensor).concat("?time=")
         .concat(time).concat("&periods=").concat(periods), function (data) {
         if (typeof data._1.evolutionValues === "undefined"){
             var nullArray = [];

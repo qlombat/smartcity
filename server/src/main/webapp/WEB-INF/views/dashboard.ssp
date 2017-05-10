@@ -124,7 +124,7 @@
             <div id="non-empty-zones-alerts" class="hidden">
                 <div class="list-group" id="zones-alerts">
                 </div>
-                <a href="#" class="btn btn-default btn-block">View Details</a>
+                <a href="${uri("/charts/zones")}" class="btn btn-default btn-block">View Details</a>
             </div>
             <!-- /.list-group -->
         </div>

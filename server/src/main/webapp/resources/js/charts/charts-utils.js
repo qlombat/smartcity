@@ -6,7 +6,7 @@ function updateValues(time, periods, sensor) {
 }
 
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
-    $.getJSON("http://localhost:8080/api/sensors/all/evolution/".concat(sensor).concat("?time=")
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/evolution/".concat(sensor).concat("?time=")
         .concat(time).concat("&periods=").concat(periods), function (data) {
         if (typeof data._1.evolutionValues === "undefined"){
             var nullArray = [];

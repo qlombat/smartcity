@@ -6,7 +6,7 @@
  */
 $(document).ready(function () {
     function updateSensors() {
-        $.getJSON("http://localhost:8080/api/sensors/temperature", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +  "/api/sensors/temperature", function (data) {
             if (typeof data.value === 'undefined') {
                 $("#temp-value").text("N/A");
             } else {
@@ -15,7 +15,7 @@ $(document).ready(function () {
         }).fail(function(){
             $("#temp-value").text("N/A");
         });
-        $.getJSON("http://localhost:8080/api/sensors/light", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/light", function (data) {
             if (typeof data.value === 'undefined') {
                 $("#luminosity").text("N/A");
             } else {
@@ -24,7 +24,7 @@ $(document).ready(function () {
         }).fail(function(){
             $("#luminosity").text("N/A");
         });
-        $.getJSON("http://localhost:8080/api/sensors/humidity", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/humidity", function (data) {
             if (typeof data.value === 'undefined') {
                 $("#humidity").text("N/A");
             } else {
@@ -34,7 +34,7 @@ $(document).ready(function () {
         }).fail(function(){
             $("#humidity").text("N/A");
         });
-        $.getJSON("http://localhost:8080/api/rfid/parking/accessibility", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/rfid/parking/accessibility", function (data) {
             if (typeof data._1.taken === 'undefined') {
                 $("#parking").text("N/A");
             } else {
@@ -47,7 +47,7 @@ $(document).ready(function () {
 
     function updateZoneAlerts() {
         var zoneAlerts = $('#zones-alerts');
-        $.getJSON("http://localhost:8080/api/zones/history?take=5", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/zones/history?take=5", function (data) {
             if (data.length > 0) {
                 zoneAlerts.parents().find('#non-empty-zones-alerts').removeClass('hidden');
                 zoneAlerts.parents().find('#empty-zones-alerts').addClass('hidden')

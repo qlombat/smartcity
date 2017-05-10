@@ -6,9 +6,9 @@ $(document).ready(function () {
 
         actorModal.modal('show');
 
-        $.get("http://localhost:8080/actors/start", function (data) {
-            actorModal.find(".fa-refresh").hide();
-            actorModal.find(".modal-footer").show();
+        $.get(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/actors/start", function (data) {
+            actorModal.find(".fa-spin").addClass('hidden');
+            actorModal.find(".modal-footer").removeClass('hidden');
 
             var splittedData = data.toString().split(" ");
             if (splittedData[0] === "Impossible") {
@@ -19,7 +19,7 @@ $(document).ready(function () {
                 actorModal.find(".modal-header").addClass("panel-heading");
             }
 
-            $("#actor-modal-content").text(data).show();
+            $("#actor-modal-content").text(data).removeClass('hidden');
         })
     });
 
@@ -28,9 +28,9 @@ $(document).ready(function () {
 
         actorModal.modal('show');
 
-        $.get("http://localhost:8080/actors/stop", function (data) {
-            actorModal.find(".fa-refresh").hide();
-            actorModal.find(".modal-footer").show();
+        $.get(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +  "/actors/stop", function (data) {
+            actorModal.find(".fa-spin").addClass('hidden');
+            actorModal.find(".modal-footer").removeClass('hidden');
 
             var splittedData = data.toString().split(" ");
             if (splittedData[0] === "Impossible") {
@@ -41,7 +41,7 @@ $(document).ready(function () {
                 actorModal.find(".modal-header").addClass("panel-heading");
             }
 
-            $("#actor-modal-content").text(data).show();
+            $("#actor-modal-content").text(data).removeClass('hidden');
         })
     });
 
@@ -50,8 +50,8 @@ $(document).ready(function () {
         actorModal.find(".modal-content").removeClass("panel-danger");
         actorModal.find(".modal-content").addClass("panel-success");
         actorModal.find(".modal-header").removeClass("panel-heading");
-        actorModal.find(".fa").show();
-        actorModal.find(".modal-footer").hide();
-        $("#actor-modal-content").text("").hide();
+        actorModal.find(".fa").removeClass('hidden');
+        actorModal.find(".modal-footer").addClass('hidden');
+        $("#actor-modal-content").text("").addClass('hidden');
     });
 });

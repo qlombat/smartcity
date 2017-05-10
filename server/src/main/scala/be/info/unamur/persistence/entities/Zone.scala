@@ -72,9 +72,27 @@ object Zone extends SQLSyntaxSupport[Zone] {
     }.map(Zone(zone.resultName)).list.apply()
   }
 
+  def findAllDescBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[Zone] = {
+    withSQL {
+      select.from(Zone as zone).where.append(sqls"$where").orderBy(zone.createdAt).desc
+    }.map(Zone(zone.resultName)).list.apply()
+  }
+
+  def findAllAscBy(where: SQLSyntax)(implicit session: DBSession = autoSession): List[Zone] = {
+    withSQL {
+      select.from(Zone as zone).where.append(sqls"$where").orderBy(zone.createdAt).asc
+    }.map(Zone(zone.resultName)).list.apply()
+  }
+
   def findAllDesc()(implicit session: DBSession = autoSession): List[Zone] = {
     withSQL {
       select.from(Zone as zone).orderBy(zone.createdAt).desc
+    }.map(Zone(zone.resultName)).list.apply()
+  }
+
+  def findAllAsc()(implicit session: DBSession = autoSession): List[Zone] = {
+    withSQL {
+      select.from(Zone as zone).orderBy(zone.createdAt).asc
     }.map(Zone(zone.resultName)).list.apply()
   }
 

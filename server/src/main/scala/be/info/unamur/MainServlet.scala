@@ -57,8 +57,15 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
 
   get("/charts/zones") {
     layoutTemplate("/WEB-INF/views/charts/zones-charts.ssp",
-      ("styles", Nil),
-      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js",
+      ("styles", List("/resources/vendor/datatables-plugins/dataTables.bootstrap.css",
+        "/resources/vendor/datatables-responsive/dataTables.responsive.css",
+        "/resources/css/zones-charts.css")),
+      ("scripts", List("/resources/vendor/datatables/js/jquery.dataTables.min.js",
+        "/resources/vendor/datatables-plugins/dataTables.bootstrap.min.js",
+        "/resources/vendor/datatables-responsive/dataTables.responsive.js",
+        "/resources/vendor/momentjs/moment.min.js",
+        "/resources/vendor/momentjs/moment-duration-format.js",
+        "/resources/vendor/chartjs/chart.bundle.min.js",
         "/resources/js/charts/zones-charts.js")))
   }
 

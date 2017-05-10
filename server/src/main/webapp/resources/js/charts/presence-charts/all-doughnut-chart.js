@@ -30,7 +30,7 @@ $("#btn-doughnut-month").on("click", function () {
     $(this).toggleClass('active');
 });
 
-var ctx = document.getElementById("dougnut-chart");
+var ctx = document.getElementById("doughnut-chart");
 var doughnutChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -48,13 +48,13 @@ var doughnutChart = new Chart(ctx, {
                 'rgba(255,99,132,1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
+                'rgba(75, 192, 192, 1)'
             ],
             borderColor: [
                 'rgba(255,99,132,1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
+                'rgba(75, 192, 192, 1)'
             ],
             borderWidth: 0.3
         }]
