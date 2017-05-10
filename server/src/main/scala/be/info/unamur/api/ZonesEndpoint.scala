@@ -34,7 +34,7 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
     }
   }
 
-  get("/:name/close") {
+  post("/:name/close") {
     new AsyncResult() {
       override val is = Future {
         Zone.create(params(ZonesEndpoint.NameParamIdentifier), params(ZonesEndpoint.NameFullParamIdentifier), opened = false, new Timestamp(System.currentTimeMillis()))
@@ -42,7 +42,7 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
     }
   }
 
-  get("/:name/open") {
+  post("/:name/open") {
     new AsyncResult() {
       override val is = Future {
         Zone.create(params(ZonesEndpoint.NameParamIdentifier), params(ZonesEndpoint.NameFullParamIdentifier), opened = true, new Timestamp(System.currentTimeMillis()))

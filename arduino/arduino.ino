@@ -48,9 +48,9 @@ int pinLed[9][3] = {
 //API configuration
 const char* server = "192.168.3.1";  // server's address
 const int defaultPort = 8080;
-const char* pathGetZones = "/smartcity/api/zones/closed";
-const char* pathPostTemperature = "/smartcity/api/sensors";
-const char* pathPostHumidity = "/smartcity/api/sensors";
+const char* pathGetZones = "/api/zones/closed";
+const char* pathPostTemperature = "/api/sensors";
+const char* pathPostHumidity = "/api/sensors";
 const unsigned long HTTP_TIMEOUT = 10000;  // max respone time from server
 const size_t MAX_CONTENT_SIZE = 256;       // max size of the HTTP response
 
@@ -62,11 +62,9 @@ const unsigned long BAUD_RATE = 9600;
 void setup() {
   initSerial();
   initLCD();
-
   initLed();
   ConnectToWifiIfNecessary();
   printWiFiStatus();
-  initLed();
 
 }
 

@@ -27,7 +27,7 @@
 #city-map-panel #city-map{
     overflow: hidden;
     position: relative;
-    max-height: 500px;
+    max-height: 600px;
 }
 #city-map-panel #city-map #city-map-svg{
     background: #fff;

@@ -8,8 +8,8 @@
       "email": "smartcity@info.unamur.be"
     }
   },
-  "host": "192;168.3.1:8080",
-  "basePath": "/smartcity/api",
+  "host": "192.168.3.1:8080",
+  "basePath": "/api",
   "tags": [
     {
       "name": "zones",
@@ -22,14 +22,16 @@
   ],
   "paths": {
     "/zones/{name}/close": {
-      "get": {
+      "post": {
         "tags": [
           "zones"
         ],
         "summary": "Close a specific zone",
         "description": "",
         "operationId": "closeZone",
-        "consumes": [],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
         "produces": [
           "application/json"
         ],
@@ -38,6 +40,13 @@
             "name": "name",
             "in": "path",
             "description": "The name of the zone",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "full_name",
+            "in": "formData",
+            "description": "The full name of the zone",
             "required": true,
             "type": "string"
           }
@@ -53,14 +62,16 @@
       }
     },
     "/zones/{name}/open": {
-      "get": {
+      "post": {
         "tags": [
           "zones"
         ],
         "summary": "Open a specific zone",
         "description": "",
         "operationId": "openZone",
-        "consumes": [],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
         "produces": [
           "application/json"
         ],
@@ -69,6 +80,13 @@
             "name": "name",
             "in": "path",
             "description": "The name of the zone",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "full_name",
+            "in": "formData",
+            "description": "The full name of the zone",
             "required": true,
             "type": "string"
           }
