@@ -3,6 +3,7 @@
  *
  * @author Noe Picard
  * @author Quentin Lombat
+ * @author Justin Sirjacques
  */
 $(document).ready(function () {
     function updateSensors() {

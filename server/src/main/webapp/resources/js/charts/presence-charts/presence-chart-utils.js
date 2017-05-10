@@ -3,7 +3,7 @@
  */
 function getSensorValue(sensor, index, time, chartToUpdate) {
     $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/".concat(sensor).concat("?count=true").concat("&time=").concat(time), function (data) {
-        updateChart(index, data.size, chartToUpdate);
+        updateChart(index, data.all.length, chartToUpdate);
 
     })
         .fail(function () {
@@ -33,20 +33,16 @@ function updateEvolutionValues(time, periods) {
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
     $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/evolution/".concat(sensor).concat("?time=")
         .concat(time).concat("&periods=").concat(periods), function (data) {
-        if (typeof data._1.evolutionValues === "undefined"){
-            var nullArray = [];
-            for (var i = 0; i < periods.length; i++) {
-                nullArray[i]=0;
-            }
-            updateLineChartValues(datasetIndex, nullArray, data._2.periods);
-        }else{
-            updateLineChartValues(datasetIndex, data._1.evolutionValues, data._2.periods);
-        }
+        updateLineChartValues(datasetIndex, data.list);
     })
 }
 
-function updateLineChartValues(datasetIndex, values, periods) {
-    lineChart.data.labels = periods;
-    lineChart.data.datasets[datasetIndex].data = values;
+function updateLineChartValues(datasetIndex, list) {
+    lineChart.data.labels = list._1;
+    dataList = [];
+        $.each(list._2, function (elem) {
+            dataList.push(list._2[elem].length);
+        })
+    lineChart.data.datasets[datasetIndex].data = dataList;
     lineChart.update();
 }

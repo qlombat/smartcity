@@ -6,22 +6,29 @@ function updateValues(time, periods, sensor) {
 }
 
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
-    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/evolution/".concat(sensor).concat("?time=")
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +
+        "/api/sensors/all/evolution/".concat(sensor).concat("?time=")
         .concat(time).concat("&periods=").concat(periods), function (data) {
-        if (typeof data._1.evolutionValues === "undefined"){
-            var nullArray = [];
-            for (var i = 0; i < periods.length; i++) {
-                nullArray[i]=0;
-            }
-            updateLineChartValues(datasetIndex, nullArray, data._2.periods);
-        }else{
-            updateLineChartValues(datasetIndex, data._1.evolutionValues, data._2.periods);
-        }
+            updateLineChartValues(datasetIndex, data.list);
     })
 }
 
-function updateLineChartValues(datasetIndex, values, periods) {
-    lineChart.data.labels = periods;
-    lineChart.data.datasets[datasetIndex].data = values;
+function updateLineChartValues(datasetIndex, list) {
+    lineChart.data.labels = list._1;
+    dataList = [];
+    $.each(list._2, function (elem) {
+        if (list._2[elem].length == 0){
+            dataList.push(list._2[elem].length);
+        }else{
+            average = 0;
+            $.each(list._2[elem], function (e) {
+              average =average + list._2[elem][e].value;
+            })
+            average = average / list._2[elem].length;
+            dataList.push(average);
+            console.log(average);
+        }
+    })
+    lineChart.data.datasets[datasetIndex].data = dataList;
     lineChart.update();
 }

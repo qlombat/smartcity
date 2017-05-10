@@ -7,11 +7,11 @@ import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scalikejdbc._
-/** Api endpoint to retrieve Rfid information.
+/** Api endpoint to retrieve parking information.
   *
   * @author Justin Sirjacques
   */
-class RfidEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureSupport {
+class ParkingEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureSupport {
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   override protected implicit def executor: ExecutionContext = ExecutionContext.global
@@ -31,12 +31,12 @@ class RfidEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureSu
              case l => if (l.head.entry == 1) taken += 1
           }
         }
-        ("taken" -> taken, "totalplaces" -> RfidEndpoint.totalPlaces)
+        ("taken" -> taken, "totalplaces" -> ParkingEndpoint.totalPlaces)
       }
     }
   }
 }
 
-object RfidEndpoint {
-  var totalPlaces = 4
+object ParkingEndpoint {
+  var totalPlaces = 3
 }

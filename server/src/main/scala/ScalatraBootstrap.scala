@@ -12,6 +12,7 @@ import scala.language.postfixOps
 /** Bootstraps the Scalatra application.
   *
   * @author Noé Picard
+  * @author Justin Sirjacques
   */
 class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
   // Initialize the Actor system here to do it just once and pass it to the servlet that need it
@@ -26,7 +27,7 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
     context mount(new ActorsServlet(system), "/actors/*")
     context mount(new ZonesEndpoint, "/api/zones/*")
     context mount(new SensorsEndpoint, "/api/sensors/*")
-    context mount(new RfidEndpoint, "/api/rfid/*")
+    context mount(new ParkingEndpoint, "/api/parking/*")
     context mount(new Fixtures, "/api/fixtures/*")
     context mount(new SpeedEndpoint, "/api/speed/*")
   }

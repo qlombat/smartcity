@@ -9,7 +9,7 @@ import org.scalatra.{FutureSupport, ScalatraServlet}
 
 import scala.concurrent.ExecutionContext
 
-/** Api endpoint to retrieve Rfid information.
+/** Api endpoint to generate default data.
   *
   * @author Justin Sirjacques
   * @author jeremyduchesne
@@ -19,16 +19,13 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
 
   override protected implicit def executor: ExecutionContext = ExecutionContext.global
 
-
-  before() {
-    contentType = formats("json")
-  }
-
-  get("/generate/rfidsubscription") {
-        RfidSubscription.create("Justin", "Sirjacques", "2800b86b50", new Timestamp(System.currentTimeMillis()))
-        RfidSubscription.create("Jérémy", "Duchesne", "5c005df656", new Timestamp(System.currentTimeMillis()))
-        RfidSubscription.create("Noé", "Picard", "5c005db1b2", new Timestamp(System.currentTimeMillis()))
-        RfidSubscription.create("Quentin", "Lombat", "5c005cd4e2", new Timestamp(System.currentTimeMillis()))
+  //Generate
+  get("/Subscription") {
+    RfidSubscription.create("Justin", "Sirjacques", "2800b86b50", new Timestamp(System.currentTimeMillis()))
+    RfidSubscription.create("Jérémy", "Duchesne", "5c005df656", new Timestamp(System.currentTimeMillis()))
+    RfidSubscription.create("Noé", "Picard", "5c005db1b2", new Timestamp(System.currentTimeMillis()))
+    RfidSubscription.create("Quentin", "Lombat", "5c005cd4e2", new Timestamp(System.currentTimeMillis()))
+    "success"
   }
 
   get("/generate/properties") {

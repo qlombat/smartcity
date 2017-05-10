@@ -8,7 +8,7 @@
       "email": "smartcity@info.unamur.be"
     }
   },
-  "host": "192.168.3.1:8080",
+  "host": "192;168.3.1:8080",
   "basePath": "/smartcity/api",
   "tags": [
     {
@@ -175,6 +175,50 @@
             "name": "name",
             "in": "path",
             "description": "The name of the sensor",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Sensor"
+            }
+          },
+          "400": {
+            "description": "Sensor not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/sensors/all/{name}": {
+      "get": {
+        "tags": [
+          "sensors"
+        ],
+        "summary": "Get history of sensors",
+        "description": "",
+        "operationId": "getLastSensor",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "The name of the sensor",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "The time for which you want history (\"hour\", \"day\", \"month\" or \"all\")",
             "required": true,
             "type": "string"
           }
