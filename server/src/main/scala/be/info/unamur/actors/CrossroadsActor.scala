@@ -63,10 +63,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val initTrafficLightsMainActor = trafficLightsMainActor ? Initialize()
       val initTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Initialize()
       val initPedestrianCrossingActor = pedestrianCrossingActor ? Initialize()
-      val initMainRoadCarDetectorActor1 = mainCarDetectorActorWest ? Initialize()
-      val initMainRoadCarDetectorActor2 = mainCarDetectorActorEast ? Initialize()
-      val initAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActorSouth ? Initialize()
-      val initAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActorNorth ? Initialize()
+      val initMainRoadCarDetectorActorWest = mainCarDetectorActorWest ? Initialize()
+      val initMainRoadCarDetectorActorEast = mainCarDetectorActorEast ? Initialize()
+      val initAuxiliaryCarDetectorActorSouth = auxiliaryCarDetectorActorSouth ? Initialize()
+      val initAuxiliaryCarDetectorActorNorth = auxiliaryCarDetectorActorNorth ? Initialize()
       timeOfLastAuxiliaryGreenLight = new DateTime()
       lastOpenAuxiliaryMessage = new DateTime()
       auxiliaryScheduler = context.system.scheduler.scheduleOnce(
@@ -78,17 +78,17 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         resultInitTrafficLightsMainActor <- initTrafficLightsMainActor
         resultInitTrafficLightsAuxiliaryActor <- initTrafficLightsAuxiliaryActor
         resultInitPedestrianCrossingActor <- initPedestrianCrossingActor
-        resultInitMainRoadCarDetectorActor1 <- initMainRoadCarDetectorActor1
-        resultInitMainRoadCarDetectorActor2 <- initMainRoadCarDetectorActor2
-        resultInitAuxiliaryCarDetectorActor1 <- initAuxiliaryCarDetectorActor1
-        resultInitAuxiliaryCarDetectorActor2 <- initAuxiliaryCarDetectorActor2
+        resultInitMainRoadCarDetectorActorWest <- initMainRoadCarDetectorActorWest
+        resultInitMainRoadCarDetectorActorEast <- initMainRoadCarDetectorActorEast
+        resultInitAuxiliaryCarDetectorActorSouth <- initAuxiliaryCarDetectorActorSouth
+        resultInitAuxiliaryCarDetectorActorNorth <- initAuxiliaryCarDetectorActorNorth
       } yield (resultInitTrafficLightsMainActor,
         resultInitTrafficLightsAuxiliaryActor,
         resultInitPedestrianCrossingActor,
-        resultInitMainRoadCarDetectorActor1,
-        resultInitMainRoadCarDetectorActor2,
-        resultInitAuxiliaryCarDetectorActor1,
-        resultInitAuxiliaryCarDetectorActor2
+        resultInitMainRoadCarDetectorActorWest,
+        resultInitMainRoadCarDetectorActorEast,
+        resultInitAuxiliaryCarDetectorActorSouth,
+        resultInitAuxiliaryCarDetectorActorNorth
       )
 
       results pipeTo sender
@@ -153,26 +153,26 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val stopTrafficLightsMainActor = trafficLightsMainActor ? Stop()
       val stopTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Stop()
       val stopPedestrianCrossingActor = pedestrianCrossingActor ? Stop()
-      val stopMainRoadCarDetectorActor1 = mainCarDetectorActorWest ? Stop()
-      val stopMainRoadCarDetectorActor2 = mainCarDetectorActorEast ? Stop()
-      val stopAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActorSouth ? Stop()
-      val stopAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActorNorth ? Stop()
+      val stopMainRoadCarDetectorActorWest = mainCarDetectorActorWest ? Stop()
+      val stopMainRoadCarDetectorActorEast = mainCarDetectorActorEast ? Stop()
+      val stopAuxiliaryCarDetectorActorSouth = auxiliaryCarDetectorActorSouth ? Stop()
+      val stopAuxiliaryCarDetectorActorNorth = auxiliaryCarDetectorActorNorth ? Stop()
 
       val results = for {
         resultStopTrafficLightsMainActor <- stopTrafficLightsMainActor
         resultStopTrafficLightsAuxiliaryActor <- stopTrafficLightsAuxiliaryActor
         resultStopPedestrianCrossingActor <- stopPedestrianCrossingActor
-        resultStopMainRoadCarDetectorActor1 <- stopMainRoadCarDetectorActor1
-        resultStopMainRoadCarDetectorActor2 <- stopMainRoadCarDetectorActor2
-        resultStopAuxiliaryCarDetectorActor1 <- stopAuxiliaryCarDetectorActor1
-        resultStopAuxiliaryCarDetectorActor2 <- stopAuxiliaryCarDetectorActor2
+        resultStopMainRoadCarDetectorActorWest <- stopMainRoadCarDetectorActorWest
+        resultStopMainRoadCarDetectorActorEast <- stopMainRoadCarDetectorActorEast
+        resultStopAuxiliaryCarDetectorActorSouth <- stopAuxiliaryCarDetectorActorSouth
+        resultStopAuxiliaryCarDetectorActorNorth <- stopAuxiliaryCarDetectorActorNorth
       } yield (resultStopTrafficLightsMainActor,
         resultStopTrafficLightsAuxiliaryActor,
         resultStopPedestrianCrossingActor,
-        resultStopMainRoadCarDetectorActor1,
-        resultStopMainRoadCarDetectorActor2,
-        resultStopAuxiliaryCarDetectorActor1,
-        resultStopAuxiliaryCarDetectorActor2
+        resultStopMainRoadCarDetectorActorWest,
+        resultStopMainRoadCarDetectorActorEast,
+        resultStopAuxiliaryCarDetectorActorSouth,
+        resultStopAuxiliaryCarDetectorActorNorth
       )
 
       results pipeTo sender
