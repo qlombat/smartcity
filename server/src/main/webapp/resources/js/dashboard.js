@@ -99,9 +99,56 @@ $(document).ready(function () {
 
     }
 
+
+
+    function updateParking() {
+        var parkingHistory = $('#parking-history');
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/parking/history?take=5", function (data) {
+            if (data.length > 0) {
+                parkingHistory.parents().find('#non-empty-parking-history').removeClass('hidden');
+                parkingHistory.parents().find('#empty-parking-history').addClass('hidden')
+            } else if (data.length < 1) {
+                parkingHistory.parents().find('#empty-parking-history').removeClass('hidden');
+                parkingHistory.parents().find('#non-empty-parking-history').addClass('hidden');
+            }
+
+            parkingHistory.children().remove();
+
+            $.each(data, function (i) {
+                // Split timestamp into [ Y, M, D, h, m, s ]
+                var t = data[i]._1.createdAt.split(/[- :]/);
+                // Apply each element to the Date function
+                var d = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
+                    t[3], t[4].split("Z")[0]));
+
+                if (data[i]._1.entry === 1) {
+                    parkingHistory.append("<div class='list-group-item'>"
+                        + "<i class='fa fa-sign-in fa-fw'></i>  "
+                        + data[i]._2.firstName + " " + data[i]._2.lastName + " entered"
+                        + "<span class='pull-right text-muted small'><em> "
+                        + moment().from(d, true) + " ago</em> </span> </div>");
+                } else {
+                    parkingHistory.append("<div class='list-group-item'>"
+                        + "<i class='fa fa-sign-out fa-fw'></i>  "
+                        + data[i]._2.firstName  + " " + data[i]._2.lastName +  " went out"
+                        + "<span class='pull-right text-muted small'><em> "
+                        + moment().from(d, true) + " ago</em> </span> </div>");
+                }
+            });
+        })
+            .fail(function () {
+                parkingHistory.parents().find('#empty-parking-history').removeClass('hidden');
+                parkingHistory.parents().find('#non-empty-parking-history').addClass('hidden');
+            })
+    }
+
+
+
+
     updateSensors();
     updateSpeed();
     updateZoneAlerts();
+    updateParking();
     //setInterval(updateSensors, 3000);
     //setInterval(updateZoneAlerts, 3000)
 });

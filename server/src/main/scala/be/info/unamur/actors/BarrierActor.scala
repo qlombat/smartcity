@@ -1,7 +1,10 @@
 package be.info.unamur.actors
 
+import java.sql.Timestamp
+
 import akka.actor.Actor
 import be.info.unamur.messages._
+import be.info.unamur.persistence.entities.Sensor
 import com.phidgets.{AdvancedServoPhidget, RFIDPhidget}
 
 
@@ -34,6 +37,7 @@ class BarrierActor(ik: RFIDPhidget) extends Actor {
      * Opens the barrier.
      */
     case OpenBarrier() =>
+      Sensor.create("barrier", 1, 1, new Timestamp(System.currentTimeMillis()))
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.OpenedPosition)
 
 
@@ -42,6 +46,7 @@ class BarrierActor(ik: RFIDPhidget) extends Actor {
      */
     case CloseBarrier() =>
       Thread sleep BarrierActor.WaitingTime
+      Sensor.create("barrier", 0, 0, new Timestamp(System.currentTimeMillis()))
       sm setPosition(BarrierActor.MotorIndex, BarrierActor.ClosedPosition)
       sender ! Closed()
 

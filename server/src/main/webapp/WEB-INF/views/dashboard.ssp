@@ -147,4 +147,27 @@
         <!-- /.panel-body -->
     </div>
 </div>
+
+
+<div class="col-lg-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="">P</i> Parking history
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <div id="empty-parking-history">
+                <div class="text-center"><i>Empty parking history</i></div>
+            </div>
+            <div id="non-empty-parking-history" class="hidden">
+                <div class="list-group" id="parking-history">
+                </div>
+            </div>
+            <!-- /.list-group -->
+        </div>
+        <!-- /.panel-body -->
+    </div>
+</div>
+
+
 </div>

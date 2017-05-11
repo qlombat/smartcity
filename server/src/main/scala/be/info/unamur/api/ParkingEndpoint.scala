@@ -1,5 +1,6 @@
 package be.info.unamur.api
 
+import be.info.unamur.persistence.entities
 import be.info.unamur.persistence.entities.{RfidSubscription, RfidTag}
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
@@ -36,8 +37,21 @@ class ParkingEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
       }
     }
   }
+  get("/history") {
+    new AsyncResult() {
+      override val is = Future {
+        params get ParkingEndpoint.TakeParamIdentifier match {
+          case Some(t) => RfidTag.findAllBy(sqls"true ORDER BY created_at DESC LIMIT ${t.toInt}") match {
+            case Nil => halt(400, "error" -> "No data")
+            case t => t.map(x => (x,RfidSubscription.findAllBy(sqls"tag=${x.tag}").head))
+          }
+        }
+      }
+    }
+  }
 }
 
 object ParkingEndpoint {
   var totalPlaces = 3
+  var TakeParamIdentifier = "take"
 }

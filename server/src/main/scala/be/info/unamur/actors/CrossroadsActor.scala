@@ -1,6 +1,9 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Cancellable, Props}
+import java.sql.Timestamp
+import java.util.concurrent.TimeUnit
+
+import akka.actor.{Actor, ActorRef, ActorSystem, Cancellable, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages._
@@ -12,17 +15,17 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.language.postfixOps
 
-
 /** This actor handles the behaviour of the crossroads. It controls all the sub-actors needed by the crossroads.
   *
   * @author jeremyduchesne
   * @author Quentin Lombat
+  * @author Justin Sirjacques
   */
 class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   // The TrafficLightsActor that handles the two traffic lights of the main road of the model.
-  val trafficLightsMainActor     : ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)).withDispatcher("application-dispatcher"), name = "trafficLightsMainActor")
+  val trafficLightsMainActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 0, 1)).withDispatcher("application-dispatcher"), name = "trafficLightsMainActor")
   // The TrafficLightsActor that handles the two traffic lights of the auxiliary road of the model.
   val trafficLightsAuxiliaryActor: ActorRef = context.actorOf(Props(new TrafficLightsActor(ik, 2, 3)).withDispatcher("application-dispatcher"), name = "trafficLightsAuxiliaryActor")
 
@@ -185,6 +188,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    * Handles the switch between the main road and the auxiliary one.
    */
   def openAuxiliary(): Unit = {
+
+
     auxiliaryScheduler.cancel()
     pedestrianCrossingActor ! SetOff()
     Thread sleep CrossroadsActor.pedestrianCrossingTime * 1000
@@ -208,6 +213,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
       self,
       OpenAuxiliary())
+
   }
 
   /** Return the time the system has to wait before switching the lights on.
