@@ -40,8 +40,6 @@ class CityActor extends Actor {
 
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
-  var auxiliaryScheduler:Cancellable = _
-
   override def receive: Receive = {
 
     /*
@@ -55,12 +53,6 @@ class CityActor extends Actor {
         val initCrossroads = crossroadsActor ? Initialize()
         val initParking = parkingActor ? Initialize()
         val initPublicLightning = publicLightingActor ? Initialize()
-
-        auxiliaryScheduler = context.system.scheduler.schedule(
-          Duration.apply(CityActor.differenceBetweenAuxiliary, "seconds"),
-          Duration.apply(CityActor.differenceBetweenAuxiliary, "seconds"),
-          crossroadsActor,
-          OpenAuxiliary())
 
         val results = for {
           resultInitCrossroads <- initCrossroads
@@ -84,7 +76,6 @@ class CityActor extends Actor {
      */
     case Stop() =>
       if (!stopped) {
-        auxiliaryScheduler.cancel()
         val stopCrossroads = crossroadsActor ? Stop()
         val stopParking = parkingActor ? Stop()
         val stopPublicLightning = publicLightingActor ? Stop()
@@ -104,5 +95,4 @@ class CityActor extends Actor {
 
 object CityActor {
   val IKPhidgetId: Int = 445876
-  val differenceBetweenAuxiliary = 60
 }

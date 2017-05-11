@@ -1,6 +1,6 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Cancellable, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages._
@@ -52,6 +52,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   //the last time the Pedestrian Message has been received.
   var lastPedestrianMessage: DateTime = _
 
+  var auxiliaryScheduler: Cancellable = _
+
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
   override def receive: Receive = {
@@ -71,6 +73,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       timeOfLastPedestrianGreenLight = new DateTime()
       lastOpenAuxiliaryMessage = new DateTime()
       lastPedestrianMessage = new DateTime()
+      auxiliaryScheduler = context.system.scheduler.scheduleOnce(
+        Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
+        self,
+        OpenAuxiliary())
 
       val results = for {
         resultInitTrafficLightsMainActor <- initTrafficLightsMainActor
@@ -179,6 +185,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    * Handles the switch between the main road and the auxiliary one.
    */
   def openAuxiliary(): Unit = {
+    auxiliaryScheduler.cancel()
     pedestrianCrossingActor ! SetOff()
     Thread sleep CrossroadsActor.pedestrianCrossingTime * 1000
     trafficLightsMainActor ! SetRed()
@@ -197,6 +204,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
     // Turn on listeners
     auxiliaryCarDetectorActor1 ! Start()
     auxiliaryCarDetectorActor2 ! Start()
+    auxiliaryScheduler = context.system.scheduler.scheduleOnce(
+      Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
+      self,
+      OpenAuxiliary())
   }
 
   /** Return the time the system has to wait before switching the lights on.
@@ -215,7 +226,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   }
 }
 
-/** Companion object for the AuxiliaryCarDetectorActor
+/** Companion object for the CrossroadsActor
   *
   * @author Justin SIRJACQUES
   */
@@ -223,7 +234,7 @@ object CrossroadsActor {
   /* Constants */
 
   // The minimum time since the last time the auxiliary trafficlights has been switched on. (seconds)
-  val differenceBetweenGreenAuxiliaryTrafficLights = 1
+  val differenceBetweenGreenAuxiliaryTrafficLights = 20
 
   // The minimum time since the last time the pedestrians could cross the road. (seconds)
   val differenceBetweenGreenPedestrianCrossRoads = 15
@@ -244,5 +255,7 @@ object CrossroadsActor {
   val carCrossingTime = 2
 
   // The time that green light stay green for auxiliary. (seconds)
-  val auxiliaryGreenLightTime = 20
+  val auxiliaryGreenLightTime = 10
+
+  val differenceBetweenGreenAuxiliary = 60
 }
