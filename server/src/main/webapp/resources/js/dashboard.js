@@ -90,6 +90,4 @@ $(document).ready(function () {
 
     updateSensors();
     updateZoneAlerts();
-    setInterval(updateSensors, 3000);
-    setInterval(updateZoneAlerts, 3000)
 });

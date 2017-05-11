@@ -1,4 +1,14 @@
+// function to set the height on fly
+function autoHeight() {
+    $('#content').css('min-height', (
+        $(document).height()
+        - $('.navbar').height()
+        - $('footer').height()
+    ));
+}
+
 $(document).ready(function () {
+
     var actorModal = $("#actor-modal");
 
     $("#start-actor").on("click", function () {
@@ -20,7 +30,9 @@ $(document).ready(function () {
             }
 
             $("#actor-modal-content").text(data).removeClass('hidden');
-            setTimeout(function() {actorModal.modal('hide');}, 2500);
+            setTimeout(function () {
+                actorModal.modal('hide');
+            }, 2500);
         })
     });
 
@@ -29,7 +41,7 @@ $(document).ready(function () {
 
         actorModal.modal('show');
 
-        $.get(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +  "/actors/stop", function (data) {
+        $.get(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/actors/stop", function (data) {
             actorModal.find(".fa-spin").addClass('hidden');
             actorModal.find(".modal-footer").removeClass('hidden');
 
@@ -43,7 +55,9 @@ $(document).ready(function () {
             }
 
             $("#actor-modal-content").text(data).removeClass('hidden');
-            setTimeout(function() {actorModal.modal('hide');}, 2500);
+            setTimeout(function () {
+                actorModal.modal('hide');
+            }, 2500);
         })
     });
 
@@ -56,4 +70,11 @@ $(document).ready(function () {
         actorModal.find(".modal-footer").addClass('hidden');
         $("#actor-modal-content").text("").addClass('hidden');
     });
+
+    autoHeight();
+});
+
+// onResize bind of the function
+$(window).resize(function () {
+    autoHeight();
 });

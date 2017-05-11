@@ -1,8 +1,9 @@
 package be.info.unamur.api
 
-import java.sql.Timestamp
+import java.sql.{Time, Timestamp}
+import java.util.{Calendar, Locale}
 
-import be.info.unamur.persistence.entities.Zone
+import be.info.unamur.persistence.entities.{BusSchedule, Zone}
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
 import org.scalatra.json._
@@ -29,7 +30,22 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
   get("/closed") {
     new AsyncResult() {
       override val is = Future {
-        "zones" -> Zone.findAllLast().filter(!_.opened).map(_.name)
+        val day = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
+        val currentMillis = System.currentTimeMillis()
+        val now = new Time(currentMillis)
+
+        BusSchedule.findAllBy(sqls"day = $day and opening_time < $now and closing_time > $now") match {
+
+          case Nil =>
+            Zone.create("BUS", "BUS", opened = true, new Timestamp(currentMillis))
+            "zones" -> Zone.findAllLast().filter(!_.opened).map(_.name)
+
+          case _ =>
+            if (Zone.findAllLast().exists(z => z.name == "BUS" && z.opened))
+              Zone.create("BUS", "BUS", opened = false, new Timestamp(currentMillis))
+            "zones" -> Zone.findAllLast().filter(!_.opened).map(_.name)
+
+        }
       }
     }
   }
@@ -83,14 +99,6 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
               case _: NumberFormatException => "error" -> "The take parameter is not a int"
             }
 
-          case (Some(take), None, None) =>
-            try {
-              Zone.findAllDesc().take(Integer.parseInt(take))
-            }
-            catch {
-              case _: NumberFormatException => "error" -> "The take parameter is not a int"
-            }
-
           case (None, Some(order), Some(time)) =>
             order match {
               case "asc" => time match {
@@ -110,7 +118,15 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
               case _ => "error" -> "Invalid order"
             }
 
-          case (None, None, None) =>
+          case (Some(take), None, None) =>
+            try {
+              Zone.findAllDesc().take(Integer.parseInt(take))
+            }
+            catch {
+              case _: NumberFormatException => "error" -> "The take parameter is not a int"
+            }
+
+          case _ =>
             Zone.findAll()
         }
       }
@@ -123,7 +139,7 @@ object ZonesEndpoint {
   val NameFullParamIdentifier = "full_name"
   val TakeParamIdentifier     = "take"
 
-  val HourInMillis = 3600000
-  val DayInMillis = 86400000
+  val HourInMillis  = 3600000
+  val DayInMillis   = 86400000
   val MonthInMillis = 2678400000L
 }

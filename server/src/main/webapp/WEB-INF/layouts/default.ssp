@@ -25,11 +25,11 @@
 <link href="${uri("/resources/vendor/font-awesome/css/font-awesome.min.css")}" rel="stylesheet" type="text/css">
 <!-- Default CSS -->
 <link href="${uri("/resources/css/default.css")}" rel="stylesheet" type="text/css">
-    <% if (styles.nonEmpty) unescape("<!-- Custom styles-->\n") %>
-    <% styles.foreach((style: String) => {
-        val url = uri(style)
-        unescape(s"""<link href="$url" rel="stylesheet" type="text/css">""" + "\n")
-        }) %>
+<% if (styles.nonEmpty) unescape("<!-- Custom styles-->\n") %>
+<% styles.foreach((style: String) => {
+    val url = uri(style)
+    unescape(s"""<link href="$url" rel="stylesheet" type="text/css">""" + "\n")
+    }) %>
 </head>
 
 <body>
@@ -44,14 +44,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><i id="favicon" class="fa fa-connectdevelop fa-fw"></i> ${title}</a>
+            <a class="navbar-brand" href="${uri("/")}"><i id="favicon" class="fa fa-connectdevelop fa-fw"></i> ${title}</a>
         </div><!-- /.navbar-header -->
 
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
                     <li>
-                        <a href="${uri("/")}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        <a href="${uri("/")}"><i class="fa fa-tasks fa-fw"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="#sensors"><i class="fa fa-bar-chart-o fa-fw"></i> Sensors<span class="fa arrow"></span></a>
@@ -68,13 +68,22 @@
                         <li>
                             <a href="${uri("/charts/presence")}">Presence</a>
                         </li>
-                        <li>
-                            <a href="${uri("/charts/zones")}">Zones</a>
-                        </li>
+
                         </ul><!-- /.nav-second-level -->
                     </li>
                     <li>
-                        <a id="sensors" href="#sensors"><i class="fa fa-cogs fa-fw"></i> Actors<span class="fa arrow"></span></a>
+                        <a href="#zones"><i class="fa fa-map-signs fa-fw"></i> Zones<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                        <li>
+                            <a href="${uri("/zones/data")}">Data</a>
+                        </li>
+                        <li>
+                            <a href="${uri("/zones/management")}">Management</a>
+                        </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#actors"><i class="fa fa-cogs fa-fw"></i> Actors<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                         <li>
                             <a id="start-actor" href="#start-actor">Start</a>
@@ -113,11 +122,15 @@
         </div><!-- /.modal -->
 
 
-        <div class="container-fluid">
+        <div id="content" class="container-fluid">
             ${unescape(body)}
         </div><!-- /.container-fluid -->
 
-    </div><!-- /#page-wrapper -->
+        <footer class="container-fluid">
+            <hr>
+                <p>&copy; SmartCity 2017</p>
+            </footer>
+        </div><!-- /#page-wrapper -->
 
     </div><!-- /#wrapper -->
 
@@ -135,9 +148,9 @@
     <script type="text/javascript" src="${uri("/resources/js/default.js")}"></script>
     <% if (styles.nonEmpty) unescape("<!-- Custom scripts-->\n") %>
     <% scripts.foreach((script: String) => {
-    val url = uri(script)
-    unescape(s"""<script type="text/javascript" src="$url"></script>""" + "\n")
-    }) %>
-</body>
+        val url = uri(script)
+        unescape(s"""<script type="text/javascript" src="$url"></script>""" + "\n")
+        }) %>
+    </body>
 
 </html>

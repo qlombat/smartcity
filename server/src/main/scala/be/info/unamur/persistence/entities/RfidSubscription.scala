@@ -21,7 +21,7 @@ case class RfidSubscription(id: Long,
   * @author Justin Sirjacques
   */
 object RfidSubscription extends SQLSyntaxSupport[RfidSubscription] {
-  override val tableName = "rfidsubscription"
+  override val tableName = "rfid_subscription"
   override val columns = Seq("id", "first_name", "last_name", "tag", "created_at")
   override val autoSession = AutoSession
   val rfidsubscription: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[RfidSubscription], RfidSubscription] = RfidSubscription.syntax("r")

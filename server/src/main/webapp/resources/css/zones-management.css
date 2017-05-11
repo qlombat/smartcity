@@ -1,0 +1,9 @@
+#message {
+    position: fixed;
+    top: 10em;
+    right: 10em;
+}
+
+#alert_placeholder {
+    margin: 0 auto;
+}

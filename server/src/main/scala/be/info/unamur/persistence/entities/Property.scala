@@ -55,7 +55,7 @@ object Property extends SQLSyntaxSupport[Property] {
 
   def destroy(p: Property)(implicit session: DBSession = autoSession): Unit = {
     withSQL {
-      delete.from(Property).where.eq(column.id, p.value)
+      delete.from(Property).where.eq(column.id, p.id)
     }.update.apply()
   }
 }

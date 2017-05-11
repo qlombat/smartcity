@@ -50,23 +50,9 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
   get("/charts/presence") {
     layoutTemplate("/WEB-INF/views/charts/presence-charts.ssp",
       ("styles", List("/resources/css/presence-chart.css")),
-      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/charts/presence-charts/presence-chart-utils.js",
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js", "/resources/js/charts/presence-charts/presence-chart-utils.js",
         "/resources/js/charts/presence-charts/all-bar-chart.js", "/resources/js/charts/presence-charts/all-doughnut-chart.js",
         "/resources/js/charts/presence-charts/all-line-chart.js")))
-  }
-
-  get("/charts/zones") {
-    layoutTemplate("/WEB-INF/views/charts/zones-charts.ssp",
-      ("styles", List("/resources/vendor/datatables-plugins/dataTables.bootstrap.css",
-        "/resources/vendor/datatables-responsive/dataTables.responsive.css",
-        "/resources/css/zones-charts.css")),
-      ("scripts", List("/resources/vendor/datatables/js/jquery.dataTables.min.js",
-        "/resources/vendor/datatables-plugins/dataTables.bootstrap.min.js",
-        "/resources/vendor/datatables-responsive/dataTables.responsive.js",
-        "/resources/vendor/momentjs/moment.min.js",
-        "/resources/vendor/momentjs/moment-duration-format.js",
-        "/resources/vendor/chartjs/chart.bundle.min.js",
-        "/resources/js/charts/zones-charts.js")))
   }
 
   get("/charts/luminosity") {
@@ -79,15 +65,41 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
   get("/charts/humidity") {
     layoutTemplate("/WEB-INF/views/charts/humidity-charts.ssp",
       ("styles", Nil),
-      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/charts/charts-utils.js",
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js", "/resources/js/charts/charts-utils.js",
         "/resources/js/charts/humidity-charts.js")))
   }
 
   get("/charts/temperature") {
     layoutTemplate("/WEB-INF/views/charts/temperature-charts.ssp",
       ("styles", Nil),
-      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js","/resources/js/charts/charts-utils.js",
+      ("scripts", List("/resources/vendor/chartjs/chart.bundle.min.js", "/resources/js/charts/charts-utils.js",
         "/resources/js/charts/temperature-charts.js")))
+  }
+
+  get("/zones/data") {
+    layoutTemplate(
+      "/WEB-INF/views/zones/zones-data.ssp",
+      ("styles", List("/resources/vendor/datatables-plugins/dataTables.bootstrap.css",
+        "/resources/vendor/datatables-responsive/dataTables.responsive.css",
+        "/resources/css/zones-data.css")),
+      ("scripts", List("/resources/vendor/datatables/js/jquery.dataTables.min.js",
+        "/resources/vendor/datatables-plugins/dataTables.bootstrap.min.js",
+        "/resources/vendor/datatables-responsive/dataTables.responsive.js",
+        "/resources/vendor/momentjs/moment.min.js",
+        "/resources/vendor/momentjs/moment-duration-format.js",
+        "/resources/vendor/chartjs/chart.bundle.min.js",
+        "/resources/js/zones/zones-data.js"))
+    )
+  }
+
+  get("/zones/management") {
+    layoutTemplate(
+      "/WEB-INF/views/zones/zones-management.ssp",
+      ("styles", List("/resources/css/zones-management.css")),
+      ("scripts", List("/resources/vendor/bootstrap-validator/validator.min.js",
+        "/resources/vendor/bootstrap-notify/bootstrap-notify.min.js",
+        "/resources/js/zones/zones-management.js"))
+    )
   }
 
 }

@@ -21,7 +21,7 @@ case class RfidTag(id: Long,
   * @author Justin Sirjacques
   */
 object RfidTag extends SQLSyntaxSupport[RfidTag] {
-  override val tableName = "rfidtag"
+  override val tableName = "rfid_tag"
   override val columns = Seq("id", "name", "tag", "entry", "created_at")
   override val autoSession = AutoSession
   val rfidtag: QuerySQLSyntaxProvider[scalikejdbc.SQLSyntaxSupport[RfidTag], RfidTag] = RfidTag.syntax("r")
