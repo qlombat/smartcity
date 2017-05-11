@@ -19,6 +19,7 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Act
   val logger: Logger = LoggerFactory.getLogger(getClass)
   var sensorChangeListener: SensorChangeListener = _
   var sensorChangeListenerDB: SensorChangeListener = _
+  var listen = true
 
   override def receive: Receive = {
 
@@ -27,22 +28,16 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Act
      */
     case Initialize() =>
       // Necessary sender reference for the listener below
-
       sensorChangeListener = new SensorChangeListener {
-        override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex) && ik.getSensorValue(sensorChangeEvent.getIndex) < AuxiliaryCarDetectorActor.valueCarDetection) {
-            Sensor.create(context.self.path.name, 1, sensorChangeEvent.getValue, new Timestamp(System.currentTimeMillis()))
-            context.parent ! OpenAuxiliary()
-          }
-        }
-      }
-
-      sensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex)) {
             if (ik.getSensorValue(sensorChangeEvent.getIndex) < AuxiliaryCarDetectorActor.valueCarDetection) {
               logger.debug("Car detected on " + context.self.path.name)
               Sensor.create(context.self.path.name, 1, sensorChangeEvent.getValue, new Timestamp(System.currentTimeMillis()))
+              if (listen) {
+                logger.debug(context.self.path.name + " would open auxiliary traffic light")
+                context.parent ! OpenAuxiliary()
+              }
             } else {
               logger.debug("Car is away on " + context.self.path.name)
               Sensor.create(context.self.path.name, 0, sensorChangeEvent.getValue, new Timestamp(System.currentTimeMillis()))
@@ -61,23 +56,28 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Act
      */
     case Start() =>
       ik addSensorChangeListener sensorChangeListener
-      ik removeSensorChangeListener sensorChangeListenerDB
-      if (ik.getSensorValue(index) < AuxiliaryCarDetectorActor.valueCarDetection) {
-        sender ! OpenAuxiliary()
-      }
-
+      self ! StartListen
     /*
-     * Removes the listener from the interface kit.
+     * Removes all listener from the interface kit.
      */
     case Stop() =>
       ik removeSensorChangeListener sensorChangeListener
+
       sender ! Stopped()
 
     /*
-     * Adds the listener for database updates to the interface kit.
+     * Start to listen this actor
      */
-    case GreenLigth() =>
-      ik addSensorChangeListener sensorChangeListenerDB
+    case StartListen() =>
+      logger.debug("Start to listen " + context.self.path.name)
+      listen = true
+
+    /*
+     * Stop to listen this actor
+     */
+    case StopListen() =>
+      logger.debug("Stop to listen " + context.self.path.name)
+      listen = false
       sender ! Stopped()
   }
 }

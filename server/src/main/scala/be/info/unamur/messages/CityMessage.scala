@@ -21,8 +21,9 @@ case class Close() extends CityMessage
 case class OpenBarrier() extends CityMessage
 case class CloseBarrier() extends CityMessage
 case class Stop() extends CityMessage
+case class StopListen() extends CityMessage
+case class StartListen() extends CityMessage
 case class Stopped() extends CityMessage
 case class MainCarDetected() extends CityMessage
 case class Opened() extends CityMessage
 case class Closed() extends CityMessage
-case class GreenLigth() extends CityMessage

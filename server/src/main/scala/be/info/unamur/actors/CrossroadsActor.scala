@@ -110,12 +110,12 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
    */
     case OpenAuxiliary() =>
-
+      logger.debug("OpenAuxiliary of " + context.self.path.name)
       auxiliaryScheduler.cancel()
       /* Once a carDetected in Auxiliary, turn off listener to not receive too much request "OpenAuxiliary". These listener
          will be turned on again when the red light will be on. */
-      auxiliaryCarDetectorActorSouth ! Stop()
-      auxiliaryCarDetectorActorNorth ! Stop()
+      auxiliaryCarDetectorActorSouth ! StopListen()
+      auxiliaryCarDetectorActorNorth ! StopListen()
 
       //If there is no car on the main road, no need to wait the entire usual waiting time.
       val requestMainCarDetector1 = mainCarDetectorActorWest ? MainCarDetected()
@@ -138,9 +138,11 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         // It there is traffic jam, Auxiliary waits more time to let the MainRoad progress.
         case (true, _) | (_, true) =>
           if (timeOfLastAuxiliaryGreenLight.getSecondOfDay + CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights < new DateTime().getSecondOfDay) {
+            logger.debug("Traffic jam detected. Wait to open auxiliary of " + context.self.path.name)
             Thread sleep (CrossroadsActor.waitingTimeWhenTrafficJam * 1000)
             openAuxiliary()
           } else {
+            logger.debug("Wait few seconds to open auxiliary of " + context.self.path.name)
             Thread sleep switchTheLights(timeOfLastAuxiliaryGreenLight, CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights)
             openAuxiliary()
           }
@@ -183,24 +185,33 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    */
   def openAuxiliary(): Unit = {
 
+    //stop message of these actors
+    auxiliaryCarDetectorActorSouth ! StopListen()
+    auxiliaryCarDetectorActorNorth ! StopListen()
+
+    logger.debug("Turn pedestrian leds off - " + context.self.path.name)
     pedestrianCrossingActor ! SetOff()
     Thread sleep CrossroadsActor.pedestrianCrossingTime * 1000
+    logger.debug("Put main road leds to red - " + context.self.path.name)
     trafficLightsMainActor ! SetRed()
     Thread sleep CrossroadsActor.carCrossingTime * 1000
+    logger.debug("Put auxiliary road leds to green - " + context.self.path.name)
     trafficLightsAuxiliaryActor ! SetGreen()
-    auxiliaryCarDetectorActorSouth ! GreenLigth()
-    auxiliaryCarDetectorActorNorth ! GreenLigth()
     Thread sleep CrossroadsActor.auxiliaryGreenLightTime * 1000
+    logger.debug("Put auxiliary road leds to red - " + context.self.path.name)
     trafficLightsAuxiliaryActor ! SetRed()
     Thread sleep CrossroadsActor.carCrossingTime * 1000
+    logger.debug("Put main road leds to green - " + context.self.path.name)
     trafficLightsMainActor ! SetGreen()
+    logger.debug("Turn pedestrian leds on - " + context.self.path.name)
     pedestrianCrossingActor ! SetOn()
 
     timeOfLastAuxiliaryGreenLight = DateTime.now()
 
-    // Turn on listeners
-    auxiliaryCarDetectorActorSouth ! Start()
-    auxiliaryCarDetectorActorNorth ! Start()
+    //start message of these actors
+    auxiliaryCarDetectorActorSouth ! StartListen()
+    auxiliaryCarDetectorActorNorth ! StartListen()
+
     auxiliaryScheduler = context.system.scheduler.scheduleOnce(
       Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
       self,

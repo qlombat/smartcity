@@ -43,6 +43,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex)) {
             val value = ik.getSensorValue(sensorChangeEvent.getIndex)
+            logger.debug("Value of " + context.self.path.name + " " + value)
             val detected = Math.abs(initialValue - value) > MainRoadCarDetectorActor.valueCarDetection
             if (!alreadyDetected && detected) {
               logger.debug("Car detected on " + context.self.path.name)
@@ -79,7 +80,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
               }
 
             } else if (!alreadyDetected && !detected) {
-              if (Math.abs(System.currentTimeMillis() - lastInitialValueUpdate) > 1000) {
+              if (Math.abs(System.currentTimeMillis() - lastInitialValueUpdate) > 1000 && Math.abs(initialValue - value) <= MainRoadCarDetectorActor.trigger) {
                 logger.debug("Luminosity change on " + context.self.path.name + " from " + initialValue + " to " + value)
                 initialValue = value
                 lastInitialValueUpdate = System.currentTimeMillis()
@@ -122,7 +123,7 @@ object MainRoadCarDetectorActor {
   /* Constants */
 
   //Under this value, there isn't any car. Upper, a car is present
-  val valueCarDetection: Int = 300
+  val valueCarDetection: Int = 150
 
   //Trigger for the listener
   val trigger: Int = 5
