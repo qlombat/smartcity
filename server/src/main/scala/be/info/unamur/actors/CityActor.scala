@@ -3,7 +3,7 @@ package be.info.unamur.actors
 import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import be.info.unamur.messages.{Initialize, Start, Stop}
+import be.info.unamur.messages.{Initialize, OpenAuxiliary, Start, Stop}
 import com.phidgets.InterfaceKitPhidget
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -40,7 +40,6 @@ class CityActor extends Actor {
 
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
-
   override def receive: Receive = {
 
     /*
@@ -54,6 +53,8 @@ class CityActor extends Actor {
         val initCrossroads = crossroadsActor ? Initialize()
         val initParking = parkingActor ? Initialize()
         val initPublicLightning = publicLightingActor ? Initialize()
+
+        val auxiliaryScheduler = context.system.scheduler.schedule(Duration.apply(0, "seconds"),Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights, "seconds"), crossroadsActor, OpenAuxiliary)
 
         val results = for {
           resultInitCrossroads <- initCrossroads

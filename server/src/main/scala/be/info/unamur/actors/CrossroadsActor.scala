@@ -37,10 +37,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   val auxiliaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActor1")
   val auxiliaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActor2")
 
-  // The two PedestrianTouchActors that handle the touch sensors on each side of the auxiliary road of the model.
-  //val pedestrianTouchDetectorActor1: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 6)), name = "pedestrianTouchDetectorActor1")
-  //val pedestrianTouchDetectorActor2: ActorRef = context.actorOf(Props(new PedestrianTouchActor(ik, 7)), name = "pedestrianTouchDetectorActor2")
-
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
 
@@ -71,8 +67,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val initMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Initialize()
       val initAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Initialize()
       val initAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Initialize()
-      //val initPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Initialize()
-      //val initPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Initialize()
       timeOfLastAuxiliaryGreenLight = new DateTime()
       timeOfLastPedestrianGreenLight = new DateTime()
       lastOpenAuxiliaryMessage = new DateTime()
@@ -86,8 +80,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         resultInitMainRoadCarDetectorActor2 <- initMainRoadCarDetectorActor2
         resultInitAuxiliaryCarDetectorActor1 <- initAuxiliaryCarDetectorActor1
         resultInitAuxiliaryCarDetectorActor2 <- initAuxiliaryCarDetectorActor2
-      //resultInitPedestrianTouchDetectorActor1 <- initPedestrianTouchDetectorActor1
-      //resultInitPedestrianTouchDetectorActor2 <- initPedestrianTouchDetectorActor2
       } yield (resultInitTrafficLightsMainActor,
         resultInitTrafficLightsAuxiliaryActor,
         resultInitPedestrianCrossingActor,
@@ -95,8 +87,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         resultInitMainRoadCarDetectorActor2,
         resultInitAuxiliaryCarDetectorActor1,
         resultInitAuxiliaryCarDetectorActor2
-        //resultInitPedestrianTouchDetectorActor1,
-        //resultInitPedestrianTouchDetectorActor2
       )
 
       results pipeTo sender
@@ -113,8 +103,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       mainCarDetectorActor2 ! Start()
       auxiliaryCarDetectorActor1 ! Start()
       auxiliaryCarDetectorActor2 ! Start()
-    //pedestrianTouchDetectorActor1 ! Start()
-    //pedestrianTouchDetectorActor2 ! Start()
 
     /*
    * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
@@ -155,22 +143,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
           }
       }
 
-
-    /*
-     * When the touch sensors are triggered, closes the auxiliary road if it is opened, opens the main road, and let the pedestrians pass.
-     */
-    case Pedestrian() =>
-      // Checks if the request has been sent few minutes ago. If yes, does not add it to the message queue.
-      if (lastPedestrianMessage.getSecondOfDay + CrossroadsActor.minimumTimeSinceLastRequest < new DateTime().getSecondOfDay) {
-        lastPedestrianMessage = DateTime.now()
-        Thread sleep switchTheLights(timeOfLastPedestrianGreenLight, CrossroadsActor.differenceBetweenGreenPedestrianCrossRoads)
-        timeOfLastPedestrianGreenLight = DateTime.now()
-        trafficLightsAuxiliaryActor ! SetRed()
-        Thread sleep 4000
-        pedestrianCrossingActor ! SetOn()
-        trafficLightsMainActor ! SetGreen()
-      }
-
     /*
      * Stops all the sub-actors.
      */
@@ -182,8 +154,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val stopMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Stop()
       val stopAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Stop()
       val stopAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Stop()
-      //val stopPedestrianTouchDetectorActor1 = pedestrianTouchDetectorActor1 ? Stop()
-      //val stopPedestrianTouchDetectorActor2 = pedestrianTouchDetectorActor2 ? Stop()
 
       val results = for {
         resultStopTrafficLightsMainActor <- stopTrafficLightsMainActor
@@ -193,8 +163,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         resultStopMainRoadCarDetectorActor2 <- stopMainRoadCarDetectorActor2
         resultStopAuxiliaryCarDetectorActor1 <- stopAuxiliaryCarDetectorActor1
         resultStopAuxiliaryCarDetectorActor2 <- stopAuxiliaryCarDetectorActor2
-      //resultStopPedestrianTouchDetectorActor1 <- stopPedestrianTouchDetectorActor1
-      //resultStopPedestrianTouchDetectorActor2 <- stopPedestrianTouchDetectorActor2
       } yield (resultStopTrafficLightsMainActor,
         resultStopTrafficLightsAuxiliaryActor,
         resultStopPedestrianCrossingActor,
@@ -202,8 +170,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
         resultStopMainRoadCarDetectorActor2,
         resultStopAuxiliaryCarDetectorActor1,
         resultStopAuxiliaryCarDetectorActor2
-        //resultStopPedestrianTouchDetectorActor1,
-        //resultStopPedestrianTouchDetectorActor2
       )
 
       results pipeTo sender
@@ -257,7 +223,7 @@ object CrossroadsActor {
   /* Constants */
 
   // The minimum time since the last time the auxiliary trafficlights has been switched on. (seconds)
-  val differenceBetweenGreenAuxiliaryTrafficLights = 1
+  val differenceBetweenGreenAuxiliaryTrafficLights = 10
 
   // The minimum time since the last time the pedestrians could cross the road. (seconds)
   val differenceBetweenGreenPedestrianCrossRoads = 15

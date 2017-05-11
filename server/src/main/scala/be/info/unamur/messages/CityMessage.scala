@@ -18,7 +18,6 @@ case class OpenAuxiliary() extends CityMessage
 case class OpenMainRoad() extends CityMessage
 case class Blink() extends CityMessage
 case class Close() extends CityMessage
-case class Pedestrian() extends CityMessage
 case class OpenBarrier() extends CityMessage
 case class CloseBarrier() extends CityMessage
 case class Stop() extends CityMessage
