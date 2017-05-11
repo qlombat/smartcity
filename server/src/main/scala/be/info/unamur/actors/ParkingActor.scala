@@ -59,9 +59,18 @@ class ParkingActor extends Actor {
       // Sends the "open barrier" message when a RFID tag is read.
       this.tagGainListener = new TagGainListener {
         override def tagGained(tagGainEvent: TagGainEvent): Unit = {
-          rfid removeTagGainListener ParkingActor.this.tagGainListener
-          rfid addTagLossListener ParkingActor.this.tagLossListener
-          if (!RfidSubscription.findAllBy(sqls"tag = ${tagGainEvent.getValue}").isEmpty) {
+          var taken = 0
+          var subscription = RfidSubscription.findAll()
+          for (e <- subscription) {
+            (RfidTag.findAllBy(sqls"tag = ${e.tag} ORDER BY created_at DESC LIMIT 1")) match {
+              case Nil =>
+              case l => if (l.head.entry == 1) taken += 1
+            }
+          }
+          if (!RfidSubscription.findAllBy(sqls"tag = ${tagGainEvent.getValue}").isEmpty && (taken < ParkingActor.totalPlaces ||
+            RfidTag.findAllBy(sqls"tag = ${tagGainEvent.getValue} ORDER BY created_at DESC LIMIT 1").head.entry == 1)) {
+            rfid removeTagGainListener ParkingActor.this.tagGainListener
+            rfid addTagLossListener ParkingActor.this.tagLossListener
             barrierActor ! OpenBarrier()
             RfidTag.create(context.self.path.name, tagGainEvent.getValue, new Timestamp(System.currentTimeMillis()))
           }
@@ -114,4 +123,5 @@ class ParkingActor extends Actor {
 object ParkingActor {
   /* Constants */
   val RfidPhidgetId: Int = 384608
+  var totalPlaces = 3
 }

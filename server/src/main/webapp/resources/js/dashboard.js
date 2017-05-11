@@ -7,13 +7,13 @@
  */
 $(document).ready(function () {
     function updateSensors() {
-        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +  "/api/sensors/temperature", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/temperature", function (data) {
             if (typeof data.value === 'undefined') {
                 $("#temp-value").text("N/A");
             } else {
                 $("#temp-value").text(data.value + "° C");
             }
-        }).fail(function(){
+        }).fail(function () {
             $("#temp-value").text("N/A");
         });
         $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/light", function (data) {
@@ -22,7 +22,7 @@ $(document).ready(function () {
             } else {
                 $("#luminosity").text(data.value + " lux");
             }
-        }).fail(function(){
+        }).fail(function () {
             $("#luminosity").text("N/A");
         });
         $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/humidity", function (data) {
@@ -32,16 +32,20 @@ $(document).ready(function () {
                 $("#humidity").text(data.value + " %");
             }
 
-        }).fail(function(){
+        }).fail(function () {
             $("#humidity").text("N/A");
         });
-        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/rfid/parking/accessibility", function (data) {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/parking/accessibility", function (data) {
             if (typeof data._1.taken === 'undefined') {
                 $("#parking").text("N/A");
             } else {
-                $("#parking").text(data._2.totalplaces - data._1.taken + " of " + data._2.totalplaces);
+                if (data._2.totalplaces - data._1.taken == 0) {
+                    $("#parking").text("Full");
+                } else {
+                    $("#parking").text(data._2.totalplaces - data._1.taken + " free");
+                }
             }
-        }).fail(function(){
+        }).fail(function () {
             $("#parking").text("N/A");
         });
     }

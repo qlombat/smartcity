@@ -7,6 +7,7 @@ import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scalikejdbc._
+
 /** Api endpoint to retrieve parking information.
   *
   * @author Justin Sirjacques
@@ -21,14 +22,14 @@ class ParkingEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
     contentType = formats("json")
   }
 
-  get("/parking/accessibility") {
+  get("/accessibility") {
     new AsyncResult() {
       override val is = Future {
         var taken = 0
         for (e <- RfidSubscription.findAll()) {
-           (RfidTag.findAllBy(sqls"tag = ${e.tag} ORDER BY created_at DESC LIMIT 1"))match{
-             case Nil =>
-             case l => if (l.head.entry == 1) taken += 1
+          RfidTag.findAllBy(sqls"tag = ${e.tag} ORDER BY created_at DESC LIMIT 1") match {
+            case Nil =>
+            case l => if (l.head.entry == 1) taken += 1
           }
         }
         ("taken" -> taken, "totalplaces" -> ParkingEndpoint.totalPlaces)
