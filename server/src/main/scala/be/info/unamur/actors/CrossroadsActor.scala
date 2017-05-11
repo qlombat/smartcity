@@ -46,14 +46,9 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   // A DateTime variable that checks if the last time the two traffic lights have switched was not enough long ago.
   var timeOfLastAuxiliaryGreenLight: DateTime = _
 
-  // A DateTime variable that checks if the last time the two pedestrians crossroads have been green was not enough long ago.
-  var timeOfLastPedestrianGreenLight: DateTime = _
 
   // The last time the OpenAuxiliary Message has been received.
   var lastOpenAuxiliaryMessage: DateTime = _
-
-  //the last time the Pedestrian Message has been received.
-  var lastPedestrianMessage: DateTime = _
 
   var auxiliaryScheduler: Cancellable = _
 
@@ -73,9 +68,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val initAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Initialize()
       val initAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Initialize()
       timeOfLastAuxiliaryGreenLight = new DateTime()
-      timeOfLastPedestrianGreenLight = new DateTime()
       lastOpenAuxiliaryMessage = new DateTime()
-      lastPedestrianMessage = new DateTime()
       auxiliaryScheduler = context.system.scheduler.scheduleOnce(
         Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
         self,
@@ -118,6 +111,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    */
     case OpenAuxiliary() =>
 
+      auxiliaryScheduler.cancel()
       /* Once a carDetected in Auxiliary, turn off listener to not receive too much request "OpenAuxiliary". These listener
          will be turned on again when the red light will be on. */
       auxiliaryCarDetectorActor1 ! Stop()
@@ -189,8 +183,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    */
   def openAuxiliary(): Unit = {
 
-
-    auxiliaryScheduler.cancel()
     pedestrianCrossingActor ! SetOff()
     Thread sleep CrossroadsActor.pedestrianCrossingTime * 1000
     trafficLightsMainActor ! SetRed()
