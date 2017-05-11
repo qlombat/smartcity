@@ -1,6 +1,6 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Cancellable, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages.{Initialize, OpenAuxiliary, Start, Stop}
@@ -40,6 +40,8 @@ class CityActor extends Actor {
 
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
+  var auxiliaryScheduler:Cancellable = _
+
   override def receive: Receive = {
 
     /*
@@ -54,7 +56,11 @@ class CityActor extends Actor {
         val initParking = parkingActor ? Initialize()
         val initPublicLightning = publicLightingActor ? Initialize()
 
-        val auxiliaryScheduler = context.system.scheduler.schedule(Duration.apply(0, "seconds"),Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliaryTrafficLights, "seconds"), crossroadsActor, OpenAuxiliary)
+        auxiliaryScheduler = context.system.scheduler.schedule(
+          Duration.apply(CityActor.differenceBetweenAuxiliary, "seconds"),
+          Duration.apply(CityActor.differenceBetweenAuxiliary, "seconds"),
+          crossroadsActor,
+          OpenAuxiliary())
 
         val results = for {
           resultInitCrossroads <- initCrossroads
@@ -78,6 +84,7 @@ class CityActor extends Actor {
      */
     case Stop() =>
       if (!stopped) {
+        auxiliaryScheduler.cancel()
         val stopCrossroads = crossroadsActor ? Stop()
         val stopParking = parkingActor ? Stop()
         val stopPublicLightning = publicLightingActor ? Stop()
@@ -97,4 +104,5 @@ class CityActor extends Actor {
 
 object CityActor {
   val IKPhidgetId: Int = 445876
+  val differenceBetweenAuxiliary = 60
 }

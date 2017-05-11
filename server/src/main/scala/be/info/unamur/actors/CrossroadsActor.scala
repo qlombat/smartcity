@@ -223,7 +223,7 @@ object CrossroadsActor {
   /* Constants */
 
   // The minimum time since the last time the auxiliary trafficlights has been switched on. (seconds)
-  val differenceBetweenGreenAuxiliaryTrafficLights = 10
+  val differenceBetweenGreenAuxiliaryTrafficLights = 1
 
   // The minimum time since the last time the pedestrians could cross the road. (seconds)
   val differenceBetweenGreenPedestrianCrossRoads = 15
