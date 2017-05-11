@@ -20,6 +20,23 @@
 .panel-blue-light > a {
     color: #0099cc;
 }
+
+.panel.panel-red {
+    background: #e74c3c;
+}
+.panel-red {
+    border-color: #c0392b;
+}
+.panel-red > .panel-heading {
+    border-color: #c0392b;
+    color: white;
+    background-color: #c0392b;
+}
+.panel-red > a {
+    color: #c0392b;
+}
+
+
 #page-wrapper {
     padding-top: 40px;
 }
@@ -37,4 +54,34 @@
 }
 #city-map-panel .panel-body{
     padding: 0;
+}
+
+.popover-map-sensor{
+    background: #00bfff;
+    min-width: 300px;
+}
+.popover-map-sensor .arrow:after{
+    border-top-color: #00bfff !important;
+}
+.popover-map-sensor > .popover-heading {
+    padding: 10px 15px;
+    border-color: #0099cc;
+    color: white;
+    background-color: #0099cc
+}
+.popover-map-sensor > .popover-heading .popover-title {
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    background-color: transparent;
+    border-bottom: none;
+}.popover-map-sensor > .popover-heading .popover-content {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    background-color: transparent;
+    border-bottom: none;
 }

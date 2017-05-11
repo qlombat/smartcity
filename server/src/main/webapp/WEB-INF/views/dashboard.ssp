@@ -1,9 +1,11 @@
 <div class="row">
 <div class="col-lg-12">
     <div class="panel panel-default" id="city-map-panel">
-        <div class="panel-heading">
-            <i class="fa fa-map fa-fw"></i> City map
-        </div><!-- /.panel-heading -->
+
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title pull-left" style="padding-top: 7.5px;"><i class="fa fa-map fa-fw"></i> City map</h4>
+            <button type="button" class="btn btn-default btn-refresh pull-right">Refresh</button>
+        </div>
         <div class="panel-body">
             <div id="city-map">
                 <svg id="city-map-svg" viewBox="0.0 0.0 1277.7821522309712 1004.6325459317585"></svg>
@@ -14,97 +16,118 @@
 </div>
 
 <div class="row">
-<div class="col-lg-2">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-thermometer-half fa-5x"></i>
-                </div>
-                <div class="col-xs-9 text-right">
-                    <div class="huge">
-                        <div id="temp-value"></div>
+<div class="col-lg-9">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-thermometer-half fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">
+                                <div id="temp-value"></div>
+                            </div>
+                            <div>Temperature</div>
+                        </div>
                     </div>
-                    <div>Temperature</div>
+                </div>
+                <a href="${uri("/charts/temperature")}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Details</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-lightbulb-o fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">
+                                <div id="luminosity"></div>
+                            </div>
+                            <div>Luminosity</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="${uri("/charts/luminosity")}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Details</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tint fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">
+                                <div id="humidity"></div>
+                            </div>
+                            <div>Humidity</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="${uri("/charts/humidity")}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Details</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-blue-light">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-car fa-4x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">
+                                <div id="parking"></div>
+                            </div>
+                            <div>Parking</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <a href="${uri("/charts/temperature")}">
-            <div class="panel-footer">
-                <span class="pull-left">View Details</span>
-                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                <div class="clearfix"></div>
-            </div>
-        </a>
-    </div>
-</div>
-<div class="col-lg-2">
-    <div class="panel panel-yellow">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-lightbulb-o fa-5x"></i>
-                </div>
-                <div class="col-xs-9 text-right">
-                    <div class="huge">
-                        <div id="luminosity"></div>
+        <div class="col-lg-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tachometer fa-4x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">
+                                <div id="speed"></div>
+                            </div>
+                            <div>Speed</div>
+                        </div>
                     </div>
-                    <div>Luminosity</div>
-                </div>
-            </div>
-        </div>
-        <a href="${uri("/charts/luminosity")}">
-            <div class="panel-footer">
-                <span class="pull-left">View Details</span>
-                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                <div class="clearfix"></div>
-            </div>
-        </a>
-    </div>
-</div>
-<div class="col-lg-2">
-    <div class="panel panel-green">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-tint fa-5x"></i>
-                </div>
-                <div class="col-xs-9 text-right">
-                    <div class="huge">
-                        <div id="humidity"></div>
-                    </div>
-                    <div>Humidity</div>
-                </div>
-            </div>
-        </div>
-        <a href="${uri("/charts/humidity")}">
-            <div class="panel-footer">
-                <span class="pull-left">View Details</span>
-                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                <div class="clearfix"></div>
-            </div>
-        </a>
-    </div>
-</div>
-<div class="col-lg-2">
-    <div class="panel panel-blue-light">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-car fa-4x"></i>
-                </div>
-                <div class="col-xs-9 text-right">
-                    <div class="huge">
-                        <div id="parking"></div>
-                    </div>
-                    <div>Parking</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="col-lg-4">
+<div class="col-lg-3">
     <div class="panel panel-default">
         <div class="panel-heading">
             <i class="fa fa-bell fa-fw"></i> Zones Alerts

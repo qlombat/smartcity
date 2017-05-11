@@ -98,8 +98,7 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
     /*
      * Checks if there is a car on the street.
      */
-    case MainCarDetected()
-    =>
+    case MainCarDetected() =>
       if (Math.abs(initialValue - ik.getSensorValue(index)) > MainRoadCarDetectorActor.valueCarDetection) {
         sender ! true
       } else sender ! false
@@ -125,7 +124,7 @@ object MainRoadCarDetectorActor {
   val valueCarDetection: Int = 300
 
   //Trigger for the listener
-  val trigger: Int = 25
+  val trigger: Int = 50
 
   //Minimum time between two car detections. (seconds)
   val timeBetweenCarDectection: Int = 3

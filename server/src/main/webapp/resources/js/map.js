@@ -1,4 +1,10 @@
-//SVG generator
+/****************************/
+/****************************/
+/************SVG*************/
+/****************************/
+/****************************/
+
+
 var rsr = Snap("#city-map-svg");
 var bg = rsr.path("M.5.5H1278.77V1005.13H.5Z").attr({
     fill: '#6aa84f',
@@ -21,12 +27,13 @@ var path_c = rsr.path("M104,841.35H1176.4V980.69H104Z").attr({
     'stroke-width': '0',
     'stroke-opacity': '1'
 }).transform("t-0.5 -0.5").data('id', 'path_c');
-var path_d = rsr.path("M243.32,25.35V980.69H104V25.35Z").attr({
+var roadSouthWest = rsr.path("M243.32,25.35V980.31H104V25.35Z").attr({
+    id: 'roadSouthWest',
     fill: '#b7b7b7',
     parent: 'Road',
     'stroke-width': '0',
     'stroke-opacity': '1'
-}).transform("t-0.5 -0.5").data('id', 'path_d');
+}).transform("t-0.5 -0.5");
 var path_e = rsr.path("M1176.39,25V980.31H1037V25Z").attr({
     fill: '#b7b7b7',
     parent: 'Road',
@@ -673,13 +680,6 @@ var StopSouthToNorthWest = rsr.path("M171.64,606.52h71.68").attr({
     parent: 'Bande',
     'stroke-opacity': '1'
 }).transform("t-0.5 -0.5").data('id', 'StopSouthToNorthWest');
-var Parking = rsr.path("M346.87,764.23V718.42h14.84q8.44,0,11,.69a12,12,0,0,1,6.59,4.48,14.22,14.22,0,0,1,2.66,8.92,15,15,0,0,1-1.53,7.09,12.56,12.56,0,0,1-3.89,4.52,13.41,13.41,0,0,1-4.8,2.17,52.79,52.79,0,0,1-9.59.66h-6v17.28Zm9.25-38.06v13h5.06q5.47,0,7.31-.72a6.07,6.07,0,0,0,2.89-2.25,6.16,6.16,0,0,0,1-3.56,5.92,5.92,0,0,0-1.47-4.12,6.4,6.4,0,0,0-3.72-2,44.47,44.47,0,0,0-6.66-.31Z").attr({
-    id: 'Parking',
-    fill: '#fff',
-    parent: 'Bande',
-    'stroke-width': '0',
-    'stroke-opacity': '1'
-}).transform("t-0.5 -0.5").data('id', 'Parking');
 var StopNorthToSouthCenter2 = rsr.path("M569.72,839.27h70.17").attr({
     id: 'StopNorthToSouthCenter-2',
     "data-name": 'StopNorthToSouthCenter',
@@ -700,6 +700,67 @@ var StopSouthToNorthCenter2 = rsr.path("M639,165.84h70.17").attr({
     parent: 'Bande',
     'stroke-opacity': '1'
 }).transform("t-0.5 -0.5").data('id', 'StopSouthToNorthCenter2');
+
+var zoneNorthWest_RoadWest = rsr.rect(103, 24, 140, 377).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneNorthWest_RoadNorth = rsr.rect(243, 24, 326, 140).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneNorthEast_RoadEst = rsr.rect(1036, 24, 140, 377).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneNorthEast_RoadNorth = rsr.rect(709, 24, 327, 140).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneNorth_RoadCenter = rsr.rect(569, 24, 140, 377).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+
+var zoneSouthWest_RoadWest = rsr.rect(103, 604, 140, 377).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneSouthWest_RoadSouth = rsr.rect(243, 841, 326, 140).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneSouthEast_RoadEst = rsr.rect(1036, 604, 140, 377).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneSouthEast_RoadSouth = rsr.rect(709, 841, 327, 140).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+var zoneSouth_RoadCenter = rsr.rect(569, 604, 140, 377).attr({
+    fill: "#c0392b",
+    'fill-opacity': "0.4",
+    visibility: "hidden"
+});
+
+
+var Parking = rsr.path("M346.87,764.23V718.42h14.84q8.44,0,11,.69a12,12,0,0,1,6.59,4.48,14.22,14.22,0,0,1,2.66,8.92,15,15,0,0,1-1.53,7.09,12.56,12.56,0,0,1-3.89,4.52,13.41,13.41,0,0,1-4.8,2.17,52.79,52.79,0,0,1-9.59.66h-6v17.28Zm9.25-38.06v13h5.06q5.47,0,7.31-.72a6.07,6.07,0,0,0,2.89-2.25,6.16,6.16,0,0,0,1-3.56,5.92,5.92,0,0,0-1.47-4.12,6.4,6.4,0,0,0-3.72-2,44.47,44.47,0,0,0-6.66-.31Z").attr({
+    id: 'Parking',
+    fill: '#fff',
+    parent: 'Bande',
+    'stroke-width': '0',
+    'stroke-opacity': '1'
+}).transform("t-0.5 -0.5").data('id', 'Parking');
 var Bus = rsr.path("M338.16,442.34h-4.92a13.11,13.11,0,0,1-3.53-.36,3.46,3.46,0,0,1-1.94-1.47A6.52,6.52,0,0,1,327,437a3.8,3.8,0,0,1,.53-2.33,3.56,3.56,0,0,1,2-1,3.63,3.63,0,0,1-2.31-1.3,4.9,4.9,0,0,1-.61-2.73v-1.75a7,7,0,0,1,.44-2.84,2.38,2.38,0,0,1,1.41-1.27,14.17,14.17,0,0,1,3.94-.34h5.7Zm-4.94-3.23v-4.27h-.48q-.73,0-.92.36a5.76,5.76,0,0,0-.2,2,3.18,3.18,0,0,0,.17,1.25.76.76,0,0,0,.42.45,3.7,3.7,0,0,0,1,.2Zm0-7.17v-5.31a2.05,2.05,0,0,0-1.33.33,2.34,2.34,0,0,0-.28,1.44v1.77q0,1.22.27,1.47a2.23,2.23,0,0,0,1.34.29Zm-19.54,10.4V429.66a22,22,0,0,1,.14-3,4.07,4.07,0,0,1,.84-1.8,4.36,4.36,0,0,1,1.81-1.41,6.92,6.92,0,0,1,2.67-.47,7.55,7.55,0,0,1,3,.56,4.64,4.64,0,0,1,1.94,1.47,4.17,4.17,0,0,1,.77,1.91q.11,1,.11,4.22v11.2H320V428.12a5.41,5.41,0,0,0-.14-1.59.54.54,0,0,0-.55-.34.55.55,0,0,0-.59.38,7,7,0,0,0-.14,1.81v14Zm-12.36-5.74h4.58V438a2.58,2.58,0,0,0,.19,1.25.64.64,0,0,0,.58.27.75.75,0,0,0,.67-.36,2,2,0,0,0,.23-1.09,3.07,3.07,0,0,0-.27-1.44,3.71,3.71,0,0,0-1.39-1.16,14,14,0,0,1-4.16-3.22,7.4,7.4,0,0,1-.84-4,7.24,7.24,0,0,1,.47-3,3.72,3.72,0,0,1,1.83-1.61,7.22,7.22,0,0,1,3.17-.66,7.12,7.12,0,0,1,3.39.75,3.77,3.77,0,0,1,1.83,1.92A10,10,0,0,1,312,429v1.23h-4.58v-2.35a3.17,3.17,0,0,0-.19-1.37.77.77,0,0,0-.69-.3.79.79,0,0,0-.73.39,2.25,2.25,0,0,0-.23,1.14,3.61,3.61,0,0,0,.45,2.2,14.43,14.43,0,0,0,2.31,1.72,25.15,25.15,0,0,1,2.44,1.77,4.11,4.11,0,0,1,1,1.52,6.84,6.84,0,0,1,.39,2.5,6.92,6.92,0,0,1-.55,3.17,3.74,3.74,0,0,1-1.8,1.58,7.14,7.14,0,0,1-3,.58,7.71,7.71,0,0,1-3.27-.62,3.44,3.44,0,0,1-1.8-1.56,8.28,8.28,0,0,1-.44-3.2Z").attr({
     id: 'Bus',
     fill: '#fff',
@@ -756,61 +817,16 @@ var RFID = rsr.path("M250.37,696.75h0a12.39,12.39,0,0,1,12.39-12.39h0a12.39,12.3
     'name': 'RFID'
 }).transform("t-0.5 -0.5").data('id', 'path_bx');
 
-Road.push(path_b, path_c, path_d, path_e, path_f, path_g, path_h, path_i, path_j, path_k, path_l, path_m, path_n, path_o, path_p, path_q, path_r, path_s, path_t, path_u, path_v, path_w, path_x, path_y, path_z, path_aa, path_ab, path_ac, path_ad, path_ae, path_af, path_ag, path_ah, path_ai, path_aj, path_ak, path_al, path_am, path_an, path_ao, path_ap, path_aq, path_ar, path_as, path_at, path_au, path_av, path_aw, path_ax, path_ay);
+Road.push(path_b, path_c, roadSouthWest, path_e, path_f, path_g, path_h, path_i, path_j, path_k, path_l, path_m, path_n, path_o, path_p, path_q, path_r, path_s, path_t, path_u, path_v, path_w, path_x, path_y, path_z, path_aa, path_ab, path_ac, path_ad, path_ae, path_af, path_ag, path_ah, path_ai, path_aj, path_ak, path_al, path_am, path_an, path_ao, path_ap, path_aq, path_ar, path_as, path_at, path_au, path_av, path_aw, path_ax, path_ay);
 Bande.push(DottedLineWest, LineWest, path_az, path_ba, ArrwoNorthWest, ArrowSouthWest, StopMainWest, GiveAwayNorth, DottedLineEast, LineEast, path_bb, path_bc, ArrowSouthEast, ArrowNorthEast, StopMainEast, GiveAwayNorth2, Pedestrian_North, Pedestrian_South, DottedLineNorth, DottedLineNorthWest, DottedLineNorthEast, DottedLineNorthCenter, StopNorthToSouthCenter, StopNorthToSouthWest, StopNorthToSouthEast, DottedLineSouth, DottedLineSouthEast, DottedLineSouthWest, DottedLineSouthCenter, StopSouthToNorthCenter, StopSouthToNorthEast, StopSouthToNorthWest, Parking, StopNorthToSouthCenter2, StopSouthToNorthCenter2, Bus, Bus2);
 
-RFID.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "RFID"
-});
-AuxiliaryCarDetectorSouth.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Car detector of South auxiliary road"
-});
-AuxiliaryCarDetectorNorth.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Car detector of North auxiliary road"
-});
-MainCarDetectorEast.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Car detector of East main road"
-});
-MainCarDetectorWest.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Car detector of West main road"
-});
-Bus.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Traffic band reserved for buses"
-});
-Bus2.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Traffic band reserved for buses"
-});
 
-Parking.attr({
-    'data-container': "body",
-    'data-toggle': "popover",
-    'data-placement': "top",
-    'data-content': "Parking"
-});
+/************************************/
+/************************************/
+/************MAP MANAGER*************/
+/************************************/
+/************************************/
 
-
-$('[data-toggle="popover"]').popover({trigger: "hover"});
 function CityMap(container, map) {
     this.container = container;
     this.map = map;
@@ -921,5 +937,456 @@ function CityMap(container, map) {
 }
 
 
+/*********************************/
+/*********************************/
+/**********Manage Zones***********/
+/*********************************/
+/*********************************/
+
+
+function refreshZones() {
+    $("#city-map-panel .btn-refresh").button('loading');
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/zones/closed", function (data) {
+        if (typeof data.zones === 'undefined') {
+            popover.find(".popover-content").html("N/A");
+        } else {
+            //Reset all zone
+            zoneNorth_RoadCenter.attr({visibility: "hidden"});
+            zoneNorthEast_RoadEst.attr({visibility: "hidden"});
+            zoneNorthEast_RoadNorth.attr({visibility: "hidden"});
+            zoneNorthWest_RoadNorth.attr({visibility: "hidden"});
+            zoneNorthWest_RoadWest.attr({visibility: "hidden"});
+            zoneSouth_RoadCenter.attr({visibility: "hidden"});
+            zoneSouthEast_RoadEst.attr({visibility: "hidden"});
+            zoneSouthEast_RoadSouth.attr({visibility: "hidden"});
+            zoneSouthWest_RoadSouth.attr({visibility: "hidden"});
+            zoneSouthWest_RoadWest.attr({visibility: "hidden"});
+            Bus.attr({opacity: "0.2"});
+            Bus2.attr({opacity: "0.2"});
+            MainCarDetectorWest.attr({fill: "#ffffff"});
+            MainCarDetectorEast.attr({fill: "#ffffff"});
+
+            if (data.zones.indexOf("N") !== -1) {
+                console.log("Zone North closed");
+                zoneNorth_RoadCenter.attr({visibility: "visible"});
+                zoneNorthEast_RoadEst.attr({visibility: "visible"});
+                zoneNorthEast_RoadNorth.attr({visibility: "visible"});
+                zoneNorthWest_RoadNorth.attr({visibility: "visible"});
+                zoneNorthWest_RoadWest.attr({visibility: "visible"});
+            } else {
+                if (data.zones.indexOf("NE") !== -1) {
+                    console.log("Zone North East closed");
+                    zoneNorthEast_RoadEst.attr({visibility: "visible"});
+                    zoneNorthEast_RoadNorth.attr({visibility: "visible"});
+                }
+                if (data.zones.indexOf("NW") !== -1) {
+                    console.log("Zone North West closed");
+                    zoneNorthWest_RoadNorth.attr({visibility: "visible"});
+                    zoneNorthWest_RoadWest.attr({visibility: "visible"});
+                }
+            }
+            if (data.zones.indexOf("S") !== -1) {
+                console.log("Zone South closed");
+                zoneSouth_RoadCenter.attr({visibility: "visible"});
+                zoneSouthEast_RoadEst.attr({visibility: "visible"});
+                zoneSouthEast_RoadSouth.attr({visibility: "visible"});
+                zoneSouthWest_RoadSouth.attr({visibility: "visible"});
+                zoneSouthWest_RoadWest.attr({visibility: "visible"});
+            } else {
+                if (data.zones.indexOf("SE") !== -1) {
+                    console.log("Zone South East closed");
+                    zoneSouthEast_RoadEst.attr({visibility: "visible"});
+                    zoneSouthEast_RoadSouth.attr({visibility: "visible"});
+                }
+                if (data.zones.indexOf("SW") !== -1) {
+                    console.log("Zone South West closed");
+                    zoneSouthWest_RoadSouth.attr({visibility: "visible"});
+                    zoneSouthWest_RoadWest.attr({visibility: "visible"});
+                }
+            }
+            if (data.zones.indexOf("BUS") !== -1) {
+                console.log("Zone BUS closed");
+                Bus.attr({opacity: "1"});
+                Bus2.attr({opacity: "1"});
+            }
+            if (data.zones.indexOf("MainRoadWest") !== -1) {
+                console.log("Zone BUS closed");
+                MainCarDetectorWest.attr({fill: "#f0ad4e"});
+            }
+            if (data.zones.indexOf("MainRoadEast") !== -1) {
+                console.log("Zone BUS closed");
+                MainCarDetectorEast.attr({fill: "#f0ad4e"});
+            }
+        }
+
+        $("#city-map-panel").find(".btn-refresh").button('reset');
+
+    }).fail(function () {
+        $("#city-map-panel").find(".popover-content").html("N/A");
+    });
+}
+
+/****************************/
+/****************************/
+/**********POPOVER***********/
+/****************************/
+/****************************/
+
+function removeAllPopover() {
+    $('.popover').each(function () {
+        var id = $(this).attr("id");
+        $("*[aria-describedby='" + id + "']").removeAttr("aria-describedby");
+        $(this).remove();
+    })
+}
+
+$("#AuxiliaryCarDetectorSouth").popover({
+    container: "#city-map-panel",
+    trigger: 'hover',
+    placement: 'top',
+    html: 'true',
+    title: "Auxiliary car detector South",
+    content: 'Loading ...',
+    template: '' +
+    '<div class="popover popover-map-sensor">' +
+    '    <div class="arrow"></div>' +
+    '    <div class="popover-heading">' +
+    '        <div class="row">' +
+    '            <div class="col-xs-3">' +
+    '                <i class="fa fa-car fa-4x"></i>' +
+    '            </div>' +
+    '            <div class="col-xs-9 text-right">' +
+    '                <div class="popover-content">N/A</div>' +
+    '                <div class="popover-title"></div>' +
+    '           </div>' +
+    '        </div>' +
+    '    </div>' +
+    '    <div class="popover-footer"></div>' +
+    '</div>'
+
+})
+    .on('show.bs.popover', function () {
+        removeAllPopover();
+    })
+    .on('shown.bs.popover', function (e) {
+        var popover = $('#' + $(e.target).attr('aria-describedby'));
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/auxiliaryCarDetectorActor1", function (data) {
+            // Split timestamp into [ Y, M, D, h, m, s ]
+            var t = data.createdAt.split(/[- :]/);
+            // Apply each element to the Date function
+            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
+                t[3], t[4].split("Z")[0]));
+
+            var secondsAgo = moment().diff(createAt, "seconds");
+            console.log("secondsAgo", secondsAgo);
+            if (secondsAgo < 3) {
+                console.log("secondsAgo < 3");
+                popover.find(".popover-content").html("A vehicle is present");
+            } else {
+                console.log("secondsAgo >= 3");
+                popover.find(".popover-content").html("No vehicles is present");
+            }
+
+        }).fail(function () {
+            popover.find(".popover-content").html("N/A");
+        });
+
+    });
+
+$("#AuxiliaryCarDetectorNorth").popover({
+    container: "#city-map-panel",
+    trigger: 'hover',
+    placement: 'top',
+    html: 'true',
+    title: "Auxiliary car detector North",
+    content: 'Loading ...',
+    template: '' +
+    '<div class="popover popover-map-sensor">' +
+    '    <div class="arrow"></div>' +
+    '    <div class="popover-heading">' +
+    '        <div class="row">' +
+    '            <div class="col-xs-3">' +
+    '                <i class="fa fa-car fa-4x"></i>' +
+    '            </div>' +
+    '            <div class="col-xs-9 text-right">' +
+    '                <div class="popover-content">N/A</div>' +
+    '                <div class="popover-title"></div>' +
+    '           </div>' +
+    '        </div>' +
+    '    </div>' +
+    '    <div class="popover-footer"></div>' +
+    '</div>'
+
+})
+    .on('show.bs.popover', function () {
+        removeAllPopover();
+    })
+    .on('shown.bs.popover', function (e) {
+        var popover = $('#' + $(e.target).attr('aria-describedby'));
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/auxiliaryCarDetectorActor2", function (data) {
+            // Split timestamp into [ Y, M, D, h, m, s ]
+            var t = data.createdAt.split(/[- :]/);
+            // Apply each element to the Date function
+            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
+                t[3], t[4].split("Z")[0]));
+
+            var secondsAgo = moment().diff(createAt, "seconds");
+            console.log("secondsAgo", secondsAgo);
+            if (secondsAgo < 3) {
+                console.log("secondsAgo < 3");
+                popover.find(".popover-content").html("A vehicle is present");
+            } else {
+                console.log("secondsAgo >= 3");
+                popover.find(".popover-content").html("No vehicles is present");
+            }
+
+        }).fail(function () {
+            popover.find(".popover-content").html("N/A");
+        });
+
+    });
+
+$("#MainCarDetectorWest").popover({
+    container: "#city-map-panel",
+    trigger: 'hover',
+    placement: 'top',
+    html: 'true',
+    title: "Main car detector West",
+    content: 'Loading ...',
+    template: '' +
+    '<div class="popover popover-map-sensor">' +
+    '    <div class="arrow"></div>' +
+    '    <div class="popover-heading">' +
+    '        <div class="row">' +
+    '            <div class="col-xs-3">' +
+    '                <i class="fa fa-car fa-4x"></i>' +
+    '            </div>' +
+    '            <div class="col-xs-9 text-right">' +
+    '                <div class="popover-content">N/A</div>' +
+    '                <div class="popover-title"></div>' +
+    '           </div>' +
+    '        </div>' +
+    '    </div>' +
+    '    <div class="popover-footer"></div>' +
+    '</div>'
+
+})
+    .on('show.bs.popover', function () {
+        removeAllPopover();
+    })
+    .on('shown.bs.popover', function (e) {
+        var popover = $('#' + $(e.target).attr('aria-describedby'));
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/mainCarDetectorActor1", function (data) {
+            // Split timestamp into [ Y, M, D, h, m, s ]
+            var t = data.createdAt.split(/[- :]/);
+            // Apply each element to the Date function
+            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
+                t[3], t[4].split("Z")[0]));
+
+            var secondsAgo = moment().diff(createAt, "seconds");
+            console.log("secondsAgo", secondsAgo);
+            if (secondsAgo < 3) {
+                console.log("secondsAgo < 3");
+                popover.find(".popover-content").html("A vehicle is present");
+            } else {
+                console.log("secondsAgo >= 3");
+                popover.find(".popover-content").html("No vehicles is present");
+            }
+
+        }).fail(function () {
+            popover.find(".popover-content").html("N/A");
+        });
+
+    });
+
+$("#MainCarDetectorEast").popover({
+    container: "#city-map-panel",
+    trigger: 'hover',
+    placement: 'top',
+    html: 'true',
+    title: "Main car detector East",
+    content: 'Loading ...',
+    template: '' +
+    '<div class="popover popover-map-sensor">' +
+    '    <div class="arrow"></div>' +
+    '    <div class="popover-heading">' +
+    '        <div class="row">' +
+    '            <div class="col-xs-3">' +
+    '                <i class="fa fa-car fa-4x"></i>' +
+    '            </div>' +
+    '            <div class="col-xs-9 text-right">' +
+    '                <div class="popover-content">N/A</div>' +
+    '                <div class="popover-title"></div>' +
+    '           </div>' +
+    '        </div>' +
+    '    </div>' +
+    '    <div class="popover-footer"></div>' +
+    '</div>'
+
+})
+    .on('show.bs.popover', function () {
+        removeAllPopover();
+    })
+    .on('shown.bs.popover', function (e) {
+        var popover = $('#' + $(e.target).attr('aria-describedby'));
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/mainCarDetectorActor2", function (data) {
+            // Split timestamp into [ Y, M, D, h, m, s ]
+            var t = data.createdAt.split(/[- :]/);
+            // Apply each element to the Date function
+            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
+                t[3], t[4].split("Z")[0]));
+
+            var secondsAgo = moment().diff(createAt, "seconds");
+            console.log("secondsAgo", secondsAgo);
+            if (secondsAgo < 3) {
+                console.log("secondsAgo < 3");
+                popover.find(".popover-content").html("A vehicle is present");
+            } else {
+                console.log("secondsAgo >= 3");
+                popover.find(".popover-content").html("No vehicles is present");
+            }
+
+        }).fail(function () {
+            popover.find(".popover-content").html("N/A");
+        });
+    });
+
+$("#Parking").popover({
+    container: "#city-map-panel",
+    trigger: 'hover',
+    placement: 'top',
+    html: 'true',
+    title: "Parking",
+    content: 'Loading ...',
+    template: '' +
+    '<div class="popover popover-map-sensor">' +
+    '    <div class="arrow"></div>' +
+    '    <div class="popover-heading">' +
+    '        <div class="row">' +
+    '            <div class="col-xs-3">' +
+    '                <i class="fa fa-university fa-4x"></i>' +
+    '            </div>' +
+    '            <div class="col-xs-9 text-right">' +
+    '                <div class="popover-content">N/A</div>' +
+    '                <div class="popover-title"></div>' +
+    '           </div>' +
+    '        </div>' +
+    '    </div>' +
+    '    <div class="popover-footer"></div>' +
+    '</div>'
+
+})
+    .on('show.bs.popover', function (e) {
+        removeAllPopover();
+    })
+    .on('shown.bs.popover', function (e) {
+        var popover = $('#' + $(e.target).attr('aria-describedby'));
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/parking/accessibility", function (data) {
+            if (typeof data._1.taken === 'undefined') {
+                popover.find(".popover-content").html("N/A");
+            } else {
+                popover.find(".popover-content").html(data._2.totalplaces - data._1.taken + " of " + data._2.totalplaces);
+            }
+        }).fail(function () {
+            popover.find(".popover-content").html("N/A");
+        });
+    });
+
+$("#RFID").popover({
+    container: "#city-map-panel",
+    trigger: 'hover',
+    placement: 'top',
+    html: 'true',
+    title: "RFID Reader",
+    content: 'Loading ...',
+    template: '' +
+    '<div class="popover popover-map-sensor">' +
+    '    <div class="arrow"></div>' +
+    '    <div class="popover-heading">' +
+    '        <div class="row">' +
+    '            <div class="col-xs-3">' +
+    '                <i class="fa fa-car fa-4x"></i>' +
+    '            </div>' +
+    '            <div class="col-xs-9 text-right">' +
+    '                <div class="popover-content">N/A</div>' +
+    '                <div class="popover-title"></div>' +
+    '           </div>' +
+    '        </div>' +
+    '    </div>' +
+    '    <div class="popover-footer"></div>' +
+    '</div>'
+
+})
+    .on('show.bs.popover', function () {
+        removeAllPopover();
+    });
+
+$("#Bus, #Bus-2").each(function () {
+    $(this).popover({
+        container: "#city-map-panel",
+        trigger: 'hover',
+        placement: 'top',
+        html: 'true',
+        title: "Bus",
+        content: 'Loading ...',
+        template: '' +
+        '<div class="popover popover-map-sensor">' +
+        '    <div class="arrow"></div>' +
+        '    <div class="popover-heading">' +
+        '        <div class="row">' +
+        '            <div class="col-xs-3">' +
+        '                <i class="fa fa-bus fa-4x"></i>' +
+        '            </div>' +
+        '            <div class="col-xs-9 text-right">' +
+        '                <div class="popover-content">N/A</div>' +
+        '                <div class="popover-title"></div>' +
+        '           </div>' +
+        '        </div>' +
+        '    </div>' +
+        '    <div class="popover-footer"></div>' +
+        '</div>'
+
+    })
+        .on('show.bs.popover', function (e) {
+            removeAllPopover();
+        })
+        .on('shown.bs.popover', function (e) {
+            var popover = $('#' + $(e.target).attr('aria-describedby'));
+            $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/zones/closed", function (data) {
+                if (typeof data.zones === 'undefined') {
+                    popover.find(".popover-content").html("N/A");
+                } else {
+
+                    var zoneFound = false;
+                    for (var i = 0; i < data.zones.length; i++) {
+                        if (data.zones.indexOf("BUS") != -1) {
+                            zoneFound = true;
+                            break;
+                        }
+                    }
+                    if (zoneFound) {
+                        popover.find(".popover-content").html("Bus Only");
+                    } else {
+                        popover.find(".popover-content").html("All vehicles");
+                    }
+                }
+            }).fail(function () {
+                popover.find(".popover-content").html("N/A");
+            });
+        });
+});
+
+
+/*****************************/
+/*****************************/
+/**********LOAD ALL***********/
+/*****************************/
+/*****************************/
+
 var cityMap = new CityMap($("#city-map"), $("#city-map-svg"));
 cityMap.init();
+
+refreshZones();
+$("#city-map-panel").find(".btn-refresh").on("click", function () {
+    refreshZones();
+});

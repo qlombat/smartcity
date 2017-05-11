@@ -49,6 +49,17 @@ $(document).ready(function () {
             $("#parking").text("N/A");
         });
     }
+    function updateSpeed() {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +  "/api/speed", function (data) {
+            if (typeof data.speed === 'undefined') {
+                $("#speed").text("N/A");
+            } else {
+                $("#speed").text(data.speed + " km/h");
+            }
+        }).fail(function(){
+            $("#speed").text("N/A");
+        });
+    }
 
     function updateZoneAlerts() {
         var zoneAlerts = $('#zones-alerts');
@@ -89,5 +100,8 @@ $(document).ready(function () {
     }
 
     updateSensors();
+    updateSpeed();
     updateZoneAlerts();
+    //setInterval(updateSensors, 3000);
+    //setInterval(updateZoneAlerts, 3000)
 });

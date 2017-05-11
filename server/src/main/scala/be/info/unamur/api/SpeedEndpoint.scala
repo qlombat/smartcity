@@ -6,6 +6,7 @@ import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 
 /** Api endpoint to retrieve the speed information
@@ -26,15 +27,18 @@ class SpeedEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
       override val is = Future {
         (Sensor.findLastByName("Temperature"), Sensor.findLastByName("Humidity"), Sensor.findLastByName("Light")) match {
           case (Some(temperature), Some(humidity), Some(light)) =>
-            (Property.find("TemperatureMin"), Property.find("HumidityMax"), Property.find("LightMin")) match {
-              case (Some(tempMin), Some(humidMax), Some(lightMin)) =>
-                if (((temperature.value < tempMin.value.toDouble) && (humidity.value > humidMax.value.toDouble)) || (light.value < lightMin.value.toDouble))
-                  "speed" -> 30
-                else
-                  "speed" -> 50
-              case _ => halt(400, "error" -> "Properties not found")
+            Try(Property.find("TemperatureMin"), Property.find("HumidityMax"), Property.find("LightMin")) match {
+              case Success(s) => s match {
+                case (Some(tempMin), Some(humidMax), Some(lightMin)) =>
+                  if (((temperature.value < tempMin.value.toDouble) && (humidity.value > humidMax.value.toDouble)) || (light.value < lightMin.value.toDouble))
+                    "speed" -> 30
+                  else
+                    "speed" -> 50
+                case _ => "speed" -> 50
+              }
+              case Failure(_) => "speed" -> 50
             }
-          case _ => halt(400, "error" -> "Sensors not found")
+          case _ => "speed" -> 50
         }
       }
     }
