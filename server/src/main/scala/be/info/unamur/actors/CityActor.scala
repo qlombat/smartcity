@@ -1,9 +1,9 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Cancellable, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import be.info.unamur.messages.{Initialize, OpenAuxiliary, Start, Stop}
+import be.info.unamur.messages.{Initialize, Start, Stop}
 import com.phidgets.InterfaceKitPhidget
 import org.slf4j.{Logger, LoggerFactory}
 
