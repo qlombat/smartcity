@@ -33,15 +33,15 @@ function updateEvolutionValues(time, periods) {
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
     $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/evolution/".concat(sensor).concat("?time=")
         .concat(time).concat("&periods=").concat(periods), function (data) {
-        updateLineChartValues(datasetIndex, data.list);
+        updateLineChartValues(datasetIndex, data.result);
     })
 }
 
-function updateLineChartValues(datasetIndex, list) {
-    lineChart.data.labels = list._1;
+function updateLineChartValues(datasetIndex, result) {
+    lineChart.data.labels = result._1;
     dataList = [];
-        $.each(list._2, function (elem) {
-            dataList.push(list._2[elem].length);
+        $.each(result._2, function (elem) {
+            dataList.push(result._2[elem].length);
         })
     lineChart.data.datasets[datasetIndex].data = dataList;
     lineChart.update();

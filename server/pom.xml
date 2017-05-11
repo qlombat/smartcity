@@ -61,7 +61,7 @@
         <phidgets.version>2.1</phidgets.version>
         <scalikejdbc.version>3.0.0-RC3</scalikejdbc.version>
         <mysql.version>5.1.41</mysql.version>
-        <json4s.version>3.5.1</json4s.version>
+        <json4s.version>3.5.2</json4s.version>
         <joda-time.version>2.9.9</joda-time.version>
     </properties>
 

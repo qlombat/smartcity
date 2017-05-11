@@ -3,14 +3,15 @@ package be.info.unamur.api
 import java.sql.Timestamp
 
 import be.info.unamur.persistence.entities.Sensor
-import org.json4s._
-import org.json4s.JsonDSL.WithBigDecimal._
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scalikejdbc._
 import java.util.{Calendar, Date}
+
+import org.json4s.{DefaultFormats, Formats}
+
 
 /** Api endpoint to retrieve sensors information.
   *
@@ -68,15 +69,16 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
 
   //TODO add this shit in the API doc
   get("/all/evolution/:name") {
+
     new AsyncResult() {
       override val is = Future {
         params get SensorsEndpoint.NameParamIdentifier match {
           case Some(n) => params get SensorsEndpoint.PeriodParamIdentifier match {
             case Some(p) => params get SensorsEndpoint.TimeParamIdentifier match {
               case Some(t) => t match {
-                case "hour" => "list" -> (getPeriodsArray(p.toInt, SensorsEndpoint.HourInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.HourInMillis))
-                case "day" => "list" -> (getPeriodsArray(p.toInt, SensorsEndpoint.DayInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.DayInMillis))
-                case "month" => "list" -> (getPeriodsArray(p.toInt, SensorsEndpoint.MonthInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.MonthInMillis))
+                case "hour" =>"result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.HourInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.HourInMillis))
+                case "day" => "result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.DayInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.DayInMillis))
+                case "month" => "result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.MonthInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.MonthInMillis))
               }
               case _ => halt(400, "error" -> "Time parameter missing")
             }
@@ -103,15 +105,15 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
   }
 
 
-  def getValuesArray(sensor: String, period: Integer, interval: Long): Array[Array[Sensor]] = {
+  def getValuesArray(sensor: String, period: Integer, interval: Long): List[List[Sensor]] = {
     var upperTime = System.currentTimeMillis()
-    var valuesList: Array[Array[Sensor]] = new Array[Array[Sensor]](period)
+    var valuesList: Array[List[Sensor]] = new Array[List[Sensor]](period)
     for (p <- 0 until period) {
-      valuesList(p) = Sensor.findAllBy(sqls"name = $sensor and created_at > ${new Timestamp(upperTime - interval)} and created_at < ${new Timestamp(upperTime)}").toArray
+      valuesList(p) = Sensor.findAllBy(sqls"name = $sensor and created_at > ${new Timestamp(upperTime - interval)} and created_at < ${new Timestamp(upperTime)}").toList
       upperTime = upperTime - interval
 
     }
-    valuesList.reverse
+    valuesList.reverse.toList
   }
 
   def getPeriodsArray(period: Integer, interval: Long, time: String): Array[String] = {
