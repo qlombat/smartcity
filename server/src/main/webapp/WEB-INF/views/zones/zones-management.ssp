@@ -1,0 +1,66 @@
+<h1>Zones management</h1><hr>
+<div id="message">
+<div style="padding: 5px;">
+    <div id = "alert_placeholder"></div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-6">
+<div class="panel panel-default">
+<div class="panel-heading">
+Close or open a zone
+</div>
+<div class="panel-body">
+<div class="row">
+    <div class="col-lg-12">
+        <form id="close-open-zone-form" role="form" data-toggle="validator" method="">
+
+            <div class="form-group has-feedback input-group">
+                <span class="input-group-addon">Name</span>
+                <input id="inputName" name="name" type="text" class="form-control" placeholder="N" required>
+                </div>
+
+                <div class="form-group has-feedback input-group">
+                    <span class="input-group-addon">Full name</span>
+                    <input id="inputFullName" name="fullname" type="text" class="form-control" placeholder="North" required>
+                    </div>
+
+                    <div class="form-group checkbox text-right">
+                        <label>
+                            <input id="opened" name="opened" type="checkbox" value="">Opened
+                            </label>
+                        </div>
+
+                        <div class="text-right"><button type="submit" class="btn btn-primary">Submit Button</button></div>
+
+                    </form>
+                </div>
+            </div>
+            <!-- /.row (nested) -->
+        </div>
+        <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+</div>
+<!-- /.col-lg-6 -->
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Bus schedule
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+
+                </div>
+            </div>
+            <!-- /.row (nested) -->
+        </div>
+        <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+</div>
+<!-- /.col-lg-6 -->
+</div>
+<!-- /.row -->
