@@ -113,11 +113,11 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActorEast", 1, 1, new Timestamp(offset + (Math.random * diff).toLong))
+      Sensor.create("mainCarDetectorActorEast", 1, 1, new Timestamp(offset + (Math.random * diff).toLong))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActorWest", 1, 1, new Timestamp(offset + (Math.random * diff).toLong))
+      Sensor.create("mainCarDetectorActorWest", 1, 1, new Timestamp(offset + (Math.random * diff).toLong))
     }
 
   }
