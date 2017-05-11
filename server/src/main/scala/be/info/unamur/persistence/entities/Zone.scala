@@ -145,4 +145,9 @@ object Zone extends SQLSyntaxSupport[Zone] {
       delete.from(Zone).where.eq(column.id, z.id)
     }.update.apply()
   }
+  def destroyAll()(implicit session: DBSession = autoSession): Unit = {
+    withSQL {
+      delete.from(Zone)
+    }.update.apply()
+  }
 }

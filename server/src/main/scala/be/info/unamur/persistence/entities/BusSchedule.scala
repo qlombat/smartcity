@@ -2,6 +2,7 @@ package be.info.unamur.persistence.entities
 
 import java.sql.Time
 
+import be.info.unamur.persistence.entities.Property.autoSession
 import scalikejdbc._
 
 
@@ -74,4 +75,10 @@ object BusSchedule extends SQLSyntaxSupport[BusSchedule] {
       delete.from(BusSchedule).where.eq(column.id, bs.id)
     }.update.apply()
   }
+  def destroyAll()(implicit session: DBSession = autoSession): Unit = {
+    withSQL {
+      delete.from(BusSchedule)
+    }.update.apply()
+  }
+
 }

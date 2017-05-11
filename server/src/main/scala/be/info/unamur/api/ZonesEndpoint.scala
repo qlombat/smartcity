@@ -37,11 +37,12 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
         BusSchedule.findAllBy(sqls"day = $day and opening_time < $now and closing_time > $now") match {
 
           case Nil =>
-            Zone.create("BUS", "BUS", opened = true, new Timestamp(currentMillis))
+            if (!Zone.findAllLast().exists(z => z.name == "BUS" && z.opened))
+              Zone.create("BUS", "BUS", opened = true, new Timestamp(currentMillis))
             "zones" -> Zone.findAllLast().filter(!_.opened).map(_.name)
 
           case _ =>
-            if (Zone.findAllLast().exists(z => z.name == "BUS" && z.opened))
+            if (!Zone.findAllLast().exists(z => z.name == "BUS" && !z.opened))
               Zone.create("BUS", "BUS", opened = false, new Timestamp(currentMillis))
             "zones" -> Zone.findAllLast().filter(!_.opened).map(_.name)
 
@@ -135,11 +136,11 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
 }
 
 object ZonesEndpoint {
-  val NameParamIdentifier     = "name"
+  val NameParamIdentifier = "name"
   val NameFullParamIdentifier = "full_name"
-  val TakeParamIdentifier     = "take"
+  val TakeParamIdentifier = "take"
 
-  val HourInMillis  = 3600000
-  val DayInMillis   = 86400000
+  val HourInMillis = 3600000
+  val DayInMillis = 86400000
   val MonthInMillis = 2678400000L
 }

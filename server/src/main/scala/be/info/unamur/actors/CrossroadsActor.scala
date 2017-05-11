@@ -33,12 +33,12 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
   val pedestrianCrossingActor: ActorRef = context.actorOf(Props(new PedestrianTrafficLightActor(ik, 4)).withDispatcher("application-dispatcher"), name = "pedestrianCrossingActor")
 
   // The two MainRoadCarDetectorActors that handle the detection sensors on each side of the main road of the model.
-  val mainCarDetectorActor1: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 0)).withDispatcher("application-dispatcher"), name = "mainCarDetectorActor1")
-  val mainCarDetectorActor2: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)).withDispatcher("application-dispatcher"), name = "mainCarDetectorActor2")
+  val mainCarDetectorActorWest: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 0)).withDispatcher("application-dispatcher"), name = "mainCarDetectorActorWest")
+  val mainCarDetectorActorEast: ActorRef = context.actorOf(Props(new MainRoadCarDetectorActor(ik, 1)).withDispatcher("application-dispatcher"), name = "mainCarDetectorActorEast")
 
   // The two AuxiliaryCarDetectorActors that handle the detection sensors on each side of the auxiliary road of the model.
-  val auxiliaryCarDetectorActor1: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActor1")
-  val auxiliaryCarDetectorActor2: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActor2")
+  val auxiliaryCarDetectorActorSouth: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 2)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActorSouth")
+  val auxiliaryCarDetectorActorNorth: ActorRef = context.actorOf(Props(new AuxiliaryCarDetectorActor(ik, 3)).withDispatcher("application-dispatcher"), name = "auxiliaryCarDetectorActorNorth")
 
   // Timeout for the asked messages to some actors.
   implicit val timeout = Timeout(5 seconds)
@@ -63,10 +63,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val initTrafficLightsMainActor = trafficLightsMainActor ? Initialize()
       val initTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Initialize()
       val initPedestrianCrossingActor = pedestrianCrossingActor ? Initialize()
-      val initMainRoadCarDetectorActor1 = mainCarDetectorActor1 ? Initialize()
-      val initMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Initialize()
-      val initAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Initialize()
-      val initAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Initialize()
+      val initMainRoadCarDetectorActor1 = mainCarDetectorActorWest ? Initialize()
+      val initMainRoadCarDetectorActor2 = mainCarDetectorActorEast ? Initialize()
+      val initAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActorSouth ? Initialize()
+      val initAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActorNorth ? Initialize()
       timeOfLastAuxiliaryGreenLight = new DateTime()
       lastOpenAuxiliaryMessage = new DateTime()
       auxiliaryScheduler = context.system.scheduler.scheduleOnce(
@@ -101,10 +101,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       trafficLightsMainActor ! SetGreen()
       trafficLightsAuxiliaryActor ! SetRed()
       pedestrianCrossingActor ! SetOn()
-      mainCarDetectorActor1 ! Start()
-      mainCarDetectorActor2 ! Start()
-      auxiliaryCarDetectorActor1 ! Start()
-      auxiliaryCarDetectorActor2 ! Start()
+      mainCarDetectorActorWest ! Start()
+      mainCarDetectorActorEast ! Start()
+      auxiliaryCarDetectorActorSouth ! Start()
+      auxiliaryCarDetectorActorNorth ! Start()
 
     /*
    * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
@@ -114,12 +114,12 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       auxiliaryScheduler.cancel()
       /* Once a carDetected in Auxiliary, turn off listener to not receive too much request "OpenAuxiliary". These listener
          will be turned on again when the red light will be on. */
-      auxiliaryCarDetectorActor1 ! Stop()
-      auxiliaryCarDetectorActor2 ! Stop()
+      auxiliaryCarDetectorActorSouth ! Stop()
+      auxiliaryCarDetectorActorNorth ! Stop()
 
       //If there is no car on the main road, no need to wait the entire usual waiting time.
-      val requestMainCarDetector1 = mainCarDetectorActor1 ? MainCarDetected()
-      val requestMainCarDetector2 = mainCarDetectorActor2 ? MainCarDetected()
+      val requestMainCarDetector1 = mainCarDetectorActorWest ? MainCarDetected()
+      val requestMainCarDetector2 = mainCarDetectorActorEast ? MainCarDetected()
 
       val results: Future[(Any, Any)] = for {
         resultMainCarDetection1 <- requestMainCarDetector1
@@ -153,10 +153,10 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       val stopTrafficLightsMainActor = trafficLightsMainActor ? Stop()
       val stopTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Stop()
       val stopPedestrianCrossingActor = pedestrianCrossingActor ? Stop()
-      val stopMainRoadCarDetectorActor1 = mainCarDetectorActor1 ? Stop()
-      val stopMainRoadCarDetectorActor2 = mainCarDetectorActor2 ? Stop()
-      val stopAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActor1 ? Stop()
-      val stopAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActor2 ? Stop()
+      val stopMainRoadCarDetectorActor1 = mainCarDetectorActorWest ? Stop()
+      val stopMainRoadCarDetectorActor2 = mainCarDetectorActorEast ? Stop()
+      val stopAuxiliaryCarDetectorActor1 = auxiliaryCarDetectorActorSouth ? Stop()
+      val stopAuxiliaryCarDetectorActor2 = auxiliaryCarDetectorActorNorth ? Stop()
 
       val results = for {
         resultStopTrafficLightsMainActor <- stopTrafficLightsMainActor
@@ -188,8 +188,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
     trafficLightsMainActor ! SetRed()
     Thread sleep CrossroadsActor.carCrossingTime * 1000
     trafficLightsAuxiliaryActor ! SetGreen()
-    auxiliaryCarDetectorActor1 ! GreenLigth()
-    auxiliaryCarDetectorActor2 ! GreenLigth()
+    auxiliaryCarDetectorActorSouth ! GreenLigth()
+    auxiliaryCarDetectorActorNorth ! GreenLigth()
     Thread sleep CrossroadsActor.auxiliaryGreenLightTime * 1000
     trafficLightsAuxiliaryActor ! SetRed()
     Thread sleep CrossroadsActor.carCrossingTime * 1000
@@ -199,8 +199,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
     timeOfLastAuxiliaryGreenLight = DateTime.now()
 
     // Turn on listeners
-    auxiliaryCarDetectorActor1 ! Start()
-    auxiliaryCarDetectorActor2 ! Start()
+    auxiliaryCarDetectorActorSouth ! Start()
+    auxiliaryCarDetectorActorNorth ! Start()
     auxiliaryScheduler = context.system.scheduler.scheduleOnce(
       Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
       self,

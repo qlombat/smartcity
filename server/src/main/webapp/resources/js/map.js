@@ -1070,23 +1070,17 @@ $("#AuxiliaryCarDetectorSouth").popover({
     })
     .on('shown.bs.popover', function (e) {
         var popover = $('#' + $(e.target).attr('aria-describedby'));
-        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/auxiliaryCarDetectorActor1", function (data) {
-            // Split timestamp into [ Y, M, D, h, m, s ]
-            var t = data.createdAt.split(/[- :]/);
-            // Apply each element to the Date function
-            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
-                t[3], t[4].split("Z")[0]));
-
-            var secondsAgo = moment().diff(createAt, "seconds");
-            console.log("secondsAgo", secondsAgo);
-            if (secondsAgo < 3) {
-                console.log("secondsAgo < 3");
-                popover.find(".popover-content").html("A vehicle is present");
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/auxiliaryCarDetectorActorSouth", function (data) {
+            if (typeof data.value === 'undefined') {
+                popover.find(".popover-content").html("N/A");
             } else {
-                console.log("secondsAgo >= 3");
-                popover.find(".popover-content").html("No vehicles is present");
-            }
+                if(data.value === 0){
+                    popover.find(".popover-content").html("No vehicle is present");
 
+                }else{
+                    popover.find(".popover-content").html("A vehicle is present");
+                }
+            }
         }).fail(function () {
             popover.find(".popover-content").html("N/A");
         });
@@ -1123,23 +1117,17 @@ $("#AuxiliaryCarDetectorNorth").popover({
     })
     .on('shown.bs.popover', function (e) {
         var popover = $('#' + $(e.target).attr('aria-describedby'));
-        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/auxiliaryCarDetectorActor2", function (data) {
-            // Split timestamp into [ Y, M, D, h, m, s ]
-            var t = data.createdAt.split(/[- :]/);
-            // Apply each element to the Date function
-            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
-                t[3], t[4].split("Z")[0]));
-
-            var secondsAgo = moment().diff(createAt, "seconds");
-            console.log("secondsAgo", secondsAgo);
-            if (secondsAgo < 3) {
-                console.log("secondsAgo < 3");
-                popover.find(".popover-content").html("A vehicle is present");
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/auxiliaryCarDetectorActorNorth", function (data) {
+            if (typeof data.value === 'undefined') {
+                popover.find(".popover-content").html("N/A");
             } else {
-                console.log("secondsAgo >= 3");
-                popover.find(".popover-content").html("No vehicles is present");
-            }
+                if(data.value === 0){
+                    popover.find(".popover-content").html("No vehicle is present");
 
+                }else{
+                    popover.find(".popover-content").html("A vehicle is present");
+                }
+            }
         }).fail(function () {
             popover.find(".popover-content").html("N/A");
         });
@@ -1176,23 +1164,17 @@ $("#MainCarDetectorWest").popover({
     })
     .on('shown.bs.popover', function (e) {
         var popover = $('#' + $(e.target).attr('aria-describedby'));
-        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/mainCarDetectorActor1", function (data) {
-            // Split timestamp into [ Y, M, D, h, m, s ]
-            var t = data.createdAt.split(/[- :]/);
-            // Apply each element to the Date function
-            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
-                t[3], t[4].split("Z")[0]));
-
-            var secondsAgo = moment().diff(createAt, "seconds");
-            console.log("secondsAgo", secondsAgo);
-            if (secondsAgo < 3) {
-                console.log("secondsAgo < 3");
-                popover.find(".popover-content").html("A vehicle is present");
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/mainCarDetectorActorWest", function (data) {
+            if (typeof data.value === 'undefined') {
+                popover.find(".popover-content").html("N/A");
             } else {
-                console.log("secondsAgo >= 3");
-                popover.find(".popover-content").html("No vehicles is present");
-            }
+                if(data.value === 0){
+                    popover.find(".popover-content").html("No vehicle is present");
 
+                }else{
+                    popover.find(".popover-content").html("A vehicle is present");
+                }
+            }
         }).fail(function () {
             popover.find(".popover-content").html("N/A");
         });
@@ -1229,23 +1211,17 @@ $("#MainCarDetectorEast").popover({
     })
     .on('shown.bs.popover', function (e) {
         var popover = $('#' + $(e.target).attr('aria-describedby'));
-        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/mainCarDetectorActor2", function (data) {
-            // Split timestamp into [ Y, M, D, h, m, s ]
-            var t = data.createdAt.split(/[- :]/);
-            // Apply each element to the Date function
-            var createAt = new Date(Date.UTC(t[0], t[1] - 1, t[2].split("T")[0], t[2].split("T")[1],
-                t[3], t[4].split("Z")[0]));
-
-            var secondsAgo = moment().diff(createAt, "seconds");
-            console.log("secondsAgo", secondsAgo);
-            if (secondsAgo < 3) {
-                console.log("secondsAgo < 3");
-                popover.find(".popover-content").html("A vehicle is present");
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/mainCarDetectorActorEast", function (data) {
+            if (typeof data.value === 'undefined') {
+                popover.find(".popover-content").html("N/A");
             } else {
-                console.log("secondsAgo >= 3");
-                popover.find(".popover-content").html("No vehicles is present");
-            }
+                if(data.value === 0){
+                    popover.find(".popover-content").html("No vehicle is present");
 
+                }else{
+                    popover.find(".popover-content").html("A vehicle is present");
+                }
+            }
         }).fail(function () {
             popover.find(".popover-content").html("N/A");
         });

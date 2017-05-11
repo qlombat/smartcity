@@ -2,10 +2,11 @@ package be.info.unamur.api
 
 import java.sql.Timestamp
 
-import be.info.unamur.persistence.entities.{Property, RfidSubscription, Sensor}
+import be.info.unamur.persistence.entities._
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{FutureSupport, ScalatraServlet}
+
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
@@ -18,6 +19,15 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   override protected implicit def executor: ExecutionContext = ExecutionContext.global
+  //Generate
+  get("/database/clear") {
+    RfidSubscription.destroyAll()
+    RfidTag.destroyAll()
+    Sensor.destroyAll()
+    Zone.destroyAll()
+    BusSchedule.destroyAll()
+    Property.destroyAll()
+  }
 
   //Generate
   get("/Subscription") {

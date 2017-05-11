@@ -117,4 +117,9 @@ object RfidTag extends SQLSyntaxSupport[RfidTag] {
       delete.from(RfidTag).where.eq(column.id, r.id)
     }.update.apply()
   }
+  def destroyAll()(implicit session: DBSession = autoSession): Unit = {
+    withSQL {
+      delete.from(RfidTag)
+    }.update.apply()
+  }
 }

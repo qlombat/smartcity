@@ -1,5 +1,6 @@
 package be.info.unamur.persistence.entities
 
+import be.info.unamur.persistence.entities.Zone.autoSession
 import scalikejdbc._
 
 
@@ -58,4 +59,11 @@ object Property extends SQLSyntaxSupport[Property] {
       delete.from(Property).where.eq(column.id, p.id)
     }.update.apply()
   }
+
+  def destroyAll()(implicit session: DBSession = autoSession): Unit = {
+    withSQL {
+      delete.from(Property)
+    }.update.apply()
+  }
+
 }

@@ -116,5 +116,10 @@ object Sensor extends SQLSyntaxSupport[Sensor] {
       delete.from(Sensor).where.eq(column.id, s.id)
     }.update.apply()
   }
+  def destroyAll()(implicit session: DBSession = autoSession): Unit = {
+    withSQL {
+      delete.from(Sensor)
+    }.update.apply()
+  }
 }
 

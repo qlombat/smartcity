@@ -7,6 +7,7 @@ import be.info.unamur.messages._
 import be.info.unamur.persistence.entities.Sensor
 import com.phidgets.InterfaceKitPhidget
 import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
+import org.slf4j.{Logger, LoggerFactory}
 
 
 /** This actor handles the behaviour of the detection sensor. If it detects a car, the CrossroadsActor will handle the LEDs.
@@ -15,10 +16,9 @@ import com.phidgets.event.{SensorChangeEvent, SensorChangeListener}
   * @author Justin SIRJACQUES
   */
 class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Actor {
-
-  var sensorChangeListener  : SensorChangeListener = _
+  val logger: Logger = LoggerFactory.getLogger(getClass)
+  var sensorChangeListener: SensorChangeListener = _
   var sensorChangeListenerDB: SensorChangeListener = _
-  var lastDBUpdate          : Long                 = 0
 
   override def receive: Receive = {
 
@@ -39,9 +39,14 @@ class AuxiliaryCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Act
 
       sensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
-          if (index.equals(sensorChangeEvent.getIndex) && (ik.getSensorValue(sensorChangeEvent.getIndex) < AuxiliaryCarDetectorActor.valueCarDetection) && (System.currentTimeMillis() - lastDBUpdate > AuxiliaryCarDetectorActor.timeBetweenCarDectection * 1000)) {
-            Sensor.create(context.self.path.name, 1, sensorChangeEvent.getValue, new Timestamp(System.currentTimeMillis()))
-            lastDBUpdate = System.currentTimeMillis()
+          if (index.equals(sensorChangeEvent.getIndex)) {
+            if (ik.getSensorValue(sensorChangeEvent.getIndex) < AuxiliaryCarDetectorActor.valueCarDetection) {
+              logger.debug("Car detected on " + context.self.path.name)
+              Sensor.create(context.self.path.name, 1, sensorChangeEvent.getValue, new Timestamp(System.currentTimeMillis()))
+            } else {
+              logger.debug("Car is away on " + context.self.path.name)
+              Sensor.create(context.self.path.name, 0, sensorChangeEvent.getValue, new Timestamp(System.currentTimeMillis()))
+            }
           }
         }
       }
@@ -89,7 +94,4 @@ object AuxiliaryCarDetectorActor {
 
   //Trigger for the listeners
   val trigger: Int = 500
-
-  //Minimum time between two car detections. (seconds)
-  val timeBetweenCarDectection: Int = 3
 }

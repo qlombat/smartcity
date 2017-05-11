@@ -104,4 +104,9 @@ object RfidSubscription extends SQLSyntaxSupport[RfidSubscription] {
       delete.from(RfidSubscription).where.eq(column.id, r.id)
     }.update.apply()
   }
+  def destroyAll()(implicit session: DBSession = autoSession): Unit = {
+    withSQL {
+      delete.from(RfidSubscription)
+    }.update.apply()
+  }
 }

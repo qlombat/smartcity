@@ -47,20 +47,21 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
             if (!alreadyDetected && detected) {
               logger.debug("Car detected on " + context.self.path.name)
               alreadyDetected = true
-              Sensor.create(context.self.path.name, 1, ik.getSensorValue(index), new Timestamp(System.currentTimeMillis()))
+              Sensor.create(context.self.path.name, 1, value, new Timestamp(System.currentTimeMillis()))
 
               //Add traffic jam detector
               cancellableScheduler = system.scheduler.scheduleOnce(Duration.apply(MainRoadCarDetectorActor.timeToDetectTrafficJam, "seconds")) {
                 logger.debug("Traffic Jam detected on " + context.self.path.name)
                 trafficJamDetected = true
                 context.self.path.name match {
-                  case "mainCarDetectorActor1" => Zone.create("MainRoadWest", "Main road West", opened = false, new Timestamp(System.currentTimeMillis()))
-                  case "mainCarDetectorActor2" => Zone.create("MainRoadEast", "Main road East", opened = false, new Timestamp(System.currentTimeMillis()))
+                  case "mainCarDetectorActorWest" => Zone.create("MainRoadWest", "Main road West", opened = false, new Timestamp(System.currentTimeMillis()))
+                  case "mainCarDetectorActorEast" => Zone.create("MainRoadEast", "Main road East", opened = false, new Timestamp(System.currentTimeMillis()))
                 }
               }
 
             } else if (alreadyDetected && !detected) {
               logger.debug("Car is away on " + context.self.path.name)
+              Sensor.create(context.self.path.name, 0, value, new Timestamp(System.currentTimeMillis()))
               alreadyDetected = false
 
               //Remove traffic Jam detector
@@ -71,15 +72,15 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
 
               if (trafficJamDetected) {
                 context.self.path.name match {
-                  case "mainCarDetectorActor1" => Zone.create("MainRoadWest", "Main road West", opened = true, new Timestamp(System.currentTimeMillis()))
-                  case "mainCarDetectorActor2" => Zone.create("MainRoadEast", "Main road East", opened = true, new Timestamp(System.currentTimeMillis()))
+                  case "mainCarDetectorActorWest" => Zone.create("MainRoadWest", "Main road West", opened = true, new Timestamp(System.currentTimeMillis()))
+                  case "mainCarDetectorActorEast" => Zone.create("MainRoadEast", "Main road East", opened = true, new Timestamp(System.currentTimeMillis()))
                 }
                 trafficJamDetected = false
               }
 
             } else if (!alreadyDetected && !detected) {
               if (Math.abs(System.currentTimeMillis() - lastInitialValueUpdate) > 1000) {
-                logger.debug("Luminosity change on " + context.self.path.name + " " + value)
+                logger.debug("Luminosity change on " + context.self.path.name + " from " + initialValue + " to " + value)
                 initialValue = value
                 lastInitialValueUpdate = System.currentTimeMillis()
               }
@@ -124,7 +125,7 @@ object MainRoadCarDetectorActor {
   val valueCarDetection: Int = 300
 
   //Trigger for the listener
-  val trigger: Int = 50
+  val trigger: Int = 5
 
   //Minimum time between two car detections. (seconds)
   val timeBetweenCarDectection: Int = 3

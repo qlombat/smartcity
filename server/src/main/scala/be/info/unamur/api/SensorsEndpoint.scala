@@ -76,7 +76,7 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
           case Some(n) => params get SensorsEndpoint.PeriodParamIdentifier match {
             case Some(p) => params get SensorsEndpoint.TimeParamIdentifier match {
               case Some(t) => t match {
-                case "hour" =>"result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.HourInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.HourInMillis))
+                case "hour" => "result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.HourInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.HourInMillis))
                 case "day" => "result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.DayInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.DayInMillis))
                 case "month" => "result" -> (getPeriodsArray(p.toInt, SensorsEndpoint.MonthInMillis, t), getValuesArray(n, p.toInt, SensorsEndpoint.MonthInMillis))
               }
@@ -96,11 +96,18 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
     val currentTimeHour = new Timestamp(currentTime - SensorsEndpoint.HourInMillis)
     val currentTimeDay = new Timestamp(currentTime - SensorsEndpoint.DayInMillis)
     val currentTimeMonth = new Timestamp(currentTime - SensorsEndpoint.MonthInMillis)
+
+    val constraintSensorsValue = sensor match {
+      case s if s == "mainCarDetectorActorWest" || s == "mainCarDetectorActorWest" || s == "auxiliaryCarDetectorActorSouth" || s == "auxiliaryCarDetectorActorNorth" =>
+        " and value != 0"
+      case _ => ""
+    }
+
     time match {
-      case "hour" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeHour")
-      case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay")
-      case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth")
-      case "all" => Sensor.findAllBy(sqls"name = $sensor")
+      case "hour" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeHour $constraintSensorsValue")
+      case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay $constraintSensorsValue")
+      case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth $constraintSensorsValue")
+      case "all" => Sensor.findAllBy(sqls"name = $sensor $constraintSensorsValue")
     }
   }
 
