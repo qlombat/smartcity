@@ -2,7 +2,7 @@
  * Created by jsirjacq on 8/05/17.
  */
 function getSensorValue(sensor, index, time, chartToUpdate) {
-    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/".concat(sensor).concat("?count=true").concat("&time=").concat(time), function (data) {
+    $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/all/".concat(sensor).concat("?time=").concat(time), function (data) {
         updateChart(index, data.all.length, chartToUpdate);
 
     })
@@ -12,10 +12,10 @@ function getSensorValue(sensor, index, time, chartToUpdate) {
 }
 
 function updateValues(time, chartToUpdate) {
-    getSensorValue("auxiliaryCarDetectorActor2", 0, time, chartToUpdate);
-    getSensorValue("auxiliaryCarDetectorActor1", 1, time, chartToUpdate);
-    getSensorValue("mainCarDetectorActor1", 2, time, chartToUpdate);
-    getSensorValue("mainCarDetectorActor2", 3, time, chartToUpdate);
+    getSensorValue("auxiliaryCarDetectorActorNorth", 0, time, chartToUpdate);
+    getSensorValue("auxiliaryCarDetectorActorSouth", 1, time, chartToUpdate);
+    getSensorValue("mainCarDetectorActorWest", 2, time, chartToUpdate);
+    getSensorValue("mainCarDetectorActorEast", 3, time, chartToUpdate);
 }
 
 function updateChart(indexToUpdate, valueToUpdate, chartToUpdate) {
@@ -24,10 +24,10 @@ function updateChart(indexToUpdate, valueToUpdate, chartToUpdate) {
 }
 
 function updateEvolutionValues(time, periods) {
-    getSensorEvolution("auxiliaryCarDetectorActor2", 0, time, periods);
-    getSensorEvolution("auxiliaryCarDetectorActor1", 1, time, periods);
-    getSensorEvolution("mainCarDetectorActor1", 2, time, periods);
-    getSensorEvolution("mainCarDetectorActor2", 3, time, periods);
+    getSensorEvolution("auxiliaryCarDetectorActorNorth", 0, time, periods);
+    getSensorEvolution("auxiliaryCarDetectorActorSouth", 1, time, periods);
+    getSensorEvolution("mainCarDetectorActorWest", 2, time, periods);
+    getSensorEvolution("mainCarDetectorActorEast", 3, time, periods);
 }
 
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
