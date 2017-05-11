@@ -96,18 +96,21 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
     val currentTimeHour = new Timestamp(currentTime - SensorsEndpoint.HourInMillis)
     val currentTimeDay = new Timestamp(currentTime - SensorsEndpoint.DayInMillis)
     val currentTimeMonth = new Timestamp(currentTime - SensorsEndpoint.MonthInMillis)
-
-    val constraintSensorsValue = sensor match {
+    sensor match {
       case s if s == "mainCarDetectorActorWest" || s == "mainCarDetectorActorWest" || s == "auxiliaryCarDetectorActorSouth" || s == "auxiliaryCarDetectorActorNorth" =>
-        " and value != 0"
-      case _ => ""
-    }
-
-    time match {
-      case "hour" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeHour $constraintSensorsValue")
-      case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay $constraintSensorsValue")
-      case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth $constraintSensorsValue")
-      case "all" => Sensor.findAllBy(sqls"name = $sensor $constraintSensorsValue")
+        time match {
+          case "hour" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeHour and value != 0")
+          case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay and value != 0")
+          case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth and value != 0")
+          case "all" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth and value != 0")
+        }
+      case _ =>
+        time match {
+          case "hour" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeHour")
+          case "day" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeDay")
+          case "month" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth")
+          case "all" => Sensor.findAllBy(sqls"name = $sensor and created_at > $currentTimeMonth")
+        }
     }
   }
 
@@ -116,7 +119,11 @@ class SensorsEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
     var upperTime = System.currentTimeMillis()
     var valuesList: Array[List[Sensor]] = new Array[List[Sensor]](period)
     for (p <- 0 until period) {
-      valuesList(p) = Sensor.findAllBy(sqls"name = $sensor and created_at > ${new Timestamp(upperTime - interval)} and created_at < ${new Timestamp(upperTime)}").toList
+      valuesList(p) = Sensor.findAllBy(sqls"name = $sensor and created_at > ${
+        new Timestamp(upperTime - interval)
+      } and created_at < ${
+        new Timestamp(upperTime)
+      }").toList
       upperTime = upperTime - interval
 
     }

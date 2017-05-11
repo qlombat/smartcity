@@ -14,8 +14,8 @@ function getSensorValue(sensor, index, time, chartToUpdate) {
 function updateValues(time, chartToUpdate) {
     getSensorValue("auxiliaryCarDetectorActorNorth", 0, time, chartToUpdate);
     getSensorValue("auxiliaryCarDetectorActorSouth", 1, time, chartToUpdate);
-    getSensorValue("mainCarDetectorActorWest", 2, time, chartToUpdate);
-    getSensorValue("mainCarDetectorActorEast", 3, time, chartToUpdate);
+    getSensorValue("mainCarDetectorActorEast", 2, time, chartToUpdate);
+    getSensorValue("mainCarDetectorActorWest", 3, time, chartToUpdate);
 }
 
 function updateChart(indexToUpdate, valueToUpdate, chartToUpdate) {
@@ -26,8 +26,8 @@ function updateChart(indexToUpdate, valueToUpdate, chartToUpdate) {
 function updateEvolutionValues(time, periods) {
     getSensorEvolution("auxiliaryCarDetectorActorNorth", 0, time, periods);
     getSensorEvolution("auxiliaryCarDetectorActorSouth", 1, time, periods);
-    getSensorEvolution("mainCarDetectorActorWest", 2, time, periods);
-    getSensorEvolution("mainCarDetectorActorEast", 3, time, periods);
+    getSensorEvolution("mainCarDetectorActorEast", 2, time, periods);
+    getSensorEvolution("mainCarDetectorActorWest", 3, time, periods);
 }
 
 function getSensorEvolution(sensor, datasetIndex, time, periods) {
