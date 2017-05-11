@@ -57,19 +57,19 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("AuxiliaryCarDetectorActor1", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("AuxiliaryCarDetectorActorNorth", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("AuxiliaryCarDetectorActor2", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("AuxiliaryCarDetectorActorSouth", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActor1", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("MainRoadCarDetectorActorEast", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActor2", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("MainRoadCarDetectorActorWest", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
     }
 
     offset = Timestamp.valueOf("2017-02-01 00:00:00").getTime()
