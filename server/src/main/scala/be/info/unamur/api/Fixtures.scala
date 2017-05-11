@@ -6,7 +6,6 @@ import be.info.unamur.persistence.entities.{Property, RfidSubscription, Sensor}
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{FutureSupport, ScalatraServlet}
-
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
@@ -35,75 +34,37 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
     Property.create("LightMin", "190.0")
   }
 
-  get("generate/sensors") {
-
-    var offset = Timestamp.valueOf("2016-05-01 00:00:00").getTime()
-    val end = Timestamp.valueOf("2017-05-10 00:00:00").getTime()
-    var diff = (end - offset + 1).toInt
+  get("/generate/sensors") {
 
     for (i <- 0 to 200) {
       val temp = Random.nextInt(30)
-      Sensor.create("Temperature", temp, temp, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("Temperature", temp, temp, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
 
     for (i <- 0 to 200) {
       val hum = Random.nextInt(90)
-      Sensor.create("Humidity", hum, hum, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("Humidity", hum, hum, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
 
     for (i <- 0 to 200) {
       val light = Random.nextInt(900)
-      Sensor.create("Light", light, light, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("Light", light, light, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("AuxiliaryCarDetectorActorNorth", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("AuxiliaryCarDetectorActorNorth", 1, 1, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("AuxiliaryCarDetectorActorSouth", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("AuxiliaryCarDetectorActorSouth", 1, 1, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActorEast", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("MainRoadCarDetectorActorEast", 1, 1, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
 
     for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActorWest", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    offset = Timestamp.valueOf("2017-02-01 00:00:00").getTime()
-    diff = (end - offset + 1).toInt
-
-    for (i <- 0 to 200) {
-      val temp = Random.nextInt(30)
-      Sensor.create("Temperature", temp, temp, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    for (i <- 0 to 200) {
-      val hum = Random.nextInt(90)
-      Sensor.create("Humidity", hum, hum, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    for (i <- 0 to 200) {
-      val light = Random.nextInt(900)
-      Sensor.create("Light", light, light, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    for (i <- 0 to 200) {
-      Sensor.create("AuxiliaryCarDetectorActorNorth", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    for (i <- 0 to 200) {
-      Sensor.create("AuxiliaryCarDetectorActorSouth", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActorEast", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
-    }
-
-    for (i <- 0 to 200) {
-      Sensor.create("MainRoadCarDetectorActorWest", 1, 1, new Timestamp(offset + Random.nextInt(diff)))
+      Sensor.create("MainRoadCarDetectorActorWest", 1, 1, new Timestamp(System.currentTimeMillis() - Random.nextInt(2147483647)))
     }
   }
 }
