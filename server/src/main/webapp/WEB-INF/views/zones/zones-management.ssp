@@ -14,7 +14,7 @@ Close or open a zone
 <div class="panel-body">
 <div class="row">
     <div class="col-lg-12">
-        <form id="close-open-zone-form" role="form" data-toggle="validator" method="">
+        <form id="close-open-zone-form" role="form" data-toggle="validator">
 
             <div class="form-group has-feedback input-group">
                 <span class="input-group-addon">Name</span>
@@ -32,7 +32,7 @@ Close or open a zone
                             </label>
                         </div>
 
-                        <div class="text-right"><button type="submit" class="btn btn-primary">Submit Button</button></div>
+                        <div class="text-right"><button type="submit" class="btn btn-primary">Submit</button></div>
 
                     </form>
                 </div>
@@ -52,7 +52,36 @@ Close or open a zone
         <div class="panel-body">
             <div class="row">
                 <div class="col-lg-12">
-
+                    <form id="bus-schedule-form" role="form">
+                    <div class="form-group has-feedback input-group">
+                        <span class="input-group-addon">Day</span>
+                        <select id="day" class="form-control" required>
+                            <option disabled selected value> -- select a day -- </option>
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            <option value="saturday">Saturday</option>
+                            <option value="sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group has-feedback input-group">
+                        <span class="input-group-addon">Opening time</span>
+                        <input type="text" class="form-control clockpicker" id="opening-time" data-opening="opening-time" required>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-time"></span>
+                        </span>
+                    </div>
+                    <div class="form-group has-feedback input-group">
+                        <span class="input-group-addon">Closing time</span>
+                        <input type="text" class="form-control clockpicker" id="closing-time" data-closing="closing-time" required>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-time"></span>
+                        </span>
+                        </div>
+                        <div class="text-right"><button type="submit" class="btn btn-primary">Submit</button></div>
+                    </form>
                 </div>
             </div>
             <!-- /.row (nested) -->

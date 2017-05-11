@@ -30,6 +30,7 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
     context mount(new ParkingEndpoint, "/api/parking/*")
     context mount(new Fixtures, "/api/fixtures/*")
     context mount(new SpeedEndpoint, "/api/speed/*")
+    context mount(new BusScheduleEndpoint, "/api/bus_schedule/*")
   }
 
   override def destroy(context: ServletContext) {

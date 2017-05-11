@@ -38,22 +38,20 @@ object BusSchedule extends SQLSyntaxSupport[BusSchedule] {
     }.map(BusSchedule(busSchedule.resultName)).list().apply()
   }
 
-  def create(id: Long, day: String, openingTime: Time, closingTime: Time)(implicit session: DBSession = autoSession): BusSchedule = {
-    withSQL {
+  def create(day: String, openingTime: Time, closingTime: Time)(implicit session: DBSession = autoSession): BusSchedule = {
+    val generatedKey = withSQL {
       insert.into(BusSchedule).columns(
-        column.id,
         column.day,
         column.openingTime,
         column.closingTime
       ).values(
-        id,
         day,
         openingTime,
         closingTime)
-    }.update().apply()
+    }.updateAndReturnGeneratedKey().apply()
 
     BusSchedule(
-      id = id,
+      id = generatedKey,
       day = day,
       openingTime = openingTime,
       closingTime = closingTime)

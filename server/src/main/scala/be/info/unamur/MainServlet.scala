@@ -95,8 +95,12 @@ class MainServlet extends ScalatraServlet with ScalateSupport {
   get("/zones/management") {
     layoutTemplate(
       "/WEB-INF/views/zones/zones-management.ssp",
-      ("styles", List("/resources/css/zones-management.css")),
-      ("scripts", List("/resources/vendor/bootstrap-validator/validator.min.js",
+      ("styles", List("/resources/vendor/clockpicker/css/bootstrap-clockpicker.min.css",
+        "/resources/css/zones-management.css")),
+      ("scripts", List("/resources/vendor/momentjs/moment.min.js",
+        "/resources/vendor/clockpicker/js/bootstrap-clockpicker.min.js",
+        "/resources/vendor/clockpicker/js/jquery-clockpicker.min.js",
+        "/resources/vendor/bootstrap-validator/validator.min.js",
         "/resources/vendor/bootstrap-notify/bootstrap-notify.min.js",
         "/resources/js/zones/zones-management.js"))
     )
