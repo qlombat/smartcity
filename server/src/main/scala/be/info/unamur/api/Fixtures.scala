@@ -42,7 +42,7 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
     try {
       Property.create("TemperatureMin", "3.0")
       Property.create("HumidityMax", "60.0")
-      Property.create("LightMin", "190.0")
+      Property.create("LightMin", "30.0")
     } catch {
       case e:Throwable => "Propriétés déjà générées"
     }
@@ -120,10 +120,39 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
       Sensor.create("mainCarDetectorActorWest", 1, 1, new Timestamp(offset + (Math.random * diff).toLong))
     }
 
+    for (i <- 0 to 20) {
+      Zone.create("N", "North", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("N", "North", true, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("S", "South", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("S", "South", true, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("W", "West", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("W", "West", true, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("E", "East", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("E", "East", true, new Timestamp(offset + (Math.random * diff).toLong))
+
+      Zone.create("NW", "Northwest", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("NW", "Northwest", true, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("NE", "Northeast", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("NE", "Northeast", true, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("SW", "Southwest", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("SW", "Southwest", true, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("SE", "Southeast", false, new Timestamp(offset + (Math.random * diff).toLong))
+      Zone.create("SE", "Southeast", true, new Timestamp(offset + (Math.random * diff).toLong))
+    }
+
+    Zone.create("N", "North", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("S", "South", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("W", "West", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("E", "East", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("NE", "Northeast", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("NW", "Northwest", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("SW", "Southwest", true, new Timestamp(System.currentTimeMillis()))
+    Zone.create("SE", "Southeast", true, new Timestamp(System.currentTimeMillis()))
     Sensor.create("AuxiliaryCarDetectorActorNorth", 0, 0, new Timestamp(System.currentTimeMillis()))
     Sensor.create("AuxiliaryCarDetectorActorSouth", 0, 0, new Timestamp(System.currentTimeMillis()))
     Sensor.create("mainCarDetectorActorEast", 0, 0, new Timestamp(System.currentTimeMillis()))
     Sensor.create("mainCarDetectorActorWest", 0, 0, new Timestamp(System.currentTimeMillis()))
+    "Success"
   }
 }
 
