@@ -42,7 +42,7 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
     try {
       Property.create("TemperatureMin", "3.0")
       Property.create("HumidityMax", "60.0")
-      Property.create("LightMin", "30.0")
+      Property.create("LightMin", "70.0")
     } catch {
       case e:Throwable => "Propriétés déjà générées"
     }
