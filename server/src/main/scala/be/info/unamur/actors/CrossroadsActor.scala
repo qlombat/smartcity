@@ -52,6 +52,8 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
 
   var auxiliaryScheduler: Cancellable = _
 
+  var stopped = true
+
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
   override def receive: Receive = {
@@ -105,6 +107,7 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
       mainCarDetectorActorEast ! Start()
       auxiliaryCarDetectorActorSouth ! Start()
       auxiliaryCarDetectorActorNorth ! Start()
+      stopped = false;
 
     /*
    * When the detection sensors located on the auxiliary road are triggered, closes the main road and opens the auxiliary one.
@@ -147,11 +150,20 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
             openAuxiliary()
           }
       }
+      //start message of these actors
+      auxiliaryCarDetectorActorSouth ! StartListen()
+      auxiliaryCarDetectorActorNorth ! StartListen()
+
 
     /*
      * Stops all the sub-actors.
      */
     case Stop() =>
+      stopped = true
+      if (!auxiliaryScheduler.isCancelled) {
+        auxiliaryScheduler.cancel()
+      }
+
       val stopTrafficLightsMainActor = trafficLightsMainActor ? Stop()
       val stopTrafficLightsAuxiliaryActor = trafficLightsAuxiliaryActor ? Stop()
       val stopPedestrianCrossingActor = pedestrianCrossingActor ? Stop()
@@ -185,10 +197,6 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
    */
   def openAuxiliary(): Unit = {
 
-    //stop message of these actors
-    auxiliaryCarDetectorActorSouth ! StopListen()
-    auxiliaryCarDetectorActorNorth ! StopListen()
-
     logger.debug("Turn pedestrian leds off - " + context.self.path.name)
     pedestrianCrossingActor ! SetOff()
     Thread sleep CrossroadsActor.pedestrianCrossingTime * 1000
@@ -208,14 +216,15 @@ class CrossroadsActor(ik: InterfaceKitPhidget) extends Actor {
 
     timeOfLastAuxiliaryGreenLight = DateTime.now()
 
-    //start message of these actors
-    auxiliaryCarDetectorActorSouth ! StartListen()
-    auxiliaryCarDetectorActorNorth ! StartListen()
-
-    auxiliaryScheduler = context.system.scheduler.scheduleOnce(
-      Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
-      self,
-      OpenAuxiliary())
+    if (!auxiliaryScheduler.isCancelled) {
+      auxiliaryScheduler.cancel()
+    }
+    if (!stopped) {
+      auxiliaryScheduler = context.system.scheduler.scheduleOnce(
+        Duration.apply(CrossroadsActor.differenceBetweenGreenAuxiliary, "seconds"),
+        self,
+        OpenAuxiliary())
+    }
 
   }
 

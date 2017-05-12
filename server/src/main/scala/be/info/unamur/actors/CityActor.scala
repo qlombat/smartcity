@@ -1,15 +1,17 @@
 package be.info.unamur.actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, PoisonPill, Props}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import be.info.unamur.messages.{Initialize, Start, Stop}
 import com.phidgets.InterfaceKitPhidget
+import com.phidgets.event.{AttachEvent, AttachListener, DetachEvent, DetachListener}
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{Await, ExecutionContextExecutor}
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{Failure, Success}
 
 
 /** Master actor that controls the other city sub-actors. It is directly called by the servlet.
@@ -40,15 +42,45 @@ class CityActor extends Actor {
 
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
+  val ikAttachListener = new AttachListener {
+    override def attached(attachEvent: AttachEvent): Unit = {
+      logger.debug("Interface Kit plugged")
+      // The master actor (normally, other actors will be children of this one)
+      Await.ready(self ? Stop(), Duration.Inf).value.get match {
+        case Success(_) =>
+          logger.debug("Actors stopped")
+          self ! Start()
+        case Failure(t) =>
+          logger.debug("Impossible to stop the actors, may be there is no actor to stop.")
+          self ! Start()
+      }
+    }
+  }
+  val ikDetachListener = new DetachListener {
+    override def detached(detachEvent: DetachEvent): Unit = {
+      logger.debug("Interface Kit unplugged")
+    }
+  }
+
+  var listenerAdded = false
+
   override def receive: Receive = {
 
     /*
      * Initializes the interface kit and the sub-actors (crossroads, parking and publicLightning).
      */
     case Initialize() =>
+      logger.debug("Initialize city")
       if (stopped) {
+        stopped = false
         ik open CityActor.IKPhidgetId
         ik waitForAttachment()
+
+        if(!listenerAdded){
+          listenerAdded = true
+          ik.addAttachListener(ikAttachListener)
+          ik.addDetachListener(ikDetachListener)
+        }
 
         val initCrossroads = crossroadsActor ? Initialize()
         val initParking = parkingActor ? Initialize()
@@ -62,20 +94,25 @@ class CityActor extends Actor {
 
         Thread sleep 2000
 
-        crossroadsActor ! Start()
-        publicLightingActor ! Start()
-        parkingActor ! Start()
+        self ! Start()
 
         results pipeTo sender
-
-        stopped = false
       }
+
+
+    case Start() =>
+      logger.debug("Start city")
+      crossroadsActor ! Start()
+      publicLightingActor ! Start()
+      parkingActor ! Start()
 
     /*
      * Stops the entire system by sending the Stop message to all the sub-actors.
      */
     case Stop() =>
       if (!stopped) {
+        stopped = true
+
         val stopCrossroads = crossroadsActor ? Stop()
         val stopParking = parkingActor ? Stop()
         val stopPublicLightning = publicLightingActor ? Stop()
@@ -87,8 +124,6 @@ class CityActor extends Actor {
         } yield (resultStopCrossroads, resultStopParking, resultStopPublicLightning)
 
         results pipeTo sender
-
-        stopped = true
       }
   }
 }

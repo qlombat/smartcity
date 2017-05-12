@@ -62,13 +62,13 @@ class PublicLightingActor(ik: InterfaceKitPhidget, index: Int, level1Pin: Int, l
      * Stops the LEDs and remove the listener.
      */
     case Stop() =>
+      ik removeSensorChangeListener this.lightSensorChangeListener
       3 times {
         allPinUp()
         Thread sleep PublicLightingActor.blinkingSpeed / 2
         allPinDown()
         Thread sleep PublicLightingActor.blinkingSpeed / 2
       }
-      ik removeSensorChangeListener this.lightSensorChangeListener
       sender ! Stopped()
   }
 

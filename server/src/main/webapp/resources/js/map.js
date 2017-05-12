@@ -1295,6 +1295,23 @@ $("#RFID").popover({
 })
     .on('show.bs.popover', function () {
         removeAllPopover();
+    })
+    .on('shown.bs.popover', function (e) {
+        var popover = $('#' + $(e.target).attr('aria-describedby'));
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/sensors/barrier", function (data) {
+            if (typeof data.value === 'undefined') {
+                popover.find(".popover-content").html("N/A");
+            } else {
+                if(data.value === 0){
+                    popover.find(".popover-content").html("Barrier close");
+
+                }else{
+                    popover.find(".popover-content").html("Barrier open");
+                }
+            }
+        }).fail(function () {
+            popover.find(".popover-content").html("N/A");
+        });
     });
 
 $("#Bus, #Bus-2").each(function () {

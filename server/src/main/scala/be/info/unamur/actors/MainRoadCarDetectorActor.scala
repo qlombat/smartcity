@@ -43,7 +43,6 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
           if (index.equals(sensorChangeEvent.getIndex)) {
             val value = ik.getSensorValue(sensorChangeEvent.getIndex)
-            logger.debug("Value of " + context.self.path.name + " " + value)
             val detected = Math.abs(initialValue - value) > MainRoadCarDetectorActor.valueCarDetection
             if (!alreadyDetected && detected) {
               logger.debug("Car detected on " + context.self.path.name)
@@ -126,7 +125,7 @@ object MainRoadCarDetectorActor {
   val valueCarDetection: Int = 150
 
   //Trigger for the listener
-  val trigger: Int = 5
+  val trigger: Int = 15
 
   //Minimum time between two car detections. (seconds)
   val timeBetweenCarDectection: Int = 3

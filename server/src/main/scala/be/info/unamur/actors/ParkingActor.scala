@@ -41,6 +41,20 @@ class ParkingActor extends Actor {
   implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
 
+  val rfidAttachListener = new AttachListener {
+    override def attached(attachEvent: AttachEvent): Unit ={
+      logger.debug("RFID plugged")
+      self ! Start()
+    }
+  }
+  val rfidDetachListener = new DetachListener {
+    override def detached(detachEvent: DetachEvent): Unit = {
+      logger.debug("RFID unplugged")
+      barrierActor ! OpenBarrier()
+    }
+  }
+  var listenerAdded = false
+
   override def receive: Receive = {
 
     /*
@@ -52,6 +66,12 @@ class ParkingActor extends Actor {
 
       val initBarrierActor = barrierActor ? Initialize()
 
+      if(!listenerAdded) {
+        listenerAdded = true
+        rfid.addAttachListener(rfidAttachListener)
+        rfid.addDetachListener(rfidDetachListener)
+      }
+
       val results = for {
         resultInitBarrierActor <- initBarrierActor
       } yield resultInitBarrierActor
@@ -59,15 +79,16 @@ class ParkingActor extends Actor {
       // Sends the "open barrier" message when a RFID tag is read.
       this.tagGainListener = new TagGainListener {
         override def tagGained(tagGainEvent: TagGainEvent): Unit = {
+          logger.debug("Tag gain - " + context.self.path.name)
           var taken = 0
           var subscription = RfidSubscription.findAll()
           for (e <- subscription) {
-            (RfidTag.findAllBy(sqls"tag = ${e.tag} ORDER BY created_at DESC LIMIT 1")) match {
+            RfidTag.findAllBy(sqls"tag = ${e.tag} ORDER BY created_at DESC LIMIT 1") match {
               case Nil =>
               case l => if (l.head.entry == 1) taken += 1
             }
           }
-          if (!RfidSubscription.findAllBy(sqls"tag = ${tagGainEvent.getValue}").isEmpty && (taken < ParkingActor.totalPlaces ||
+          if (RfidSubscription.findAllBy(sqls"tag = ${tagGainEvent.getValue}").nonEmpty && (taken < ParkingActor.totalPlaces ||
             RfidTag.findAllBy(sqls"tag = ${tagGainEvent.getValue} ORDER BY created_at DESC LIMIT 1").head.entry == 1)) {
             rfid removeTagGainListener ParkingActor.this.tagGainListener
             rfid addTagLossListener ParkingActor.this.tagLossListener
@@ -80,12 +101,15 @@ class ParkingActor extends Actor {
       // Sends the "close barrier" message when a RFID tag is lost.
       this.tagLossListener = new TagLossListener {
         override def tagLost(tagLossEvent: TagLossEvent): Unit = {
-          if (!RfidSubscription.findAllBy(sqls"tag = ${tagLossEvent.getValue}").isEmpty) {
+          logger.debug("Tag loss - " + context.self.path.name)
+          if (RfidSubscription.findAllBy(sqls"tag = ${tagLossEvent.getValue}").nonEmpty) {
             barrierActor ! CloseBarrier()
             rfid removeTagLossListener ParkingActor.this.tagLossListener
           }
         }
       }
+
+      rfid setAntennaOn true
 
       results pipeTo sender
 
@@ -95,7 +119,7 @@ class ParkingActor extends Actor {
 
 
     case Start() =>
-      rfid setAntennaOn true
+      barrierActor ! Start()
       rfid addTagGainListener this.tagGainListener
       rfid removeTagLossListener this.tagLossListener
 
@@ -104,6 +128,10 @@ class ParkingActor extends Actor {
      * Stops the BarrierActor.
      */
     case Stop() =>
+      listenerAdded = false
+      rfid.removeAttachListener(rfidAttachListener)
+      rfid.removeDetachListener(rfidDetachListener)
+
       val stopBarrierActor = barrierActor ? Stop()
 
       val results = for {
