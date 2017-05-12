@@ -51,7 +51,7 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
   get("/generate/sensors") {
 
     var offset = Timestamp.valueOf("2016-05-01 00:00:00").getTime
-    val end = Timestamp.valueOf("2017-05-11 00:00:00").getTime
+    var end = Timestamp.valueOf("2017-05-11 00:00:00").getTime
     var diff = end - offset + 1
     val rand = new Timestamp(offset + (Math.random * diff).toLong)
 
@@ -118,6 +118,20 @@ class Fixtures extends ScalatraServlet with JacksonJsonSupport with FutureSuppor
 
     for (i <- 0 to 200) {
       Sensor.create("mainCarDetectorActorWest", 1, 1, new Timestamp(offset + (Math.random * diff).toLong))
+    }
+
+    offset = Timestamp.valueOf("2017-05-9 00:00:00").getTime
+    end = Timestamp.valueOf("2017-05-12 10:30:00").getTime
+    diff = end - offset + 1
+
+    for (i <- 0 to 200) {
+      val temp = Random.nextInt(30)
+      val hum = Random.nextInt(90)
+      val light = Random.nextInt(900)
+
+      Sensor.create("Temperature", temp, temp, new Timestamp(offset + (Math.random * diff).toLong))
+      Sensor.create("Humidity", hum, hum, new Timestamp(offset + (Math.random * diff).toLong))
+      Sensor.create("Light", light, light, new Timestamp(offset + (Math.random * diff).toLong))
     }
 
     for (i <- 0 to 20) {
