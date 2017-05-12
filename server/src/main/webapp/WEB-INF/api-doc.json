@@ -249,7 +249,7 @@
           "200": {
             "description": "Successful operation",
             "schema": {
-              "$ref": "#/definitions/Sensor"
+              "$ref": "#/definitions/SensorAll"
             }
           },
           "400": {
@@ -288,6 +288,40 @@
             "schema": {
               "$ref": "#/definitions/BusSchedule"
             }
+          },
+          "400": {
+            "description": "Sensor not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/parking/history": {
+      "get": {
+        "tags": [
+          "Parking"
+        ],
+        "summary": "Get the last parking changes",
+        "description": "",
+        "operationId": "getParkingHistory",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "description": "How many changes you want",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
           },
           "400": {
             "description": "Sensor not found",
@@ -346,6 +380,39 @@
         }
       }
     },
+    "SensorAll": {
+      "type": "object",
+      "properties": {
+        "all": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "format": "string"
+              },
+              "value": {
+                "type": "number",
+                "format": "double"
+              },
+              "grossValue": {
+                "type": "number",
+                "format": "double"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
     "ZonesName": {
       "type": "object",
       "properties": {
@@ -357,7 +424,7 @@
         }
       }
     },
-    "BusSchedule":{
+    "BusSchedule": {
       "type": "object",
       "properties": {
         "id": {
