@@ -296,6 +296,92 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Bus schedule"
+        ],
+        "summary": "Add a new bus schedule",
+        "description": "",
+        "operationId": "postBusSchedule",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "day",
+            "in": "path",
+            "description": "The day of the week",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "opening_time",
+            "in": "query",
+            "description": "The opening time of the schedule",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "closing_time",
+            "in": "query",
+            "description": "The closing time of the schedule",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/BusSchedule"
+            }
+          },
+          "400": {
+            "description": "Sensor not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/bus_schedule/{id}": {
+      "delete": {
+        "tags": [
+          "Bus schedule"
+        ],
+        "summary": "Delete a bus schedule",
+        "description": "",
+        "operationId": "deleteBusSchedule",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the bus schedule",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Ok"
+            }
+          },
+          "400": {
+            "description": "Sensor not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
       }
     },
     "/parking/history": {
@@ -449,6 +535,15 @@
       "type": "object",
       "properties": {
         "error": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "Ok": {
+      "type": "object",
+      "properties": {
+        "ok": {
           "type": "string",
           "format": "string"
         }
