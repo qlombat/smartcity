@@ -1,13 +1,13 @@
 package be.info.unamur.api
 
-import be.info.unamur.persistence.entities
 import be.info.unamur.persistence.entities.{RfidSubscription, RfidTag}
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraServlet}
+import scalikejdbc._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scalikejdbc._
+
 
 /** Api endpoint to retrieve parking information.
   *
@@ -43,7 +43,7 @@ class ParkingEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
         params get ParkingEndpoint.TakeParamIdentifier match {
           case Some(t) => RfidTag.findAllBy(sqls"true ORDER BY created_at DESC LIMIT ${t.toInt}") match {
             case Nil => halt(400, "error" -> "No data")
-            case t => t.map(x => (x,RfidSubscription.findAllBy(sqls"tag=${x.tag}").head))
+            case t => t.map(x => (x, RfidSubscription.findAllBy(sqls"tag=${x.tag}").head))
           }
         }
       }
@@ -52,6 +52,6 @@ class ParkingEndpoint extends ScalatraServlet with JacksonJsonSupport with Futur
 }
 
 object ParkingEndpoint {
-  var totalPlaces = 3
+  var totalPlaces         = 3
   var TakeParamIdentifier = "take"
 }

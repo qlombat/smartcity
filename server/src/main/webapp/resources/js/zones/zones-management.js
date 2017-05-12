@@ -4,13 +4,9 @@
  * @author Noe Picard
  */
 
-function showalert(message, alerttype) {
-    $('#alert_placeholder').append('<div id="alertdiv" class="alert ' + alerttype + '"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>')
-
-    setTimeout(function () { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
-        $("#alertdiv").remove();
-    }, 5000);
-}
+var table = $('#datatables-bus-schedules').DataTable({
+    responsive: true
+});
 
 $(document).ready(function () {
     $('#close-open-zone-form').validator().on('submit', function (e) {
@@ -49,6 +45,12 @@ $(document).ready(function () {
         }
     });
 
+
+    $('.clockpicker').clockpicker({
+        align: 'left',
+        autoclose: true
+    });
+
     $('#bus-schedule-form').validator({
         custom: {
             'opening': function (el) {
@@ -77,7 +79,9 @@ $(document).ready(function () {
                 + "/api/bus_schedule/" + $('#day').val()
                 + "?opening_time=" + $('#opening-time').val()
                 + "&closing_time=" + $('#closing-time').val()
-            ).done(function () {
+            ).done(function (result) {
+                updateTable();
+
                 $.notify({
                     // options
                     message: 'Bus schedule added'
@@ -98,8 +102,47 @@ $(document).ready(function () {
         }
     });
 
-    $('.clockpicker').clockpicker({
-        align: 'left',
-        autoclose: true
-    });
+    function updateTable() {
+        $.getJSON(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port
+            + "/api/bus_schedule/", function (result) {
+
+            var html = '';
+            $.each(result, function (index, item) {
+                html += "<tr>" +
+                    "<td>" + item.id + "</td>" +
+                    "<td>" + item.day.charAt(0).toUpperCase() + item.day.slice(1) + "</td>" +
+                    "<td>" + item.openingTime + "</td>" +
+                    "<td>" + item.closingTime + "</td>" +
+                    "<td>" + "<button id='delete-bs-" + item.id + "' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></button>" + "</td>" +
+                    "</tr>";
+            });
+
+            $('#datatables-bus-schedule-body').html(html);
+
+
+            $.each(result, function (index, item) {
+                $('#delete-bs-' + item.id).on('click', function () {
+                    var me = $(this);
+                    $.ajax({
+                        url: window.location.protocol + "//" + window.location.hostname + ":" + window.location.port
+                        + "/api/bus_schedule/" + item.id,
+                        type: 'DELETE',
+                        success: function () {
+                            $.notify({
+                                // options
+                                message: 'Bus schedule deleted'
+                            }, {
+                                // settings
+                                type: 'danger'
+                            });
+                            updateTable();
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    updateTable();
+
 });

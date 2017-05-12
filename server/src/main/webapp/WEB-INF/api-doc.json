@@ -12,19 +12,23 @@
   "basePath": "/api",
   "tags": [
     {
-      "name": "zones",
+      "name": "Zones",
       "description": "Everything about your zones"
     },
     {
-      "name": "sensors",
+      "name": "Sensors",
       "description": "Access to SmartCity sensors"
+    },
+    {
+      "name": "Bus schedule",
+      "description": "Access and modify the information about bus schedules"
     }
   ],
   "paths": {
     "/zones/{name}/close": {
       "post": {
         "tags": [
-          "zones"
+          "Zones"
         ],
         "summary": "Close a specific zone",
         "description": "",
@@ -64,7 +68,7 @@
     "/zones/{name}/open": {
       "post": {
         "tags": [
-          "zones"
+          "Zones"
         ],
         "summary": "Open a specific zone",
         "description": "",
@@ -104,7 +108,7 @@
     "/zones/closed": {
       "get": {
         "tags": [
-          "zones"
+          "Zones"
         ],
         "summary": "Get the closed zones",
         "description": "",
@@ -127,7 +131,7 @@
     "/sensors": {
       "post": {
         "tags": [
-          "sensors"
+          "Sensors"
         ],
         "summary": "Add a new sensor with its value and its gross value",
         "operationId": "addNewSensorValueGrossValue",
@@ -179,7 +183,7 @@
     "/sensors/{name}": {
       "get": {
         "tags": [
-          "sensors"
+          "Sensors"
         ],
         "summary": "Get the sensor last value",
         "description": "",
@@ -216,7 +220,7 @@
     "/sensors/all/{name}": {
       "get": {
         "tags": [
-          "sensors"
+          "Sensors"
         ],
         "summary": "Get history of sensors",
         "description": "",
@@ -246,6 +250,43 @@
             "description": "Successful operation",
             "schema": {
               "$ref": "#/definitions/Sensor"
+            }
+          },
+          "400": {
+            "description": "Sensor not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/bus_schedule/{day}": {
+      "get": {
+        "tags": [
+          "Bus schedule"
+        ],
+        "summary": "Get the schedule for that day",
+        "description": "",
+        "operationId": "getBusSchedule",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "day",
+            "in": "path",
+            "description": "The day of the week",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/BusSchedule"
             }
           },
           "400": {
@@ -313,6 +354,27 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "BusSchedule":{
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "day": {
+          "type": "string",
+          "format": "string"
+        },
+        "opening_time": {
+          "type": "string",
+          "format": "time"
+        },
+        "closing_time": {
+          "type": "string",
+          "format": "time"
         }
       }
     },
