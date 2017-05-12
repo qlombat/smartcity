@@ -18,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * @author Noé Picard
   */
 class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureSupport {
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats + new TimeSerializer
 
   override protected implicit def executor: ExecutionContext = ExecutionContext.global
 
@@ -136,11 +136,11 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
 }
 
 object ZonesEndpoint {
-  val NameParamIdentifier = "name"
+  val NameParamIdentifier     = "name"
   val NameFullParamIdentifier = "full_name"
-  val TakeParamIdentifier = "take"
+  val TakeParamIdentifier     = "take"
 
-  val HourInMillis = 3600000
-  val DayInMillis = 86400000
+  val HourInMillis  = 3600000
+  val DayInMillis   = 86400000
   val MonthInMillis = 2678400000L
 }

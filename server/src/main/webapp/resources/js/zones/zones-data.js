@@ -84,7 +84,7 @@ $(document).ready(function () {
         chart.data.datasets[0].data.push(data);
         chart.data.datasets[0].backgroundColor.push(getColor(colorIndex));
         chart.data.datasets[0].hoverBackgroundColor.push(getColorHover(colorIndex));
-        chart.data.datasets[0].borderColor.push(getColor(colorIndex));
+        chart.data.datasets[0].borderColor.push(getColorHover(colorIndex));
         colorIndex++;
         chart.update();
     }
@@ -199,7 +199,7 @@ $(document).ready(function () {
                 backgroundColor: [],
                 hoverBackgroundColor: [],
                 borderColor: [],
-                borderWidth: 0.3
+                borderWidth: 0.5
             }]
         },
         options: {
