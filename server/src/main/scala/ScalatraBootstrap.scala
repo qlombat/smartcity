@@ -16,7 +16,7 @@ import scala.language.postfixOps
   */
 class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
   // Initialize the Actor system here to do it just once and pass it to the servlet that need it
-  val system: ActorSystem = ActorSystem.create("SmartCity")
+
 
 
   override def init(context: ServletContext) {
@@ -24,7 +24,7 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
 
     // Mount servlets
     context mount(new MainServlet, "/*")
-    context mount(new ActorsServlet(system), "/actors/*")
+    context mount(new ActorsServlet(), "/actors/*")
     context mount(new ZonesEndpoint, "/api/zones/*")
     context mount(new SensorsEndpoint, "/api/sensors/*")
     context mount(new ParkingEndpoint, "/api/parking/*")
@@ -34,7 +34,6 @@ class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
   }
 
   override def destroy(context: ServletContext) {
-    system terminate()
     closeDatabase()
   }
 }

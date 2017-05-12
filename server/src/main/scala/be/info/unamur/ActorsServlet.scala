@@ -20,18 +20,24 @@ import scala.util.{Failure, Success}
   *
   * @author Noé Picard
   */
-class ActorsServlet(system: ActorSystem) extends ScalatraServlet with ScalateSupport {
+class ActorsServlet() extends ScalatraServlet with ScalateSupport {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  // The master actor (normally, other actors will be children of this one)
-  val cityActor: ActorRef = system.actorOf(Props[CityActor].withDispatcher("application-dispatcher"), name = "cityActor")
+  var system: ActorSystem = null
 
+  // The master actor (normally, other actors will be children of this one)
+  var cityActor: ActorRef = _
   // Timeout for the ask messages to actors
   implicit val timeout = Timeout(10 seconds)
 
 
   /* Starts the actors (for example, by opening the necessary connections to the phidgets) */
   get("/start") {
+    if (system != null) {
+      system terminate()
+    }
+    system = ActorSystem.create("SmartCity")
+    cityActor = system.actorOf(Props[CityActor].withDispatcher("application-dispatcher"), name = "cityActor")
     contentType = "text"
     Await.ready(cityActor ? Initialize(), Duration.Inf).value.get match {
       case Success(_) =>
