@@ -38,6 +38,10 @@ class MainRoadCarDetectorActor(ik: InterfaceKitPhidget, index: Int) extends Acto
     case Initialize() =>
 
       initialValue = ik.getSensorValue(index)
+      context.self.path.name match {
+        case "mainCarDetectorActorWest" => Zone.create("MainRoadWest", "Main road West", opened = true, new Timestamp(System.currentTimeMillis()))
+        case "mainCarDetectorActorEast" => Zone.create("MainRoadEast", "Main road East", opened = true, new Timestamp(System.currentTimeMillis()))
+      }
 
       this.sensorChangeListenerDB = new SensorChangeListener {
         override def sensorChanged(sensorChangeEvent: SensorChangeEvent): Unit = {
