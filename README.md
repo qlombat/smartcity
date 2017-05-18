@@ -42,8 +42,10 @@ Utilisation des ports sur l'arduino :
   - Zone SE : 6
   - Zone S : 4, 5 et 6
   - Zone Bus : 7
+  - Déviation Est : 0
 - Analogue
   - Temperature et himidité : A0
+    - Déviation Ouest : A6
 - Autre
   - LCD : 11 (SDA) et 12 (SCL)
 
