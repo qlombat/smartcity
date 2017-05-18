@@ -1383,3 +1383,5 @@ refreshZones();
 $("#city-map-panel").find(".btn-refresh").on("click", function () {
     refreshZones();
 });
+setInterval(refreshZones, 3000);
+

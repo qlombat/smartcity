@@ -149,6 +149,8 @@ $(document).ready(function () {
     updateSpeed();
     updateZoneAlerts();
     updateParking();
-    //setInterval(updateSensors, 3000);
-    //setInterval(updateZoneAlerts, 3000)
+    setInterval(updateSensors, 3000);
+    setInterval(updateSpeed, 3000);
+    setInterval(updateZoneAlerts, 3000);
+    setInterval(updateParking, 3000);
 });

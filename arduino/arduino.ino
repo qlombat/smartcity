@@ -63,7 +63,7 @@ void setup() {
   initSerial();
   initLCD();
   initLed();
-  ConnectToWifiIfNecessary();
+  connectToWifi();
   printWiFiStatus();
 
 }
@@ -74,7 +74,7 @@ void loop() {
 
   Serial.println();
   Serial.println("Get zones closed");
-  ConnectToWifiIfNecessary();
+  //Get state of zones
   if (connect(server, defaultPort)) {
     if (getRequest(server, pathGetZones) && skipResponseHeaders()) {
       readReponseContentForZone();
@@ -84,7 +84,7 @@ void loop() {
 
   Serial.println();
   Serial.println("Post humidity");
-  ConnectToWifiIfNecessary();
+  //Update humidity
   if (connect(server, defaultPort)) {
     if (postHumidity(server, pathPostHumidity)) {
       client.flush();
@@ -94,7 +94,7 @@ void loop() {
 
   Serial.println();
   Serial.println("Post temperature");
-  ConnectToWifiIfNecessary();
+  //Update temperature
   if (connect(server, defaultPort)) {
     if (postTemperature(server, pathPostTemperature)) {
       client.flush();
@@ -158,7 +158,7 @@ void initLed() {
   delay(1000);
 }
 
-void ConnectToWifiIfNecessary() {
+void connectToWifi() {
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");

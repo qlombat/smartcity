@@ -64,7 +64,7 @@ object Sensor extends SQLSyntaxSupport[Sensor] {
         SELECT MAX(sensor_tmp.created_at)
         FROM sensors sensor_tmp
         WHERE sensor_tmp.name = ${sensor.name}
-    )""".map(Sensor(sensor.resultName)).first.apply()
+    )  ORDER BY ${sensor.id} DESC""".map(Sensor(sensor.resultName)).first.apply()
   }
 
   def countBy(where: SQLSyntax)(implicit session: DBSession = autoSession): Long = {

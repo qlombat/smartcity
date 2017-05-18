@@ -30,7 +30,7 @@ class ZonesEndpoint extends ScalatraServlet with JacksonJsonSupport with FutureS
   get("/closed") {
     new AsyncResult() {
       override val is = Future {
-        val day = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
+        val day = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH)
         val currentMillis = System.currentTimeMillis()
         val now = new Time(currentMillis)
 
