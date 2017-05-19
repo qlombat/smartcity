@@ -65,7 +65,6 @@ CREATE TABLE `zones` (
 -- --------------------------------------------------------
 
 
-
 ALTER TABLE `bus_schedule`
   ADD PRIMARY KEY (`id`);
 

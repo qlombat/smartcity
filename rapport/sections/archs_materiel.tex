@@ -8,10 +8,10 @@ Avant toute explication, voici le schéma muni d’annotations afin d’identifi
     \end{center}
 \end{figure}
 
-La partie hardware sera divisée en deux parties principales. Dans un premier temps, l’Arduino et l’ensemble des capteurs, des LEDs et des affichages lui étant connectés seront abordées. Deuxièmement, l’ensemble des interfaces Phidgets vous seront détaillées, évidemment les précisions les plus précises seront apportées à l’InterfaceKit 8/8/8 qui a recueilli une multitude de capteurs et de LEDs.\\
+La partie hardware sera divisée en deux parties principales. Dans un premier temps, l’Arduino et l’ensemble des capteurs, des LEDs et des affichages lui étant connectés seront abordés. Deuxièmement, l’ensemble des interfaces Phidgets vous seront détaillées, évidemment les précisions les plus précises seront apportées à l’InterfaceKit 8/8/8 qui a recueilli une multitude de capteurs et de LEDs.\\
 
 \subsection{Arduino}
-\subsubsection{Élément connectés}
+\subsubsection{Éléments connectés}
 \begin{itemize}
 \item \textbf{Les zones piétonnes :}\\
 Les LEDs nommées de \textcolor{red}{L1} à \textcolor{red}{L12} permettent la gestion des zones piétonnes. La fermeture d’une zone est symbolisée par l’illumination des LEDs rouges y donnant accès. Si nous souhaitons, par exemple, fermer la zone Nord-Est, les LEDs \textcolor{red}{L3} et \textcolor{red}{L4} devront donc être allumées. Concernant les rangées de LEDs (\textcolor{red}{L9} à \textcolor{red}{L12}), celles-ci permettent de couper l’accès à la zone Nord ou Sud. Ces dernières ne seront donc, par exemple, jamais utilisées lorsque seule la zone Nord-Ouest est fermée.
@@ -113,6 +113,7 @@ Comme mentionné plus haut, nous avons dû adapter les photo senseurs afin de le
         \includegraphics[scale=0.4,keepaspectratio]{img/circuit-photo-senseurs}
     \end{center}
 \end{figure}
+\vspace{-0.5cm}
 Le photo senseur est alimenté par l’InterfaceKit (fil rouge), à la sortie du photo sensor, une résistance de 220 \textit{Ohm} est connectée directement à la terre (fil noir) alors que le file vert est branché en série et directement au port de data. Une fois ce montage réalisé, il ne suffit plus que de le connecter à un port de l’InterfaceKit conçu pour les capteurs.\\\\
 
 L’InterfaceKit nous permet également des sorties, nous l’avons donc utilisé pour gérer les feux de signalisation du carrefour principal ainsi que l’éclairage public. FN et FS, en plus des LEDs vertes et rouges pour gérer la circulation, sont munis d’une LED orange afin de signaler aux piétons s’ils peuvent ou non traverser (lorsque la LED est allumée, les piétons peuvent s’engager). Certains feux ont un fonctionnement exactement identique, nous avons donc pu les regrouper sur les mêmes ports de sortie. FN et FS ont le même état quelque soit le moment ainsi que FW et FE.

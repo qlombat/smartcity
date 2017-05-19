@@ -1,5 +1,5 @@
 \subsection{Arduino}
-La partie matérielle concernant l’Arduino est déjà largement détaillée dans le point 2.1.2 Architecture matériel – Arduino. Dès lors, nous allons ici principalement nous attarder sur la partie logicielle et nous allons aussi expliquer ce qu’apporte l’Arduino à notre solution. 
+La partie matérielle concernant l’Arduino est déjà largement détaillée dans le point 2.1.2 Architecture matériel – Arduino. Dès lors, nous allons ici principalement nous attarder sur la partie logicielle et nous allons aussi expliquer ce qu’apporte l’Arduino à notre solution.
 
 \subsubsection{But de l'Arduino}
 Dans un premier temps, notre réflexion s’est portée sur la possibilité pour une ville d’ouvrir ou de fermer des quartiers aux véhicules. Ainsi, nous avons souhaité apporter une solution modulaire à ce problème.\\
@@ -9,7 +9,7 @@ Généralement, une ville dispose de rues qui deviennent piétonnes lors de cert
 Nous avons donc choisi de considérer l’Arduino comme un objet connecté indépendant que nous pouvons configurer et ajouter à une infrastructure déjà existante. Dès lors, le code a été conçu pour se modifier très facilement dans le but d’ajouter des zones qu’on peut ouvrir ou fermer.
 
 \subsubsection{Gestion des zones}
-Dans notre maquette, nous avons défini 9 zones que nous pouvons activer (LEDs allumées) ou désactiver (LEDs fermées). Nous avons donc les zones suivantes : 
+Dans notre maquette, nous avons défini 9 zones que nous pouvons activer (LEDs allumées) ou désactiver (LEDs fermées). Nous avons donc les zones suivantes :
 
 \begin{table}[H]
 \centering
@@ -41,9 +41,9 @@ Dans notre maquette, nous avons défini 9 zones que nous pouvons activer (LEDs a
     \caption{Zones gérées par l'Arduino}
 \end{table}
 
-En lisant le code de l’Arduino, nous pouvons constater que ces zones sont définies dans les premières lignes de notre code Arduino
+En lisant le code de l’Arduino, nous pouvons constater que ces zones sont définies dans les premières lignes de notre code Arduino :
 
-\begin{lstlisting}[language=C, numbers=none]
+\begin{lstlisting}[language=C, stepnumber=5, firstnumber=1, numberfirstline=true]
 //Zones configuration
 char* zones[9] = {"NW", "NE", "N", "SW", "SE", "S", "BUS", "MainRoadWest", "MainRoadEast"}; //Zone managed by this arduino
 
@@ -61,58 +61,58 @@ int pinLed[9][3] = {
 };
 \end{lstlisting}
 
-De cette manière, nous pouvons facilement changer les zones gérées par cet Arduino. Il suffit d’ajouter ou supprimer un élément de la liste zones. De plus, nous constatons que la variable pinLed permet de faire correspondre à chaque zone définie dans la variable zones les LEDs à allumer/éteindre. Par exemple pour allumer la zone nord il nous suffit de trouver l’identifiant de cette zone (N) dans la variable zones. Il se situe à l’indice 2. À présent, pour connaître les LEDs à allumer lorsque la zone nord est activée, il nous suffit d’aller voir ce que contient l’indice 2 dans la variable pinLed. Dans notre cas, nous devrons allumer les LEDs des pins 1, 2 et 3. \\
+De cette manière, nous pouvons facilement changer les zones gérées par cet Arduino. Il suffit d’ajouter ou supprimer un élément de la liste \emph{zones}. De plus, nous constatons que la variable \emph{pinLed} permet de faire correspondre à chaque zone définie dans la variable zones les LEDs à allumer/éteindre. Par exemple pour allumer la zone nord il nous suffit de trouver l’identifiant de cette zone (N) dans la variable \emph{zones}. Il se situe à l’indice 2. À présent, pour connaître les LEDs à allumer lorsque la zone nord est activée, il nous suffit d’aller voir ce que contient l’indice 2 dans la variable \emph{pinLed}. Dans notre cas, nous devrons allumer les LEDs des pins 1, 2 et 3. \\
 
 C’est exactement ce principe que notre code utilise. Ainsi il suffit au programmeur de modifier ces deux variables pour gérer de nouvelles zones.\\
 
-Remarques : 
+Remarques :
 \begin{itemize}
-\item Nous considérons bien sûr que zones.length == pinLed.length
-\item -1 permet de ne pas désigner de LED.\\
+\item Nous considérons bien sûr que \texttt{zones.length == pinLed.length}
+\item \texttt{-1} permet de ne pas désigner de LED.\\
 \end{itemize}
 
-À présent, il nous suffit de déployer le code existant sur un autre Arduino en ayant préalablement défini les zones qu’il gérait grâce à ces deux variables et nous pourrons directement gérer d’autres zones. Dès lors, nous avons rendu notre code flexible et l’exigence que nous nous étions fixée quant à l’évolutivité d’une smartcity est respectée. 
+À présent, il nous suffit de déployer le code existant sur un autre Arduino en ayant préalablement défini les zones qu’il gérait grâce à ces deux variables et nous pourrons directement gérer d’autres zones. Dès lors, nous avons rendu notre code flexible et l’exigence que nous nous étions fixée quant à l’évolutivité d’une smartcity est respectée.
 
 \subsubsection{Recevoir et envoyer des informations}
 Maintenant que nous avons vu de manière synthétique comment notre Arduino gérait les zones qu’on lui avait définies, nous allons détailler un peu plus l’implémentation de notre solution. \\
 
 Dans un premier temps, il est important de savoir que toutes les configurations sont définies dans les premières lignes du code de l’Arduino. À l’instar des zones expliquées précédemment, les informations de connexion au wifi, les différents points API utilisés par l’Arduino et les autres configurations sont définis avant la méthode setup de notre code. De cette manière, nous facilitons grandement la maintenabilité de notre code. \\
 
-Lorsque l’Arduino exécute son code, il lance la méthode setup une fois. Dans cette méthode, nous allons initialiser notre Arduino. Ainsi, nous allons effectuer les actions suivantes : 
+Lorsque l’Arduino exécute son code, il lance la méthode setup une fois. Dans cette méthode, nous allons initialiser notre Arduino. Ainsi, nous allons effectuer les actions suivantes :
 
 \begin{enumerate}
-\item initSerial : cette fonction va initialiser le serial afin de pouvoir logger des informations via le port USB.
-\item initLCD : cette fonction va initialiser l’écran LCD lié à notre Arduino
-\item initLed : cette fonction va activer toutes les LEDs gérées par cet Arduino. Elle va les laisser allumés 5 secondes (afin de pouvoir vérifier leurs bons fonctionnements) ensuite les mettre dans leur état de base, à savoir éteint. 
-\item connectToWifi : cette fonction va connecter notre Arduino à la borne wifi configurée précédemment si celui-ci n’est déjà pas connecté. 
-\item printWiFiStatus : cette fonction nous permet simplement d’écrire sur le serial les informations de connexion du wifi.\\
+\item \emph{initSerial} : cette fonction va initialiser le serial afin de pouvoir logger des informations via le port USB.
+\item \emph{initLCD} : cette fonction va initialiser l’écran LCD lié à notre Arduino
+\item \emph{initLed} : cette fonction va activer toutes les LEDs gérées par cet Arduino. Elle va les laisser allumés 5 secondes (afin de pouvoir vérifier leurs bons fonctionnements) ensuite les mettre dans leur état de base, à savoir éteint.
+\item \emph{connectToWifi} : cette fonction va connecter notre Arduino à la borne wifi configurée précédemment si celui-ci n’est déjà pas connecté.
+\item \emph{printWiFiStatus} : cette fonction nous permet simplement d’écrire sur le serial les informations de connexion du wifi.\\
 \end{enumerate}
 
 Une fois la méthode setup terminée, l’Arduino exécutera en boucle la méthode loop. Dans celle-ci nous avons le code métier de notre Arduino. Dans le cadre de notre projet, l’Arduino gérait non seulement les zones, mais aussi le capteur de température et d’humidité. Aussi, un écran LCD était configuré afin d’afficher les informations du capteur. La méthode Loop se compose de la manière suivante :
 \begin{enumerate}
-\item updateTemperatureAndHumidity : cette fonction met à jour l’humidité et la température sur base de notre capteur et affiche les informations sur l’écran LCD. 
-\item Mise à jour de l’état des zones : l’Arduino se connecte à l’hôte hébergeant l’API grâce à la méthode connect(). Il fait une requête GET sur le point api donnant la liste des zones à allumer. Ensuite, la méthode readReponseContentForZone lie le résultat de la requête et ouvre les zones concernées. 
-\item Mise à jour de l’humidité : l’Arduino se connecte à l’hôte hébergeant l’API grâce à la méthode connect(). Il fait une requête POST sur le point api permettant d’ajouter une nouvelle valeur pour un senseur en envoyant les données correspondant à l’humidité.
-\item Mise à jour de la température : l’Arduino se connecte à l’hôte hébergeant l’API grâce à la méthode connect(). Il fait une requête POST sur le point api permettant d’ajouter une nouvelle valeur pour un senseur en envoyant les données correspondant à la température.
-\item L’Arduino attend un délai de 3 secondes et recommence. 
+\item updateTemperatureAndHumidity : cette fonction met à jour l’humidité et la température sur base de notre capteur et affiche les informations sur l’écran LCD.
+\item Mise à jour de l’état des zones : l’Arduino se connecte à l’hôte hébergeant l’API grâce à la méthode \emph{connect()}. Il fait une requête GET sur le point api donnant la liste des zones à allumer. Ensuite, la méthode \emph{readReponseContentForZone} lie le résultat de la requête et ouvre les zones concernées.
+\item Mise à jour de l’humidité : l’Arduino se connecte à l’hôte hébergeant l’API grâce à la méthode \emph{connect()}. Il fait une requête POST sur le point api permettant d’ajouter une nouvelle valeur pour un senseur en envoyant les données correspondant à l’humidité.
+\item Mise à jour de la température : l’Arduino se connecte à l’hôte hébergeant l’API grâce à la méthode \emph{connect()}. Il fait une requête POST sur le point api permettant d’ajouter une nouvelle valeur pour un senseur en envoyant les données correspondant à la température.
+\item L’Arduino attend un délai de 3 secondes et recommence.
 \end{enumerate}
 
 \subsubsection{Méthodes et fonctions}
-Voici une liste de chaque méthode/fonction définie dans le code Arduino. 
+Voici la liste de chaque méthode/fonction définie dans le code Arduino et de leur description :
 \begin{itemize}
-\item Setup : Méthode s’exécutant lors du démarrage de l’Arduino.
-\item Loop : Méthode s’exécutant en boucle et contant le code métier de l’Arduino.
-\item initSerial :  Permet d’initialiser le port Serial de l’Arduino.
-\item initLCD :   Permet d’initialiser l’écran LCD.
-\item connectToWifi : Permet de se connecter au wifi défini par les variables globales ssid et pass.
-\item printWiFiStatus : Imprime sur le port Serial les informations concernant le wifi. 
-\item connect : Permet d’ouvrir une connexion HTTP à un hôte via un port défini  .
-\item getRequest : Permet d’effectuer une requête GET sur un une ressource d’un hôte. 
-\item postTemperature : Permet d’exécuter la requête POST relative la température.
-\item postHumidity : Permet d’exécuter la requête POST relative l’humidité.
-\item postRequest : : Permet d’exécuter une requête POST.
-skipResponseHeaders : Permet de passer les headers d’une réponse HTTP.
-readReponseContentForZone : Lie la réponse de la requête GET concernant les zones et ouvre/ferme les zones en fonction de cette réponse.
-\item disconnect : Permet de fermer une connexion HTTP.
-\item updateTemperatureAndHumidity : Permet de mettre à jour les variables globales humidity et temperature en fonction des triggers définis. Cette fonction affiche aussi la température et l’humidité sur l’écran LCD.
+\item \emph{Setup} : Méthode s’exécutant lors du démarrage de l’Arduino.
+\item \emph{Loop} : Méthode s’exécutant en boucle et contant le code métier de l’Arduino.
+\item \emph{initSerial} :  Permet d’initialiser le port Serial de l’Arduino.
+\item \emph{initLCD} :   Permet d’initialiser l’écran LCD.
+\item \emph{connectToWifi} : Permet de se connecter au wifi défini par les variables globales \emph{ssid} et \emph{pass}.
+\item \emph{printWiFiStatus} : Imprime sur le port Serial les informations concernant le wifi.
+\item \emph{connect} : Permet d’ouvrir une connexion HTTP à un hôte via un port défini  .
+\item \emph{getRequest} : Permet d’effectuer une requête GET sur un une ressource d’un hôte.
+\item \emph{postTemperature} : Permet d’exécuter la requête POST relative la température.
+\item \emph{postHumidity} : Permet d’exécuter la requête POST relative l’humidité.
+\item \emph{postRequest} : Permet d’exécuter une requête POST.
+\item \emph{skipResponseHeaders} : Permet de passer les headers d’une réponse HTTP.
+\item \emph{readReponseContentForZone} : Lie la réponse de la requête GET concernant les zones et ouvre/ferme les zones en fonction de cette réponse.
+\item \emph{disconnect} : Permet de fermer une connexion HTTP.
+\item \emph{updateTemperatureAndHumidity} : Permet de mettre à jour les variables globales humidity et temperature en fonction des triggers définis. Cette fonction affiche aussi la température et l’humidité sur l’écran LCD.
 \end{itemize}

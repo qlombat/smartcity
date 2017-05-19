@@ -16,6 +16,7 @@ Néanmoins, quelques remarques préliminaires sont nécessaires :
 \item Pour déployer le projet sur une machine de développement, il suffit d’exécuter la commande maven : mvn:jetty. En ce qui concerne le déploiement sur le Raspberry Pi, il est uniquement nécessaire de transférer le fichier WAR (préalablement généré) dans le dossier ‘webapps’ de Tomcat (l’auto-déploiement étant supposé activé).\\
 \end{itemize}
 
+\newpage
 Afin d’être complet, voici le diagramme de classes du composant \emph{Serveur} :
 \begin{figure}[H]
     \begin{center}
@@ -40,7 +41,7 @@ Ce système d’Acteurs s’organise sous la forme d’un arbre qui peut être r
 \end{figure}
 On remarque donc que la ville (\emph{CityActor}) est l’acteur principal ou aussi appelé le « maître », c’est lui qui est à la racine de notre système. Les sous-acteurs engendrés par celui-ci sont des composants plus petits à l’intérieur de la ville, c’est-à-dire le carrefour (\emph{CrossroadsActor}), le parking (\emph{ParkingActor}) et l’éclairage public (\emph{PublicLightingActor}).\\
 
-Tout d’abord, il faut noter qu’il est possible de démarrer et d’arrêter tout le système d’acteurs. Ceci est réalisé en envoyant le message \emph{Initialize} à l’acteur principal qui va ensuite le propager dans tout l’arbre d’acteurs. De la même façon, s'ils ont été démarrés auparavant, il est possible de les stopper en envoyant le message \emph{Stop} à l’acteur principal qui le propagera de la même façon que pour le message de démarrage. Le fait d’initialiser des acteurs va ouvrir les connexions aux phidgets nécessaires, mais aussi ajouter les listeners et mettre en place une situation initiale (les feux de la voie principale au vert et ceux des auxiliaires au rouge). Stopper les acteurs fera l’effet inverse.\\
+Tout d’abord, il faut noter qu’il est possible de démarrer et d’arrêter tout le système d’acteurs. Ceci est réalisé en envoyant le message \emph{Initialize} à l’acteur principal qui va ensuite le propager dans tout l’arbre d’acteurs. De la même façon, s'ils ont été démarrés auparavant, il est possible de les stopper en envoyant le message \emph{Stop} à l’acteur principal qui le propagera de la même façon que pour le message de démarrage. Le fait d’initialiser des acteurs va ouvrir les connexions aux phidgets nécessaires, mais aussi ajouter les listeners et mettre en place une situation initiale (les feux de la voie principale au vert et ceux des auxiliaires au rouge, avec une inversion de situation toutes les 60 secondes). Stopper les acteurs fera l’effet inverse.\\
 
 Ensuite, l’acteur du carrefour pilote tous les composants nécessaires au bon fonctionnement du celui-ci :
 \begin{itemize}
