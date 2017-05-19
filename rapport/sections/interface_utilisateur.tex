@@ -1,0 +1,50 @@
+Nous avons développé une interface web complète montrant les possibilités qu’une smartcity comme la nôtre peut apporter. Cette interface nous permet non seulement de manager la ville dans son ensemble, mais aussi de visualiser l’état de chaque capteur, ainsi que l’historique des données. Nous avons tenté ici de démontrer la facilité avec laquelle notre infrastructure permet d’être utilisé dans une optique big data. Ainsi, bien que notre interface soit simple nous constatons que la multitude de données fournies par notre API peut être agrégée et traitée afin d’en retirer des informations plus pertinentes.
+
+\subsection{Dashboard}
+\begin{figure}[H]
+    \begin{center}
+        \frame{\includegraphics[width=\linewidth, height=\textheight,keepaspectratio]{img/dashboard}}
+
+        \caption{Dashboard}
+    \end{center}
+\end{figure}
+L’illustration ci-dessus représente le dashboard de notre interface web. Il permet de visualiser les données importantes fournies par divers capteurs sur la maquette (température, luminosité …). De plus la carte interactive fonctionnant de la même manière que Google map est la représentation en temps réel de notre ville. Ainsi, si nous souhaitons connaître l’état d’un capteur, il suffit de placer sa souris à l’endroit voulu pour obtenir l’information.
+\begin{figure}[H]
+    \begin{center}
+        \frame{
+        \includegraphics[scale=0.4,keepaspectratio]{img/detail_capteur_map}}
+        \caption{Affichage de l'état d'un capteur sur la carte}
+    \end{center}
+\end{figure}
+
+Sur cet écran d’accueil, nous pouvons aussi visualiser un court historique concernant les ouvertures/fermetures des différentes zones ainsi qu’un historique des accès au parking de notre ville. 
+
+\subsection{Sensors}
+La rubrique senseurs reprend quant à elle l’historique des principaux senseurs. Comme le montre l’illustration ci-dessous, nous avons représenté les informations sous forme de graphe. Nous pouvons appliquer des filtres afin d’afficher la dernière heure, le dernier mois, la dernière année et aussi choisit le nombre de périodes (heure, mois et année). Tous ces graphes utilisent notre API afin de récupérer les données fournies par notre ville intelligente. 
+\begin{figure}[H]
+    \begin{center}
+        \frame{\includegraphics[width=\linewidth, height=\textheight,keepaspectratio]{img/interface_senseurs}}
+        \caption{Historique des capteurs de présence sur les 4 axes routier}
+    \end{center}
+\end{figure}
+
+\subsection{Zones}
+Cette rubrique permet la gestion des zones de notre ville ainsi, nous pouvons ouvrir/fermer des zones ou ajouter/supprimer des horaires de bus afin de gérer dynamiquement les heures d’ouverture de la zone bus. 
+\begin{figure}[H]
+    \begin{center}
+        \frame{\includegraphics[width=\linewidth, height=\textheight,keepaspectratio]{img/interface_zones}}
+        \caption{Interface pour ouvrir ou fermer une zone}
+    \end{center}
+\end{figure}
+
+\subsection{Actor}
+Cette rubrique permet de lancer ou de stopper notre ville intelligente. Cette fonctionnalité n’est pas vouée à être présente dans une version de production, mais nous permet de facilement démarrer/arrêter notre ville dans cette phase de test afin de montrer la facilité qu’a notre système a redémarré.
+
+\subsection{API Documentation}
+À nouveau, cette partie du site n’est pas vouée à être disponible pour le grand public, mais bien à un public de développeurs. C’est le point d’entrée pour permettre à des services externes d’utiliser les données de notre ville. Nous offrons ainsi une vision open data de notre ville intelligente. À noter que nous utilisons Swagger afin de générer la documentation de notre api.
+\begin{figure}[H]
+    \begin{center}
+        \frame{\includegraphics[width=\linewidth, height=\textheight,keepaspectratio]{img/interface_API}}
+        \caption{Interface documentant de notre API}
+    \end{center}
+\end{figure}
