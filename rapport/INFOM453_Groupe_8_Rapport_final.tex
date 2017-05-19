@@ -9,7 +9,7 @@
 \usepackage{rotating}
 \usepackage[margin=1in,headheight=15.0pt]{geometry}
 \usepackage{listings}
-\usepackage[dvipsnames]{xcolor}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{inconsolata}
 \usepackage{enumitem}
 \usepackage{float}
@@ -72,6 +72,16 @@
   {€}{{\euro}}1 {£}{{\pounds}}1
 }
 
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  stringstyle=\color{black},
+  identifierstyle=\color{blue},
+  keywordstyle=\color{blue},
+  morekeywords={xmlns,version,type,groupId,artifactId,scope}
+}
 
 \newcolumntype{x}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
 
