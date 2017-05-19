@@ -111,6 +111,7 @@ void initSerial() {
   Serial.println("Serial ready");
 }
 
+//Initialize LCD screen
 void initLCD() {
   lcd.init();
   lcd.backlight();
@@ -158,6 +159,8 @@ void initLed() {
   delay(1000);
 }
 
+// Connect the arduino to the wifi
+// This function use global variables sssid and pass
 void connectToWifi() {
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) {
@@ -185,6 +188,7 @@ void connectToWifi() {
   }
 }
 
+//This function print the wifi status on the serial
 void printWiFiStatus() {
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
@@ -231,6 +235,7 @@ bool getRequest(const char* host, const char* resource) {
   return true;
 }
 
+//Send the HTTP POST request to update temperature
 boolean postTemperature(const char* host, const char* resource) {
   if (temperatureValueChanged) {
     char content[40] = "";
@@ -250,6 +255,7 @@ boolean postTemperature(const char* host, const char* resource) {
   }
 }
 
+//Send the HTTP POST request to update humidity
 boolean postHumidity(const char* host, const char* resource) {
   if (humidityValueChanged) {
     char content[37] = "";
@@ -268,12 +274,12 @@ boolean postHumidity(const char* host, const char* resource) {
   }
 }
 
+// Send the HTTP POST request to the server
 bool postRequest(const char* host, const char* resource, const char* content) {
   Serial.print("POST ");
   Serial.println(resource);
   Serial.print("content ");
   Serial.println(content);
-
 
   client.setTimeout(HTTP_TIMEOUT);
   client.print("POST ");
@@ -306,6 +312,7 @@ bool skipResponseHeaders() {
   return ok;
 }
 
+//This function read the response of a request and open led of zones defined in the zones field of the json
 bool readReponseContentForZone() {
   Serial.println("readReponseContentForZone");
   delay(1000);
@@ -360,6 +367,7 @@ void disconnect() {
   client.stop();
 }
 
+//This function update global variables temperature and humidity
 void updateTemperatureAndHumidity() {
   dht.begin();
   sensors_event_t event;
