@@ -41,7 +41,7 @@ Ce système d’Acteurs s’organise sous la forme d’un arbre qui peut être r
 \end{figure}
 On remarque donc que la ville (\emph{CityActor}) est l’acteur principal ou aussi appelé le « maître », c’est lui qui est à la racine de notre système. Les sous-acteurs engendrés par celui-ci sont des composants plus petits à l’intérieur de la ville, c’est-à-dire le carrefour (\emph{CrossroadsActor}), le parking (\emph{ParkingActor}) et l’éclairage public (\emph{PublicLightingActor}).\\
 
-Tout d’abord, il faut noter qu’il est possible de démarrer et d’arrêter tout le système d’acteurs. Ceci est réalisé en envoyant le message \emph{Initialize} à l’acteur principal qui va ensuite le propager dans tout l’arbre d’acteurs. De la même façon, s'ils ont été démarrés auparavant, il est possible de les stopper en envoyant le message \emph{Stop} à l’acteur principal qui le propagera de la même façon que pour le message de démarrage. Le fait d’initialiser des acteurs va ouvrir les connexions aux phidgets nécessaires, mais aussi ajouter les listeners et mettre en place une situation initiale (les feux de la voie principale au vert et ceux des auxiliaires au rouge, avec une inversion de situation toutes les 60 secondes). Stopper les acteurs fera l’effet inverse.\\
+Tout d’abord, il faut noter qu’il est possible de démarrer et d’arrêter tout le système d’acteurs. Ceci est réalisé en envoyant le message \emph{Initialize} à l’acteur principal qui va ensuite le propager dans tout l’arbre d’acteurs. De la même façon, s'ils ont été démarrés auparavant, il est possible de les stopper en envoyant le message \emph{Stop} à l’acteur principal qui le propagera de la même façon que pour le message de démarrage. Le fait d’initialiser des acteurs va ouvrir les connexions aux phidgets nécessaires, mais aussi ajouter les listeners et mettre en place une situation initiale (les feux de la voie principale au vert et ceux des auxiliaires au rouge, avec une inversion de situation toutes les 60 secondes et ce pendant 10 secondes avant que la situation ne revienne à la normale). Stopper les acteurs fera l’effet inverse.\\
 
 Ensuite, l’acteur du carrefour pilote tous les composants nécessaires au bon fonctionnement du celui-ci :
 \begin{itemize}
@@ -52,6 +52,10 @@ Ensuite, l’acteur du carrefour pilote tous les composants nécessaires au bon 
 \end{itemize}
 
 Le contrôle du carrefour part principalement de l’acteur qui gère celui-ci, en envoyant des messages aux sous-acteurs pour déléguer le travail (allumer et éteindre des feux, vérifier l’état des détecteurs de présences, etc.).\\
+
+Le comportement général du carrefour est le suivant : lorsqu'un des capteurs sur l'une des voies auxiliaires détecte une voiture, les feux passent au vert sur les voies auxiliaires et au rouge sur la voie principal. Cependant, si une ou plusieurs voitures est(sont) détectée(s) sur la voie principale, un délais (de l'ordre de 4 secondes) est mis en place pour essayer de désengorger la voie principale dans un premier temps.
+Les feux sur les voies auxiliaires restent au vert pendant 10 secondes puis passent au rouges et la voie principale est de nouveau ouverte. Si une voiture venait à nouveau à être détectée sur une des voies auxiliaires, elle devrait patienter un délais supplémentaire (de 20 secondes) avant de pouvoir passer.
+Il va de soit que lorsque la voie principale est au vert et que les voies auxiliaires sont fermées, les passage piétons de ces dernières sont ouverts.\\
 
 L’acteur pour le parking s’occupe principalement du lecteur RFID et aussi de contrôler la barrière en envoyant des messages à l’acteur correspondant à celle-ci (\emph{BarrierActor}). Ainsi, grâce à un listener sur le lecteur RFID, lorsqu’un tag est lu, si celui-ci est enregistré dans la base de données (voir ci 2.2.1.3), l’acteur envoie le message d’ouverture de la barrière du parking à l’acteur concerné. Quand le tag est perdu, il envoie le message de fermeture.\\
 

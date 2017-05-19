@@ -1,4 +1,4 @@
-# Smart road signaling :vertical_traffic_light:
+# SmartCity :vertical_traffic_light:
 
 
 Projet dans le cadre du cours **INFOM453 Laboratoire en informatique ambiante et mobile** sur le sujet des *Smart cities*.
@@ -26,14 +26,14 @@ Cette troisième et dernière tâche est la plus complexe, en effet, elle permet
 Dessin abstrait de la maquette disponible [ici](https://docs.google.com/drawings/d/1vkHto2qSTscVSHUA4KIwAOQl6Z28mmhF0PmFOPPPtXE/edit?usp=sharing) (7/3/2017)
 
 ### Arduino - Maquette
-Emplacement de chaque led géré par l'arduino. Le numéro du port associé y est précisé  [ici](https://docs.google.com/drawings/d/1HutxQbEiszSulH7tbw2Y27EUrotwv26EINmu5cpH85Q/edit?usp=sharing) (05/04/2017). 
+Emplacement de chaque led géré par l'arduino. Le numéro du port associé y est précisé  [ici](https://docs.google.com/drawings/d/1HutxQbEiszSulH7tbw2Y27EUrotwv26EINmu5cpH85Q/edit?usp=sharing) (05/04/2017).
 
 
 ## Phase 2 : Phidgets & Arduino
 ### Arduino
-Le dossier libraries contient toutes les librairies utiles pour faire tourner le code sur l'arduino. Copiez simplement le contenu de ce dossier dans le dossier librairies de votre installation arduino. 
+Le dossier libraries contient toutes les librairies utiles pour faire tourner le code sur l'arduino. Copiez simplement le contenu de ce dossier dans le dossier librairies de votre installation arduino.
 
-Utilisation des ports sur l'arduino : 
+Utilisation des ports sur l'arduino :
 - Digital
   - Zone NO : 1
   - Zone NE : 2
