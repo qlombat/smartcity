@@ -1,6 +1,5 @@
 import javax.servlet.ServletContext
 
-import _root_.akka.actor.ActorSystem
 import be.info.unamur.api._
 import be.info.unamur.persistence.utils.DatabaseUtils
 import be.info.unamur.{ActorsServlet, MainServlet}
@@ -16,7 +15,6 @@ import scala.language.postfixOps
   */
 class ScalatraBootstrap extends LifeCycle with DatabaseUtils {
   // Initialize the Actor system here to do it just once and pass it to the servlet that need it
-
 
 
   override def init(context: ServletContext) {
